@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rucas_exam_project/pages/login.dart';
+import 'package:rucas_exam_project/screens/home.dart';
+import 'package:rucas_exam_project/screens/login.dart';
 
 void main() {
   runApp(const MainApp());
@@ -11,10 +12,12 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        initialRoute: '/',
-        routes: {
-            '/': (context) => Login(),
-        },
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(),
+        '/home': (context) => HomeScreen(),
+      },
     );
   }
 }

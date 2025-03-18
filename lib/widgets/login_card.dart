@@ -32,7 +32,9 @@ class LoginCard extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                   Navigator.of(context).pushNamed('/home');
+                  },
                   child: Text(
                     'Log In',
                     style: TextStyle(
