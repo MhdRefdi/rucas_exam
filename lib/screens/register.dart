@@ -1,34 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:rucas_exam_project/widgets/login_form.dart';
+import 'package:rucas_exam_project/widgets/register_form.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  FocusNode _focusNode = FocusNode();
-  Color _activeColor = Color(0xFFD5D5D5);
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(() {
-      setState(() {
-        _activeColor = _focusNode.hasFocus ? Color(0xFF36A9E2) : Color(0xFFD5D5D5);
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
-
+class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Container(
               width: double.infinity,
-              height: 300,
+              height: 240,
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: Svg('assets/images/wave.svg'),
@@ -55,9 +36,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 80, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
                 child: Text(
-                  "Selamat Datang\nKembali",
+                  "Daftarkan Akun\nAnda",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 25,
@@ -72,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.white,
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: LoginForm(),
+                  child: RegisterForm(),
                 ),
               ),
             ),
