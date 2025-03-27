@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class ExamGrid extends StatelessWidget {
   final List<Map<String, dynamic>> exams;
 
-  ExamGrid({required this.exams});
+  const ExamGrid({super.key, required this.exams});
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
@@ -20,11 +20,19 @@ class ExamGrid extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(exams[index]['icon'], size: 35, color: Color(0xFF795548)),
-            SizedBox(height: 5),
+            Icon(
+              exams[index]['icon'], 
+              size: 35, 
+              color: const Color(0xFF39AAE0), // Bright blue accent
+            ),
+            const SizedBox(height: 5),
             Text(
               exams[index]['label'],
-              style: TextStyle(fontSize: 12),
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFF87CEEB), // Sky blue text color
+                fontWeight: FontWeight.w500,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

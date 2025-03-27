@@ -2,23 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:rucas_exam_project/widgets/exam_grid.dart';
 import 'package:rucas_exam_project/widgets/promotion_banner.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Colors that complement wooden background
-  static const Color primaryColor = Color(0xFF5D4037);     // Rich brown
-  static const Color secondaryColor = Color(0xFFD7CCC8);   // Light taupe
-  static const Color accentColor = Color(0xFF8D6E63);      // Medium brown
-  static const Color cardColor = Color(0xFFF5F0E6);        // Cream color
-  static const Color lightTextColor = Colors.white;        // White text for dark backgrounds
-  static const Color darkTextColor = Color(0xFF3E2723);    // Dark brown text
+  // Colors adjusted to complement the background image
+  static const Color defaultColor = Colors.white;
+  static const Color primaryColor = Color(0xFF39AAE0);  // Bright blue accent
+  static const Color backgroundColor = Color(0xFF87CEEB);  // Sky blue background
+  static const Color textColor = Color(0xFF2C3E50);  // Dark blue-gray for contrast
+  static const Color transparentColor = Colors.transparent;
 
   // Spacing constants
   static const double smallSpace = 8.0;
@@ -34,15 +31,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        backgroundColor: transparentColor,
+        iconTheme: IconThemeData(color: defaultColor),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: lightTextColor),
+            icon: Icon(Icons.notifications_outlined, color: defaultColor),
             onPressed: () {},
           ),
           IconButton(
-            icon: const Icon(Icons.person_outline, color: lightTextColor),
+            icon: Icon(Icons.person_outline, color: defaultColor),
             onPressed: () {},
           ),
         ],
@@ -50,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("images/background.jpg"),
+            image: AssetImage("images/icon-background.png"),
             fit: BoxFit.cover,
           ),
         ),
@@ -59,66 +56,49 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Top Header Section with warm opacity overlay
+                // Top Header Section
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: largeSpace, 
-                    vertical: mediumSpace
+                    horizontal: largeSpace,
+                    vertical: mediumSpace,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         "Halo, Selamat Datang!",
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: lightTextColor,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black38,
-                              offset: Offset(1, 1),
-                              blurRadius: 3,
-                            ),
-                          ],
+                          color: defaultColor,
                         ),
                       ),
                       const SizedBox(height: smallSpace),
-                      const Text(
+                      Text(
                         "Siap untuk belajar hari ini?",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: lightTextColor,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black38,
-                              offset: Offset(1, 1),
-                              blurRadius: 2,
-                            ),
-                          ],
-                        ),
+                        style: TextStyle(fontSize: 16, color: defaultColor),
                       ),
                       const SizedBox(height: largeSpace),
                     ],
                   ),
                 ),
 
-                // Main Content Area with frosted glass effect
+                // Main Content Area
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: mediumSpace, 
-                    vertical: largeSpace
+                    horizontal: mediumSpace,
+                    vertical: largeSpace,
                   ),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: cardColor.withOpacity(0.95),
-                    borderRadius: const BorderRadius.only(
+                    color: defaultColor,
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(largeRadius),
                       topRight: Radius.circular(largeRadius),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
+                        color: textColor.withOpacity(0.1),
                         blurRadius: 12,
                         spreadRadius: 0,
                         offset: const Offset(0, -3),
@@ -128,32 +108,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Search Bar with wood-themed styling
+                      // Search Bar
                       TextField(
                         decoration: InputDecoration(
                           hintText: 'Cari mata pelajaran...',
-                          hintStyle: TextStyle(color: accentColor.withOpacity(0.6)),
-                          prefixIcon: Icon(Icons.search, color: accentColor),
-                          filled: true,
-                          fillColor: secondaryColor.withOpacity(0.3),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide.none,
+                          hintStyle: TextStyle(color: textColor.withOpacity(0.5)),
+                          prefixIcon: Icon(Icons.search, color: textColor.withOpacity(0.7)),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: textColor.withOpacity(0.3)),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(vertical: 15),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(color: accentColor.withOpacity(0.2), width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(color: primaryColor, width: 1.5),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: primaryColor),
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: largeSpace),
-                      
+
                       // Exam Category Title
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -163,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: darkTextColor,
+                              color: textColor,
                             ),
                           ),
                           TextButton(
@@ -178,24 +149,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: mediumSpace),
-                      
-                      // Exam Grid with wood-themed styling
+
+                      // Exam Grid
                       Container(
                         padding: const EdgeInsets.all(mediumSpace),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: defaultColor,
                           borderRadius: BorderRadius.circular(mediumRadius),
-                          border: Border.all(
-                            color: secondaryColor.withOpacity(0.5),
-                            width: 1,
-                          ),
+                          border: Border.all(color: textColor.withOpacity(0.1), width: 1),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: textColor.withOpacity(0.05),
                               blurRadius: 8,
-                              offset: const Offset(0, 3),
+                              spreadRadius: 2,
                             ),
                           ],
                         ),
@@ -216,28 +184,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: largeSpace),
-                      
+
                       // Promotions Section
                       Text(
                         "Promosi Terbaru",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: darkTextColor,
+                          color: textColor,
                         ),
                       ),
-                      
+
                       const SizedBox(height: mediumSpace),
-                      
+
                       // Promotion Banner
                       BannerPromosi(),
-                      
-                      const SizedBox(height: largeSpace),
-                      
-                      // Recent Activity Section
-                      
                     ],
                   ),
                 ),
