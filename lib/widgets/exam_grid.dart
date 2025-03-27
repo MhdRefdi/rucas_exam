@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rucas_exam_project/screens/exam.dart';
 
 class ExamGrid extends StatelessWidget {
   final List<Map<String, dynamic>> exams;
@@ -17,25 +18,25 @@ class ExamGrid extends StatelessWidget {
       ),
       itemCount: exams.length,
       itemBuilder: (context, index) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              exams[index]['icon'], 
-              size: 35, 
-              color: const Color(0xFF39AAE0), // Bright blue accent
-            ),
-            const SizedBox(height: 5),
-            Text(
-              exams[index]['label'],
-              style: const TextStyle(
-                fontSize: 12,
-                color: Color(0xFF87CEEB), // Sky blue text color
-                fontWeight: FontWeight.w500,
+        final exam = exams[index];
+
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ExamScreen(examId: exam['id']),
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+            );
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(exam['icon'], size: 35, color: Colors.blue),
+              const SizedBox(height: 5),
+              Text(exam['label'], textAlign: TextAlign.center),
+            ],
+          ),
         );
       },
     );

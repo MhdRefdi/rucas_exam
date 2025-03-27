@@ -12,9 +12,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // Colors adjusted to complement the background image
   static const Color defaultColor = Colors.white;
-  static const Color primaryColor = Color(0xFF39AAE0);  // Bright blue accent
-  static const Color backgroundColor = Color(0xFF87CEEB);  // Sky blue background
-  static const Color textColor = Color(0xFF2C3E50);  // Dark blue-gray for contrast
+  static const Color primaryColor = Color(0xFF39AAE0); // Bright blue accent
+  static const Color backgroundColor = Color(0xFF87CEEB); // Sky blue background
+  static const Color textColor = Color(
+    0xFF2C3E50,
+  ); // Dark blue-gray for contrast
   static const Color transparentColor = Colors.transparent;
 
   // Spacing constants
@@ -112,10 +114,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       TextField(
                         decoration: InputDecoration(
                           hintText: 'Cari mata pelajaran...',
-                          hintStyle: TextStyle(color: textColor.withOpacity(0.5)),
-                          prefixIcon: Icon(Icons.search, color: textColor.withOpacity(0.7)),
+                          hintStyle: TextStyle(
+                            color: textColor.withOpacity(0.5),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: textColor.withOpacity(0.7),
+                          ),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: textColor.withOpacity(0.3)),
+                            borderSide: BorderSide(
+                              color: textColor.withOpacity(0.3),
+                            ),
                           ),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: primaryColor),
@@ -158,7 +167,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                           color: defaultColor,
                           borderRadius: BorderRadius.circular(mediumRadius),
-                          border: Border.all(color: textColor.withOpacity(0.1), width: 1),
+                          border: Border.all(
+                            color: textColor.withOpacity(0.1),
+                            width: 1,
+                          ),
                           boxShadow: [
                             BoxShadow(
                               color: textColor.withOpacity(0.05),
@@ -169,18 +181,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: ExamGrid(
                           exams: [
-                            {'icon': Icons.calculate, 'label': 'Matematika'},
-                            {'icon': Icons.science, 'label': 'Fisika'},
-                            {'icon': Icons.biotech, 'label': 'Kimia'},
-                            {'icon': Icons.eco, 'label': 'Biologi'},
-                            {'icon': Icons.history_edu, 'label': 'Sejarah'},
-                            {'icon': Icons.public, 'label': 'Geografi'},
-                            {'icon': Icons.attach_money, 'label': 'Ekonomi'},
-                            {'icon': Icons.language, 'label': 'B. Inggris'},
-                            {'icon': Icons.people, 'label': 'Sosiologi'},
-                            {'icon': Icons.computer, 'label': 'Teknologi'},
-                            {'icon': Icons.brush, 'label': 'Seni Budaya'},
-                            {'icon': Icons.sports_soccer, 'label': 'Olahraga'},
+                            {
+                              'id': 'math',
+                              'icon': Icons.calculate,
+                              'label': 'Matematika',
+                            },
                           ],
                         ),
                       ),
