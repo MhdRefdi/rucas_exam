@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rucas_exam_project/screens/login.dart';
 import 'package:rucas_exam_project/widgets/exam_grid.dart';
 import 'package:rucas_exam_project/widgets/promotion_banner.dart';
 
@@ -28,6 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
   static const double mediumRadius = 16.0;
   static const double largeRadius = 30.0;
 
+  static const List pages = [
+    LoginScreen(),
+  ];
+
+  final pagesId = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,12 +45,10 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.notifications_outlined, color: defaultColor),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.person_outline, color: defaultColor),
-            onPressed: () {},
-          ),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/notification');
+            },
+          )
         ],
       ),
       body: Container(
