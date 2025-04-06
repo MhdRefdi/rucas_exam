@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:rucas_exam_project/screens/login.dart';
-import 'package:rucas_exam_project/widgets/exam_grid.dart';
-import 'package:rucas_exam_project/widgets/promotion_banner.dart';
+import 'package:rucas_exam_project/widgets/Home/greeting_section.dart';
+import 'package:rucas_exam_project/widgets/Home/search_section.dart';
+import 'package:rucas_exam_project/widgets/home/banner_section.dart';
+import 'package:rucas_exam_project/widgets/home/exam_section.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,36 +12,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Colors adjusted to complement the background image
-  static const Color defaultColor = Colors.white;
-  static const Color primaryColor = Color(0xFF39AAE0); // Bright blue accent
-  static const Color backgroundColor = Color(0xFF87CEEB); // Sky blue background
-  static const Color textColor = Color(
-    0xFF2C3E50,
-  ); // Dark blue-gray for contrast
-  static const Color transparentColor = Colors.transparent;
-
-  // Spacing constants
-  static const double smallSpace = 8.0;
-  static const double mediumSpace = 16.0;
-  static const double largeSpace = 24.0;
-
-  // Border radius constants
-  static const double mediumRadius = 16.0;
-  static const double largeRadius = 30.0;
-
-  static const List pages = [
-    LoginScreen(),
-  ];
-
-  final pagesId = 0;
+  final Color defaultColor = Colors.white;
+  final Color primaryColor = const Color(0xFF39AAE0);
+  final Color backgroundColor = const Color(0xFF87CEEB);
+  final Color textColor = const Color(0xFF2C3E50);
+  final double smallSpace = 8.0;
+  final double mediumSpace = 16.0;
+  final double largeSpace = 24.0;
+  final double mediumRadius = 16.0;
+  final double largeRadius = 30.0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: transparentColor,
+        backgroundColor: Colors.transparent,
         iconTheme: IconThemeData(color: defaultColor),
         actions: [
           IconButton(
@@ -61,38 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SafeArea(
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Top Header Section
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: largeSpace,
-                    vertical: mediumSpace,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Halo, Selamat Datang!",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: defaultColor,
-                        ),
-                      ),
-                      const SizedBox(height: smallSpace),
-                      Text(
-                        "Siap untuk belajar hari ini?",
-                        style: TextStyle(fontSize: 16, color: defaultColor),
-                      ),
-                      const SizedBox(height: largeSpace),
-                    ],
-                  ),
+                GreetingSection(
+                  textColor: textColor,
+                  defaultColor: defaultColor,
+                  smallSpace: smallSpace,
+                  largeSpace: largeSpace,
                 ),
-
-                // Main Content Area
                 Container(
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     horizontal: mediumSpace,
                     vertical: largeSpace,
                   ),
@@ -115,102 +79,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Search Bar
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Cari mata pelajaran...',
-                          hintStyle: TextStyle(
-                            color: textColor.withOpacity(0.5),
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: textColor.withOpacity(0.7),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                              color: textColor.withOpacity(0.3),
-                            ),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: primaryColor),
-                          ),
-                        ),
+                      SearchSection(
+                        textColor: textColor,
+                        primaryColor: primaryColor,
                       ),
-
-                      const SizedBox(height: largeSpace),
-
-                      // Exam Category Title
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Pilihan Ujian",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: textColor,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "Lihat Semua",
-                              style: TextStyle(
-                                color: primaryColor,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
+                      SizedBox(height: largeSpace),
+                      ExamSection(
+                        textColor: textColor,
+                        defaultColor: defaultColor,
+                        primaryColor: primaryColor,
+                        mediumSpace: mediumSpace,
+                        mediumRadius: mediumRadius,
                       ),
-
-                      const SizedBox(height: mediumSpace),
-
-                      // Exam Grid
-                      Container(
-                        padding: const EdgeInsets.all(mediumSpace),
-                        decoration: BoxDecoration(
-                          color: defaultColor,
-                          borderRadius: BorderRadius.circular(mediumRadius),
-                          border: Border.all(
-                            color: textColor.withOpacity(0.1),
-                            width: 1,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: textColor.withOpacity(0.05),
-                              blurRadius: 8,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: ExamGrid(
-                          exams: [
-                            {
-                              'id': 'math',
-                              'icon': Icons.calculate,
-                              'label': 'Matematika',
-                            },
-                          ],
-                        ),
+                      SizedBox(height: largeSpace),
+                      PromotionSection(
+                        textColor: textColor,
+                        mediumSpace: mediumSpace,
                       ),
-
-                      const SizedBox(height: largeSpace),
-
-                      // Promotions Section
-                      Text(
-                        "Promosi Terbaru",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: textColor,
-                        ),
-                      ),
-
-                      const SizedBox(height: mediumSpace),
-
-                      // Promotion Banner
-                      BannerPromosi(),
                     ],
                   ),
                 ),
