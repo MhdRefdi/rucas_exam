@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rucas_exam_project/widgets/Home/greeting_section.dart';
 import 'package:rucas_exam_project/widgets/Home/search_section.dart';
-import 'package:rucas_exam_project/widgets/home/banner_section.dart';
+import 'package:rucas_exam_project/widgets/home/promotion_section.dart';
 import 'package:rucas_exam_project/widgets/home/exam_section.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,6 +14,7 @@ class HomeScreen extends StatelessWidget {
   final double largeSpace;
   final double mediumRadius;
   final double largeRadius;
+  final VoidCallback? onSeeAllExams;
 
   const HomeScreen({
     super.key,
@@ -26,6 +27,7 @@ class HomeScreen extends StatelessWidget {
     required this.largeSpace,
     required this.mediumRadius,
     required this.largeRadius,
+    this.onSeeAllExams,
   });
 
   @override
@@ -96,6 +98,7 @@ class HomeScreen extends StatelessWidget {
                         primaryColor: primaryColor,
                         mediumSpace: mediumSpace,
                         mediumRadius: mediumRadius,
+                        onSeeAll: onSeeAllExams,
                       ),
                       SizedBox(height: largeSpace),
                       PromotionSection(

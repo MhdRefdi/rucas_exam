@@ -7,6 +7,7 @@ class ExamSection extends StatelessWidget {
   final Color primaryColor;
   final double mediumSpace;
   final double mediumRadius;
+  final VoidCallback? onSeeAll;
 
   const ExamSection({
     super.key,
@@ -15,6 +16,7 @@ class ExamSection extends StatelessWidget {
     required this.primaryColor,
     required this.mediumSpace,
     required this.mediumRadius,
+    this.onSeeAll,
   });
 
   @override
@@ -33,7 +35,7 @@ class ExamSection extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: onSeeAll,
               child: Text(
                 "Lihat Semua",
                 style: TextStyle(
@@ -62,6 +64,29 @@ class ExamSection extends StatelessWidget {
           child: ExamGrid(
             exams: [
               {'id': 'math', 'icon': Icons.calculate, 'label': 'Matematika'},
+              {'id': 'science', 'icon': Icons.science, 'label': 'IPA'},
+              {'id': 'biology', 'icon': Icons.biotech, 'label': 'Biologi'},
+              {'id': 'physics', 'icon': Icons.speed, 'label': 'Fisika'},
+              {'id': 'chemistry', 'icon': Icons.bubble_chart, 'label': 'Kimia'},
+              {'id': 'history', 'icon': Icons.history_edu, 'label': 'Sejarah'},
+              {'id': 'geography', 'icon': Icons.public, 'label': 'Geografi'},
+              {
+                'id': 'english',
+                'icon': Icons.language,
+                'label': 'Bahasa Inggris',
+              },
+              {
+                'id': 'indonesian',
+                'icon': Icons.book,
+                'label': 'Bahasa Indonesia',
+              },
+              {
+                'id': 'economics',
+                'icon': Icons.attach_money,
+                'label': 'Ekonomi',
+              },
+              {'id': 'sociology', 'icon': Icons.group, 'label': 'Sosiologi'},
+              {'id': 'civics', 'icon': Icons.gavel, 'label': 'PPKn'},
             ],
           ),
         ),

@@ -1,26 +1,37 @@
 import 'package:flutter/material.dart';
 
 class BannerPromosi extends StatelessWidget {
-  final List<Map<String, String>> banners = [
-    {'image': 'banners/th.jpg', 'title': 'Diskon 50% untuk Ujian!'},
-    {'image': 'banners/1.png', 'title': 'Paket Belajar Premium!'},
-    {'image': 'banners/2.png', 'title': 'Try Out Nasional Segera Dimulai!'},
-  ];
+  final List<Map<String, String>> banners;
+  final double bannerHeight;
+  final double bannerWidth;
+  final double spacing;
+  final double borderRadius;
+  final Color gradientColor;
+
+  const BannerPromosi({
+    super.key,
+    required this.banners,
+    this.bannerHeight = 120,
+    this.bannerWidth = 300,
+    this.spacing = 10,
+    this.borderRadius = 12,
+    this.gradientColor = Colors.black54,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 120, // Sesuaikan tinggi banner
+      height: bannerHeight,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: banners.length,
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemBuilder: (context, index) {
           return Container(
-            margin: EdgeInsets.only(right: 10),
-            width: 300,
+            margin: EdgeInsets.only(right: spacing),
+            width: bannerWidth,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(borderRadius),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black26,
@@ -31,40 +42,45 @@ class BannerPromosi extends StatelessWidget {
               ],
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(borderRadius),
               child: Stack(
                 children: [
                   Image.asset(
                     banners[index]['image']!,
-                    width: 300,
-                    height: 120, // Samakan dengan parent
+                    width: bannerWidth,
+                    height: bannerHeight,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        width: 300,
-                        height: 120,
-                        color: Colors.grey[300], // Placeholder warna abu-abu
+                        width: bannerWidth,
+                        height: bannerHeight,
+                        color: Colors.grey[300],
                         child: Center(
-                          child: Icon(Icons.image_not_supported, size: 50, color: Colors.grey[600]),
+                          child: Icon(Icons.image_not_supported,
+                              size: 50, color: Colors.grey[600]),
                         ),
                       );
                     },
                   ),
                   Container(
                     width: double.infinity,
-                    height: 120, // Samakan tinggi
+                    height: bannerHeight,
                     alignment: Alignment.bottomLeft,
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.black54, Colors.transparent],
+                        colors: [gradientColor, Colors.transparent],
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
                       ),
                     ),
                     child: Text(
                       banners[index]['title']!,
-                      style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

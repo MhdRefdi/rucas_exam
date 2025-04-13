@@ -11,7 +11,6 @@ class BaseScreen extends StatefulWidget {
 class _BaseScreenState extends State<BaseScreen> {
   int pageIndex = 0;
 
-  // Styling yang akan dikirim ke halaman
   final Color defaultColor = Colors.white;
   final Color primaryColor = const Color(0xFF39AAE0);
   final Color backgroundColor = const Color(0xFF87CEEB);
@@ -21,6 +20,12 @@ class _BaseScreenState extends State<BaseScreen> {
   final double largeSpace = 24.0;
   final double mediumRadius = 16.0;
   final double largeRadius = 30.0;
+
+  void goToAllExams() {
+    setState(() {
+      pageIndex = 1;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +40,9 @@ class _BaseScreenState extends State<BaseScreen> {
         largeSpace: largeSpace,
         mediumRadius: mediumRadius,
         largeRadius: largeRadius,
+        onSeeAllExams: () {
+          goToAllExams();
+        },
       ),
       const Center(child: Text("Daftar ujian")),
       const Center(child: Text("Hasil ujian")),
@@ -44,6 +52,7 @@ class _BaseScreenState extends State<BaseScreen> {
     return Scaffold(
       body: pages[pageIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: defaultColor,
         currentIndex: pageIndex,
         onTap: (index) {
           setState(() {
@@ -51,13 +60,10 @@ class _BaseScreenState extends State<BaseScreen> {
           });
         },
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Colors.cyan,
+        selectedItemColor: primaryColor,
+        unselectedItemColor: backgroundColor,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Beranda',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),
             label: 'Daftar Ujian',

@@ -25,7 +25,21 @@ class PromotionSection extends StatelessWidget {
           ),
         ),
         SizedBox(height: mediumSpace),
-        BannerPromosi(),
+        BannerPromosi(
+          banners: [
+            {'image': 'banners/th.jpg', 'title': 'Diskon 50% untuk Ujian!'},
+            {'image': 'banners/1.png', 'title': 'Paket Belajar Premium!'},
+            {
+              'image': 'banners/2.png',
+              'title': 'Try Out Nasional Segera Dimulai!',
+            },
+          ],
+          bannerHeight: 140,
+          bannerWidth: 320,
+          spacing: 12,
+          borderRadius: 16,
+          gradientColor: Colors.black45,
+        ),
       ],
     );
   }

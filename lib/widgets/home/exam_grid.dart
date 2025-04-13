@@ -32,7 +32,7 @@ class ExamGrid extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(exam['icon'], size: 35, color: Colors.blue),
+              Icon(exam['icon'], size: 35, color: Color(0xFF39AAE0)),
               const SizedBox(height: 5),
               Text(exam['label'], textAlign: TextAlign.center),
             ],
