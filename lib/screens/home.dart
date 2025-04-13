@@ -4,23 +4,29 @@ import 'package:rucas_exam_project/widgets/Home/search_section.dart';
 import 'package:rucas_exam_project/widgets/home/banner_section.dart';
 import 'package:rucas_exam_project/widgets/home/exam_section.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatelessWidget {
+  final Color defaultColor;
+  final Color primaryColor;
+  final Color backgroundColor;
+  final Color textColor;
+  final double smallSpace;
+  final double mediumSpace;
+  final double largeSpace;
+  final double mediumRadius;
+  final double largeRadius;
 
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final Color defaultColor = Colors.white;
-  final Color primaryColor = const Color(0xFF39AAE0);
-  final Color backgroundColor = const Color(0xFF87CEEB);
-  final Color textColor = const Color(0xFF2C3E50);
-  final double smallSpace = 8.0;
-  final double mediumSpace = 16.0;
-  final double largeSpace = 24.0;
-  final double mediumRadius = 16.0;
-  final double largeRadius = 30.0;
+  const HomeScreen({
+    super.key,
+    required this.defaultColor,
+    required this.primaryColor,
+    required this.backgroundColor,
+    required this.textColor,
+    required this.smallSpace,
+    required this.mediumSpace,
+    required this.largeSpace,
+    required this.mediumRadius,
+    required this.largeRadius,
+  });
 
   @override
   Widget build(BuildContext context) {
