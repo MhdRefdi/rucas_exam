@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/widgets/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final AppTheme theme;
+
+  const LoginScreen({super.key, this.theme = const AppTheme()});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -11,14 +14,17 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   FocusNode _focusNode = FocusNode();
-  Color _activeColor = Color(0xFFD5D5D5);
+  late Color _activeColor;
 
   @override
   void initState() {
     super.initState();
+    _activeColor = const Color(0xFFD5D5D5); // default color before focus
     _focusNode.addListener(() {
       setState(() {
-        _activeColor = _focusNode.hasFocus ? Color(0xFF36A9E2) : Color(0xFFD5D5D5);
+        _activeColor = _focusNode.hasFocus
+            ? widget.theme.primaryColor
+            : const Color(0xFFD5D5D5);
       });
     });
   }
@@ -31,6 +37,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = widget.theme;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -55,11 +63,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 80, 20, 0),
+                padding: EdgeInsets.fromLTRB(
+                  theme.mediumSpace,
+                  80,
+                  theme.mediumSpace,
+                  0,
+                ),
                 child: Text(
                   "Selamat Datang\nKembali",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: theme.defaultColor,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -69,9 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Expanded(
               child: Container(
                 width: double.infinity,
-                color: Colors.white,
+                color: theme.defaultColor,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  padding: EdgeInsets.symmetric(horizontal: theme.mediumSpace),
                   child: LoginForm(),
                 ),
               ),

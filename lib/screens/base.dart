@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/models/provider/page_provider.dart';
 import 'package:rucas_exam_project/screens/home.dart';
 
 class BaseScreen extends StatelessWidget {
-   BaseScreen({super.key});
+  final AppTheme theme;
 
-  final Color defaultColor = Colors.white;
-  final Color primaryColor = Color(0xFF39AAE0);
-  final Color backgroundColor = Color(0xFF87CEEB);
-  final Color textColor = Color(0xFF2C3E50);
-  final double smallSpace = 8.0;
-  final double mediumSpace = 16.0;
-  final double largeSpace = 24.0;
-  final double mediumRadius = 16.0;
-  final double largeRadius = 30.0;
+  const BaseScreen({
+    super.key,
+    this.theme = const AppTheme(),
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +19,15 @@ class BaseScreen extends StatelessWidget {
 
     final List<Widget> pages = [
       HomeScreen(
-        defaultColor: defaultColor,
-        primaryColor: primaryColor,
-        backgroundColor: backgroundColor,
-        textColor: textColor,
-        smallSpace: smallSpace,
-        mediumSpace: mediumSpace,
-        largeSpace: largeSpace,
-        mediumRadius: mediumRadius,
-        largeRadius: largeRadius,
+        defaultColor: theme.defaultColor,
+        primaryColor: theme.primaryColor,
+        backgroundColor: theme.backgroundColor,
+        textColor: theme.textColor,
+        smallSpace: theme.smallSpace,
+        mediumSpace: theme.mediumSpace,
+        largeSpace: theme.largeSpace,
+        mediumRadius: theme.mediumRadius,
+        largeRadius: theme.largeRadius,
         onSeeAllExams: () {
           pageProvider.setPageIndex(1);
         },
@@ -44,14 +40,14 @@ class BaseScreen extends StatelessWidget {
     return Scaffold(
       body: pages[pageIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: defaultColor,
+        backgroundColor: theme.defaultColor,
         currentIndex: pageIndex,
         onTap: (index) {
           pageProvider.setPageIndex(index);
         },
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: primaryColor,
-        unselectedItemColor: backgroundColor,
+        selectedItemColor: theme.primaryColor,
+        unselectedItemColor: theme.backgroundColor,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
           BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Daftar Ujian'),

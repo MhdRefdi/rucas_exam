@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/widgets/register_form.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  final AppTheme theme;
+
+  const RegisterScreen({super.key, this.theme = const AppTheme()});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -12,6 +15,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
+    final theme = widget.theme;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -36,11 +41,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
+                padding: EdgeInsets.fromLTRB(
+                  theme.mediumSpace,
+                  theme.largeSpace,
+                  theme.mediumSpace,
+                  0,
+                ),
                 child: Text(
                   "Daftarkan Akun\nAnda",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: theme.defaultColor,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -50,9 +60,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Expanded(
               child: Container(
                 width: double.infinity,
-                color: Colors.white,
+                color: theme.defaultColor,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  padding: EdgeInsets.symmetric(horizontal: theme.mediumSpace),
                   child: RegisterForm(),
                 ),
               ),

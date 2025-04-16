@@ -25,16 +25,22 @@ class ExamGrid extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ExamScreen(examId: exam['id']),
+                builder: (_) => ExamScreen(
+                  examId: exam['id'],
+                ),
               ),
             );
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(exam['icon'], size: 35, color: Color(0xFF39AAE0)),
+              Icon(exam['icon'], size: 35, color: const Color(0xFF39AAE0)),
               const SizedBox(height: 5),
-              Text(exam['label'], textAlign: TextAlign.center),
+              Text(
+                exam['label'],
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 12),
+              ),
             ],
           ),
         );

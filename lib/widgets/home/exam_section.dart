@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rucas_exam_project/models/provider/exam_data_provider.dart';
 import 'package:rucas_exam_project/widgets/Home/exam_grid.dart';
 
 class ExamSection extends StatelessWidget {
@@ -21,6 +23,7 @@ class ExamSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final exams = context.watch<ExamDataProvider>().exams;
     return Column(
       children: [
         Row(
@@ -62,32 +65,11 @@ class ExamSection extends StatelessWidget {
             ],
           ),
           child: ExamGrid(
-            exams: [
-              {'id': 'math', 'icon': Icons.calculate, 'label': 'Matematika'},
-              {'id': 'science', 'icon': Icons.science, 'label': 'IPA'},
-              {'id': 'biology', 'icon': Icons.biotech, 'label': 'Biologi'},
-              {'id': 'physics', 'icon': Icons.speed, 'label': 'Fisika'},
-              {'id': 'chemistry', 'icon': Icons.bubble_chart, 'label': 'Kimia'},
-              {'id': 'history', 'icon': Icons.history_edu, 'label': 'Sejarah'},
-              {'id': 'geography', 'icon': Icons.public, 'label': 'Geografi'},
-              {
-                'id': 'english',
-                'icon': Icons.language,
-                'label': 'Bahasa Inggris',
-              },
-              {
-                'id': 'indonesian',
-                'icon': Icons.book,
-                'label': 'Bahasa Indonesia',
-              },
-              {
-                'id': 'economics',
-                'icon': Icons.attach_money,
-                'label': 'Ekonomi',
-              },
-              {'id': 'sociology', 'icon': Icons.group, 'label': 'Sosiologi'},
-              {'id': 'civics', 'icon': Icons.gavel, 'label': 'PPKn'},
-            ],
+            exams: exams.map((e) => {
+              'id': e.id,
+              'label': e.title,
+              'icon': Icons.calculate
+            }).toList()
           ),
         ),
       ],

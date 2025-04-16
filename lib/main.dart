@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rucas_exam_project/models/provider/exam_data_provider.dart';
 import 'package:rucas_exam_project/models/provider/page_provider.dart';
 import 'package:rucas_exam_project/screens/base.dart';
 import 'package:rucas_exam_project/screens/login.dart';
@@ -7,7 +8,10 @@ import 'package:rucas_exam_project/screens/notification.dart';
 import 'package:rucas_exam_project/screens/register.dart';
 
 void main() {
-  runApp(MultiProvider(providers: [ChangeNotifierProvider(create: (_) => PageProvider())], child: const MainApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => PageProvider()),
+    ChangeNotifierProvider(create: (_) => ExamDataProvider()),
+    ], child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
