@@ -37,7 +37,7 @@ class ExamSection extends StatelessWidget {
             TextButton(
               onPressed: onSeeAll,
               child: Text(
-                "Lihat Semua",
+                "Lihat Selengkapnya",
                 style: TextStyle(
                   color: primaryColor,
                   fontWeight: FontWeight.w600,
