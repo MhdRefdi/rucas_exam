@@ -1,32 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/widgets/Home/greeting_section.dart';
 import 'package:rucas_exam_project/widgets/Home/search_section.dart';
 import 'package:rucas_exam_project/widgets/home/promotion_section.dart';
 import 'package:rucas_exam_project/widgets/home/exam_section.dart';
 
 class HomeScreen extends StatelessWidget {
-  final Color defaultColor;
-  final Color primaryColor;
-  final Color backgroundColor;
-  final Color textColor;
-  final double smallSpace;
-  final double mediumSpace;
-  final double largeSpace;
-  final double mediumRadius;
-  final double largeRadius;
+  final AppTheme theme;
   final VoidCallback? onSeeAllExams;
 
   const HomeScreen({
     super.key,
-    required this.defaultColor,
-    required this.primaryColor,
-    required this.backgroundColor,
-    required this.textColor,
-    required this.smallSpace,
-    required this.mediumSpace,
-    required this.largeSpace,
-    required this.mediumRadius,
-    required this.largeRadius,
+    this.theme = const AppTheme(),
     this.onSeeAllExams,
   });
 
@@ -36,14 +21,14 @@ class HomeScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(color: defaultColor),
+        iconTheme: IconThemeData(color: theme.defaultColor),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications_outlined, color: defaultColor),
+            icon: Icon(Icons.notifications_outlined, color: theme.defaultColor),
             onPressed: () {
               Navigator.of(context).pushNamed('/notification');
             },
-          )
+          ),
         ],
       ),
       body: Container(
@@ -57,27 +42,22 @@ class HomeScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                GreetingSection(
-                  textColor: textColor,
-                  defaultColor: defaultColor,
-                  smallSpace: smallSpace,
-                  largeSpace: largeSpace,
-                ),
+                GreetingSection(),
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: mediumSpace,
-                    vertical: largeSpace,
+                    horizontal: theme.mediumSpace,
+                    vertical: theme.largeSpace,
                   ),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: defaultColor,
+                    color: theme.defaultColor,
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(largeRadius),
-                      topRight: Radius.circular(largeRadius),
+                      topLeft: Radius.circular(theme.largeRadius),
+                      topRight: Radius.circular(theme.largeRadius),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: textColor.withOpacity(0.1),
+                        color: theme.textColor.withOpacity(0.1),
                         blurRadius: 12,
                         spreadRadius: 0,
                         offset: const Offset(0, -3),
@@ -87,24 +67,11 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SearchSection(
-                        textColor: textColor,
-                        primaryColor: primaryColor,
-                      ),
-                      SizedBox(height: largeSpace),
-                      ExamSection(
-                        textColor: textColor,
-                        defaultColor: defaultColor,
-                        primaryColor: primaryColor,
-                        mediumSpace: mediumSpace,
-                        mediumRadius: mediumRadius,
-                        onSeeAll: onSeeAllExams,
-                      ),
-                      SizedBox(height: largeSpace),
-                      PromotionSection(
-                        textColor: textColor,
-                        mediumSpace: mediumSpace,
-                      ),
+                      SearchSection(),
+                      SizedBox(height: theme.largeSpace),
+                      ExamSection(onSeeAll: onSeeAllExams),
+                      SizedBox(height: theme.largeSpace),
+                      PromotionSection(),
                     ],
                   ),
                 ),

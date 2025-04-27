@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/widgets/home/promotion_banner.dart';
 
 class PromotionSection extends StatelessWidget {
-  final Color textColor;
-  final double mediumSpace;
+  final AppTheme theme = AppTheme();
 
-  const PromotionSection({
+
+   PromotionSection({
     super.key,
-    required this.textColor,
-    required this.mediumSpace,
   });
 
   @override
@@ -21,10 +20,10 @@ class PromotionSection extends StatelessWidget {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: textColor,
+            color: theme.textColor,
           ),
         ),
-        SizedBox(height: mediumSpace),
+        SizedBox(height: theme.mediumSpace),
         BannerPromosi(
           banners: [
             {'image': 'banners/th.jpg', 'title': 'Diskon 50% untuk Ujian!'},

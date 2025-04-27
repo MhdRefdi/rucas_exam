@@ -1,29 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rucas_exam_project/models/provider/exam_data_provider.dart';
+import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/widgets/Home/exam_grid.dart';
 
 class ExamSection extends StatelessWidget {
-  final Color textColor;
-  final Color defaultColor;
-  final Color primaryColor;
-  final double mediumSpace;
-  final double mediumRadius;
+  final AppTheme theme = AppTheme();
+
   final VoidCallback? onSeeAll;
 
-  const ExamSection({
+  ExamSection({
     super.key,
-    required this.textColor,
-    required this.defaultColor,
-    required this.primaryColor,
-    required this.mediumSpace,
-    required this.mediumRadius,
     this.onSeeAll,
   });
 
   @override
   Widget build(BuildContext context) {
-    final exams = context.watch<ExamDataProvider>().exams;
     return Column(
       children: [
         Row(
@@ -34,7 +24,7 @@ class ExamSection extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: textColor,
+                color: theme.textColor,
               ),
             ),
             TextButton(
@@ -42,35 +32,29 @@ class ExamSection extends StatelessWidget {
               child: Text(
                 "Lihat Selengkapnya",
                 style: TextStyle(
-                  color: primaryColor,
+                  color: theme.primaryColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ],
         ),
-        SizedBox(height: mediumSpace),
+        SizedBox(height: theme.mediumSpace),
         Container(
-          padding: EdgeInsets.all(mediumSpace),
+          padding: EdgeInsets.all(theme.mediumSpace),
           decoration: BoxDecoration(
-            color: defaultColor,
-            borderRadius: BorderRadius.circular(mediumRadius),
-            border: Border.all(color: textColor.withOpacity(0.1)),
+            color: theme.defaultColor,
+            borderRadius: BorderRadius.circular(theme.mediumRadius),
+            border: Border.all(color:  theme.textColor.withOpacity(0.1)),
             boxShadow: [
               BoxShadow(
-                color: textColor.withOpacity(0.05),
+                color: theme.textColor.withOpacity(0.05),
                 blurRadius: 8,
                 spreadRadius: 2,
               ),
             ],
           ),
-          child: ExamGrid(
-            exams: exams.map((e) => {
-              'id': e.id,
-              'label': e.title,
-              'icon': Icons.calculate
-            }).toList()
-          ),
+          child: ExamGrid(),
         ),
       ],
     );

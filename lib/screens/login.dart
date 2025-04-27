@@ -13,18 +13,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  FocusNode _focusNode = FocusNode();
-  late Color _activeColor;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _activeColor = const Color(0xFFD5D5D5); // default color before focus
+// default color before focus
     _focusNode.addListener(() {
       setState(() {
-        _activeColor = _focusNode.hasFocus
-            ? widget.theme.primaryColor
-            : const Color(0xFFD5D5D5);
       });
     });
   }

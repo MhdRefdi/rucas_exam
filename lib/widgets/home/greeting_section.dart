@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:rucas_exam_project/config/theme_config.dart';
 
 class GreetingSection extends StatelessWidget {
-  final Color textColor;
-  final Color defaultColor;
-  final double smallSpace;
-  final double largeSpace;
+  final AppTheme theme = AppTheme();
 
-  const GreetingSection({
-    super.key,
-    required this.textColor,
-    required this.defaultColor,
-    required this.smallSpace,
-    required this.largeSpace,
-  });
+  GreetingSection({super.key});
+
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: largeSpace, vertical: 16.0),
+      padding: EdgeInsets.symmetric(horizontal: theme.largeSpace, vertical: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -26,15 +19,15 @@ class GreetingSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: defaultColor,
+              color: theme.defaultColor,
             ),
           ),
-          SizedBox(height: smallSpace),
+          SizedBox(height: theme.smallSpace),
           Text(
             "Siap untuk belajar hari ini?",
-            style: TextStyle(fontSize: 16, color: defaultColor),
+            style: TextStyle(fontSize: 16, color: theme.defaultColor),
           ),
-          SizedBox(height: largeSpace),
+          SizedBox(height: theme.largeSpace),
         ],
       ),
     );

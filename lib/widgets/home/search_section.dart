@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:rucas_exam_project/config/theme_config.dart';
 
 class SearchSection extends StatelessWidget {
-  final Color textColor;
-  final Color primaryColor;
+  final AppTheme theme = AppTheme();
 
-  const SearchSection({
-    super.key,
-    required this.textColor,
-    required this.primaryColor,
-  });
+  SearchSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       decoration: InputDecoration(
         hintText: 'Cari mata pelajaran...',
-        hintStyle: TextStyle(color: textColor.withOpacity(0.5)),
-        prefixIcon: Icon(Icons.search, color: textColor.withOpacity(0.7)),
+        hintStyle: TextStyle(color: theme.textColor.withOpacity(0.5)),
+        prefixIcon: Icon(Icons.search, color: theme.textColor.withOpacity(0.7)),
         enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: textColor.withOpacity(0.3)),
+          borderSide: BorderSide(color: theme.textColor.withOpacity(0.3)),
         ),
         focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: primaryColor),
+          borderSide: BorderSide(color: theme.primaryColor),
         ),
       ),
     );

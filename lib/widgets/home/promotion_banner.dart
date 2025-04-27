@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class BannerPromosi extends StatelessWidget {
   final List<Map<String, String>> banners;
+
   final double bannerHeight;
   final double bannerWidth;
   final double spacing;

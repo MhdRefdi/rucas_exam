@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:rucas_exam_project/screens/exam.dart';
+import 'package:provider/provider.dart';
+import 'package:rucas_exam_project/models/provider/exam_provider.dart';
 
 class ExamGrid extends StatelessWidget {
-  final List<Map<String, dynamic>> exams;
-
-  const ExamGrid({super.key, required this.exams});
+  const ExamGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final exams = Provider.of<ExamProvider>(context).exams;
+
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -22,22 +23,16 @@ class ExamGrid extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => ExamScreen(
-                  examId: exam['id'],
-                ),
-              ),
-            );
+            Navigator.pushNamed(context, '/exam', arguments: exam.id);
           },
+
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(exam['icon'], size: 35, color: const Color(0xFF39AAE0)),
+              exam.icon,
               const SizedBox(height: 5),
               Text(
-                exam['label'],
+                exam.title,
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 12),
               ),

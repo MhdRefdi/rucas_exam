@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
 class ExamData {
   final String id;
   final String title;
-  final String icon;
   final List<Question> questions;
+  final Icon icon;
 
   ExamData({
     required this.id,
@@ -11,16 +14,6 @@ class ExamData {
     required this.questions,
   });
 
-  factory ExamData.fromJson(Map<String, dynamic> json) {
-    return ExamData(
-      id: json['id'],
-      title: json['title'],
-      icon: json['icon'],
-      questions: (json['questions'] as List)
-          .map((q) => Question.fromJson(q))
-          .toList(),
-    );
-  }
 }
 
 class Question {
@@ -37,23 +30,13 @@ class Question {
     required this.correctAnswer,
     required this.solution,
   });
-
-  factory Question.fromJson(Map<String, dynamic> json) {
-    return Question(
-      id: json['id'],
-      question: json['question'],
-      options: Map<String, String>.from(json['options']),
-      correctAnswer: json['correctAnswer'],
-      solution: json['solution'],
-    );
-  }
 }
 
 final List<ExamData> questionBank = [
   ExamData(
     id: "1",
     title: "Matematika Dasar",
-    icon: "math",
+    icon: Icon(Icons.calculate, size: 35, color: Colors.blue),
     questions: [
       Question(
         id: "1",
@@ -180,7 +163,7 @@ final List<ExamData> questionBank = [
   ExamData(
     id: "2",
     title: "IPA Umum",
-    icon: "science",
+    icon: Icon(Icons.science, color: Colors.blue, size: 35),
     questions: [
       Question(
         id: "1",
