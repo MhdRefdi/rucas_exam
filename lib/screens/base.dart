@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
-import 'package:rucas_exam_project/models/provider/page_provider.dart';
+import 'package:rucas_exam_project/provider/page_provider.dart';
 import 'package:rucas_exam_project/screens/home.dart';
 
 class BaseScreen extends StatelessWidget {

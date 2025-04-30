@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rucas_exam_project/models/provider/exam_provider.dart';
+import 'package:rucas_exam_project/provider/exam_provider.dart';
 
 class ExamGrid extends StatelessWidget {
   const ExamGrid({super.key});
@@ -23,7 +23,7 @@ class ExamGrid extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/exam', arguments: exam.id);
+            Navigator.pushNamedAndRemoveUntil(context, '/exam', (route) => false, arguments: exam.id);
           },
 
           child: Column(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/data/exam_data.dart';
-import 'package:rucas_exam_project/models/provider/exam_provider.dart';
+import 'package:rucas_exam_project/provider/exam_provider.dart';
 
 class OptionItem extends StatelessWidget {
   final AppTheme theme;

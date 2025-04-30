@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rucas_exam_project/models/provider/exam_provider.dart';
-import 'package:rucas_exam_project/models/provider/page_provider.dart';
+import 'package:rucas_exam_project/provider/exam_provider.dart';
+import 'package:rucas_exam_project/provider/page_provider.dart';
 import 'package:rucas_exam_project/screens/base.dart';
 import 'package:rucas_exam_project/screens/exam.dart';
 import 'package:rucas_exam_project/screens/login.dart';

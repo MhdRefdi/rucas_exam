@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
-import 'package:rucas_exam_project/models/provider/exam_provider.dart';
+import 'package:rucas_exam_project/provider/exam_provider.dart';
 import 'package:rucas_exam_project/widgets/exam/exam_progress_indicator.dart';
 import 'package:rucas_exam_project/widgets/exam/question_navigation.dart';
 import 'package:rucas_exam_project/widgets/exam/question_card.dart';
