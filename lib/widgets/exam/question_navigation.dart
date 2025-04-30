@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
-import 'package:rucas_exam_project/data/exam_data.dart';
+import 'package:rucas_exam_project/models/exam_data.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 
 class QuestionNavigation extends StatelessWidget {

@@ -1,36 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
-class ExamData {
-  final String id;
-  final String title;
-  final List<Question> questions;
-  final Icon icon;
-
-  ExamData({
-    required this.id,
-    required this.title,
-    required this.icon,
-    required this.questions,
-  });
-
-}
-
-class Question {
-  final String id;
-  final String question;
-  final Map<String, String> options;
-  final String correctAnswer;
-  final String solution;
-
-  Question({
-    required this.id,
-    required this.question,
-    required this.options,
-    required this.correctAnswer,
-    required this.solution,
-  });
-}
+import 'package:rucas_exam_project/models/exam_data.dart';
+import 'package:rucas_exam_project/models/question_model.dart';
 
 final List<ExamData> questionBank = [
   ExamData(
