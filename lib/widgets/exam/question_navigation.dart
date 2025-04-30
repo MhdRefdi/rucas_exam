@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
-import 'package:rucas_exam_project/models/exam_data.dart';
+import 'package:rucas_exam_project/models/exam_model.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 
 class QuestionNavigation extends StatelessWidget {
@@ -45,9 +45,8 @@ class QuestionNavigation extends StatelessWidget {
 
   Widget _buildQuestionButton(int index) {
     final isCurrentQuestion = examProvider.currentQuestionIndex == index;
-    final hasAnswer = examProvider.getQuestionAnswer(
-      exam.questions[index].id,
-    ) != null;
+    final hasAnswer =
+        examProvider.getQuestionAnswer(exam.questions[index].id) != null;
 
     return Padding(
       padding: EdgeInsets.only(right: theme.smallSpace),
@@ -61,15 +60,17 @@ class QuestionNavigation extends StatelessWidget {
           height: 40,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isCurrentQuestion
-                ? theme.primaryColor
-                : hasAnswer
+            color:
+                isCurrentQuestion
+                    ? theme.primaryColor
+                    : hasAnswer
                     ? theme.backgroundColor.withOpacity(0.5)
                     : theme.backgroundColor.withOpacity(0.2),
             border: Border.all(
-              color: isCurrentQuestion
-                  ? theme.primaryColor
-                  : hasAnswer
+              color:
+                  isCurrentQuestion
+                      ? theme.primaryColor
+                      : hasAnswer
                       ? theme.primaryColor
                       : theme.backgroundColor,
               width: 2,
@@ -79,9 +80,7 @@ class QuestionNavigation extends StatelessWidget {
             child: Text(
               '${index + 1}',
               style: TextStyle(
-                color: isCurrentQuestion
-                    ? theme.defaultColor
-                    : theme.textColor,
+                color: isCurrentQuestion ? theme.defaultColor : theme.textColor,
                 fontWeight: FontWeight.bold,
               ),
             ),

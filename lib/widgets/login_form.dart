@@ -95,7 +95,9 @@ class _LoginFormState extends State<LoginForm> {
         Align(
           alignment: Alignment.centerRight,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed('/ForgotPassword');
+            },
             child: Text(
               'Lupa Password?',
               style: TextStyle(
@@ -149,9 +151,7 @@ class _LoginFormState extends State<LoginForm> {
             backgroundColor: Colors.white,
             minimumSize: Size(double.infinity, 50),
             shape: RoundedRectangleBorder(
-              side: BorderSide(
-                color: _defaultColor,
-              ),
+              side: BorderSide(color: _defaultColor),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
