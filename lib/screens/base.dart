@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/provider/page_provider.dart';
 import 'package:rucas_exam_project/screens/home.dart';
+import 'package:rucas_exam_project/screens/list_exam.dart';
 
 class BaseScreen extends StatelessWidget {
   final AppTheme theme;
@@ -21,8 +22,6 @@ class BaseScreen extends StatelessWidget {
           pageProvider.setPageIndex(1);
         },
       ),
-
-      const Center(child: Text("Daftar ujian")),
       const Center(child: Text("Hasil ujian")),
       const Center(child: Text("Akun saya")),
     ];
@@ -40,10 +39,10 @@ class BaseScreen extends StatelessWidget {
         unselectedItemColor: theme.backgroundColor,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: 'Daftar Ujian',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.explore),
+          //   label: 'Daftar Ujian',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment),
             label: 'Hasil ujian',

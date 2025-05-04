@@ -7,6 +7,7 @@ import 'package:rucas_exam_project/screens/ForgotPassword.dart';
 import 'package:rucas_exam_project/screens/base.dart';
 import 'package:rucas_exam_project/screens/exam.dart';
 import 'package:rucas_exam_project/screens/inbox_screen.dart';
+import 'package:rucas_exam_project/screens/list_exam.dart';
 import 'package:rucas_exam_project/screens/login.dart';
 import 'package:rucas_exam_project/screens/register.dart';
 
@@ -36,6 +37,7 @@ class MainApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/login': (context) => const LoginScreen(),
         '/notification': (context) => InboxScreen(),
+        '/list-exam': (context) => ListExamScreen(),
         '/ForgotPassword': (context) => ForgotPasswordScreen(),
       },
       onGenerateRoute: (settings) {

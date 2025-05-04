@@ -7,10 +7,7 @@ class ExamSection extends StatelessWidget {
 
   final VoidCallback? onSeeAll;
 
-  ExamSection({
-    super.key,
-    this.onSeeAll,
-  });
+  ExamSection({super.key, this.onSeeAll});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +25,13 @@ class ExamSection extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: onSeeAll,
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/list-exam',
+                  (route) => false,
+                );
+              },
               child: Text(
                 "Lihat Selengkapnya",
                 style: TextStyle(
@@ -45,7 +48,7 @@ class ExamSection extends StatelessWidget {
           decoration: BoxDecoration(
             color: theme.defaultColor,
             borderRadius: BorderRadius.circular(theme.mediumRadius),
-            border: Border.all(color:  theme.textColor.withOpacity(0.1)),
+            border: Border.all(color: theme.textColor.withOpacity(0.1)),
             boxShadow: [
               BoxShadow(
                 color: theme.textColor.withOpacity(0.05),

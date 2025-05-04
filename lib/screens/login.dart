@@ -18,10 +18,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-// default color before focus
+    // default color before focus
     _focusNode.addListener(() {
-      setState(() {
-      });
+      setState(() {});
     });
   }
 
@@ -39,12 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/icon-background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/icon-background.png'), fit: BoxFit.cover)),
         child: Column(
           children: [
             Container(
@@ -59,30 +53,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  theme.mediumSpace,
-                  80,
-                  theme.mediumSpace,
-                  0,
-                ),
-                child: Text(
-                  "Selamat Datang\nKembali",
-                  style: TextStyle(
-                    color: theme.defaultColor,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                padding: EdgeInsets.fromLTRB(theme.mediumSpace, 80, theme.mediumSpace, 0),
+                child: Text("Selamat Datang\nKembali", style: TextStyle(color: theme.defaultColor, fontSize: 25, fontWeight: FontWeight.bold)),
               ),
             ),
             Expanded(
               child: Container(
                 width: double.infinity,
                 color: theme.defaultColor,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: theme.mediumSpace),
-                  child: LoginForm(),
-                ),
+                child: Padding(padding: EdgeInsets.symmetric(horizontal: theme.mediumSpace), child: LoginForm()),
               ),
             ),
           ],

@@ -7,6 +7,9 @@ final List<ExamData> questionBank = [
     id: "1",
     title: "Matematika Dasar",
     icon: Icon(Icons.calculate, size: 35, color: Colors.blue),
+    banner: Image.asset("assets/banners/3.png"),
+    date: "Senin, 3 Juli 2025",
+    time: "00:00 - 23:59",
     questions: [
       Question(
         id: "1",
@@ -94,6 +97,9 @@ final List<ExamData> questionBank = [
     id: "2",
     title: "IPA Umum",
     icon: Icon(Icons.science, color: Colors.blue, size: 35),
+    banner: Image.asset("assets/banners/3.png"),
+    date: "Senin, 4 Juli 2025",
+    time: "00:00 - 23:59",
     questions: [
       Question(
         id: "1",
