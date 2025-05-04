@@ -148,10 +148,10 @@ class _LoginFormState extends State<LoginForm> {
         SizedBox(height: 12),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.orange,
             minimumSize: Size(double.infinity, 50),
             shape: RoundedRectangleBorder(
-              side: BorderSide(color: _defaultColor),
+              // side: BorderSide(color: _defaultColor),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -160,7 +160,7 @@ class _LoginFormState extends State<LoginForm> {
           },
           child: Text(
             'Daftar',
-            style: TextStyle(color: _defaultColor, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ],

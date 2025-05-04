@@ -11,10 +11,12 @@ class _RegisterFormState extends State<RegisterForm> {
   final FocusNode _nameFocusNode = FocusNode();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
 
   final Color _defaultColor = Color(0xFFD5D5D5);
   final Color _activeColor = Color(0xFF39AAE0);
   bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   Color _getLabelColor(FocusNode focusNode) {
     return focusNode.hasFocus ? _activeColor : _defaultColor;
@@ -33,6 +35,9 @@ class _RegisterFormState extends State<RegisterForm> {
     _passwordFocusNode.addListener(() {
       setState(() {});
     });
+    _confirmPasswordFocusNode.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -40,6 +45,7 @@ class _RegisterFormState extends State<RegisterForm> {
     _nameFocusNode.dispose();
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 
@@ -65,7 +71,7 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 10),
         TextField(
           focusNode: _emailFocusNode,
           cursorColor: _getLabelColor(_emailFocusNode),
@@ -84,7 +90,7 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 10),
         TextField(
           focusNode: _passwordFocusNode,
           cursorColor: _getLabelColor(_passwordFocusNode),
@@ -115,16 +121,39 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           ),
         ),
-        SizedBox(height: 4),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: () {},
-            child: Text(
-              'Lupa Password?',
-              style: TextStyle(
-                color: _activeColor,
-                fontWeight: FontWeight.bold,
+        SizedBox(height: 10),
+        TextField(
+          focusNode: _confirmPasswordFocusNode,
+          cursorColor: _getLabelColor(_confirmPasswordFocusNode),
+          obscureText: !_isConfirmPasswordVisible,
+          decoration: InputDecoration(
+            suffixIcon: IconButton(
+              icon: Icon(
+                _isConfirmPasswordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                color: _getLabelColor(_confirmPasswordFocusNode),
+              ),
+              onPressed: () {
+                setState(() {
+                  _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                });
+              },
+            ),
+            prefixIcon: Icon(
+              Icons.lock,
+              color: _getLabelColor(_confirmPasswordFocusNode),
+            ),
+            labelText: 'Ulangi Password',
+            labelStyle: TextStyle(
+              color: _getLabelColor(_confirmPasswordFocusNode),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: _defaultColor),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: _getLabelColor(_confirmPasswordFocusNode),
               ),
             ),
           ),
@@ -170,12 +199,12 @@ class _RegisterFormState extends State<RegisterForm> {
         SizedBox(height: 12),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.orange,
             minimumSize: Size(double.infinity, 50),
             shape: RoundedRectangleBorder(
-              side: BorderSide(
-                color: _defaultColor,
-              ),
+              // side: BorderSide(
+              //   color: _defaultColor,
+              // ),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -184,7 +213,7 @@ class _RegisterFormState extends State<RegisterForm> {
           },
           child: Text(
             'Masuk',
-            style: TextStyle(color: _defaultColor, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ],
