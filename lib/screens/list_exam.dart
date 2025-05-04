@@ -19,7 +19,7 @@ class ListExamScreen extends StatelessWidget {
           body: Column(
             children: <Widget>[
               Container(
-                height: 200,
+                height: 130,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("images/icon-background.png"),
@@ -40,15 +40,15 @@ class ListExamScreen extends StatelessWidget {
                           Text(
                             "Ujian Saya",
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                           Container(
                             width: 300,
-                            height: 50,
+                            height: 42,
                             padding: EdgeInsets.all(4),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -84,7 +84,9 @@ class ListExamScreen extends StatelessWidget {
                       top: 10,
                       left: 0,
                       child: ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/home');
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           shape: const CircleBorder(),
@@ -108,14 +110,131 @@ class ListExamScreen extends StatelessWidget {
                   ),
                   child: TabBarView(
                     children: <Widget>[
-                      ListView.separated(
-                        itemBuilder:
-                            (_, index) =>
-                                ListExamCard(exam: examProvider.exams[index]),
-                        separatorBuilder: (_, _) => SizedBox(height: 10),
-                        itemCount: examProvider.exams.length,
+                      ScrollConfiguration(
+                        behavior: ScrollConfiguration.of(
+                          context,
+                        ).copyWith(scrollbars: false, overscroll: false),
+                        child: ListView.separated(
+                          itemBuilder:
+                              (_, index) => ListExamCard(
+                                exam: examProvider.exams[index],
+                                actions: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    width: 200,
+                                    child: ElevatedButton(
+                                      onPressed:
+                                          () => Navigator.of(context).pushNamed(
+                                            '/exam',
+                                            arguments:
+                                                examProvider.exams[index].id,
+                                          ),
+                                      style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        backgroundColor: Colors.amber,
+                                        foregroundColor: Colors.white,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 15,
+                                        ),
+                                        textStyle: TextStyle(fontSize: 15),
+                                      ),
+                                      child: Text("Lihat"),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          separatorBuilder: (_, _) => SizedBox(height: 10),
+                          itemCount: examProvider.exams.length,
+                        ),
                       ),
-                      Center(child: Text("Riwayat Ujian")),
+                      ScrollConfiguration(
+                        behavior: ScrollConfiguration.of(
+                          context,
+                        ).copyWith(scrollbars: false, overscroll: false),
+                        child: CustomScrollView(
+                          slivers: [
+                            SliverAppBar(
+                              toolbarHeight: 150,
+                              flexibleSpace: FlexibleSpaceBar(
+                                background: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: SizedBox(
+                                    height: 150,
+                                    width: double.infinity,
+                                    child: GestureDetector(
+                                      onTap: () {},
+                                      child: Image(
+                                        fit: BoxFit.fill,
+                                        image: AssetImage("banners/1.png"),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SliverToBoxAdapter(child: SizedBox(height: 10)),
+                            SliverList.separated(
+                              itemBuilder:
+                                  (_, index) => ListExamCard(
+                                    exam: examProvider.exams[index],
+                                    actions: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () => {},
+                                            style: ElevatedButton.styleFrom(
+                                              elevation: 0,
+                                              backgroundColor: Colors.white,
+                                              foregroundColor: Colors.black,
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 15,
+                                              ),
+                                              textStyle: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                              side: BorderSide(
+                                                color: Colors.grey,
+                                                width: 1,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                              ),
+                                            ),
+                                            child: Text("Hasil Ujian"),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () {},
+                                            style: ElevatedButton.styleFrom(
+                                              elevation: 0,
+                                              backgroundColor: Colors.amber,
+                                              foregroundColor: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 15,
+                                              ),
+                                              textStyle: TextStyle(
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            child: Text("Pembahasan"),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              separatorBuilder:
+                                  (_, index) => SizedBox(height: 10),
+                              itemCount: examProvider.exams.length,
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -130,8 +249,9 @@ class ListExamScreen extends StatelessWidget {
 
 class ListExamCard extends StatelessWidget {
   final ExamData exam;
+  final Widget? actions;
 
-  const ListExamCard({super.key, required this.exam});
+  const ListExamCard({super.key, required this.exam, this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -172,29 +292,7 @@ class ListExamCard extends StatelessWidget {
               ],
             ),
             SizedBox(height: 15),
-            Align(
-              alignment: Alignment.centerRight,
-              child: SizedBox(
-                width: 200,
-                child: ElevatedButton(
-                  onPressed:
-                      () => Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        '/exam',
-                        (route) => false,
-                        arguments: exam.id,
-                      ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: Colors.amber,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    textStyle: TextStyle(fontSize: 15),
-                  ),
-                  child: Text("Lihat"),
-                ),
-              ),
-            ),
+            if (actions != null) actions!,
           ],
         ),
       ),
