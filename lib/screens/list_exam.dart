@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/models/exam_model.dart';
-import 'package:rucas_exam_project/data/exam_data.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 
 class ListExamScreen extends StatelessWidget {
@@ -11,6 +11,7 @@ class ListExamScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final examProvider = context.watch<ExamProvider>();
+    final AppTheme theme = AppTheme();
 
     return SafeArea(
       child: DefaultTabController(
@@ -42,7 +43,7 @@ class ListExamScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: theme.defaultColor,
                             ),
                           ),
                           SizedBox(height: 10),
@@ -51,14 +52,14 @@ class ListExamScreen extends StatelessWidget {
                             height: 42,
                             padding: EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: theme.defaultColor,
                               borderRadius: BorderRadius.circular(50),
                             ),
                             child: TabBar(
                               isScrollable: false,
                               indicatorSize: TabBarIndicatorSize.tab,
                               indicator: BoxDecoration(
-                                color: Colors.blue,
+                                color: theme.primaryColor,
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               labelStyle: TextStyle(
@@ -67,7 +68,7 @@ class ListExamScreen extends StatelessWidget {
                               unselectedLabelStyle: TextStyle(
                                 fontWeight: FontWeight.normal,
                               ),
-                              labelColor: Colors.white,
+                              labelColor: theme.defaultColor,
                               unselectedLabelColor: Colors.grey,
                               dividerHeight: 0,
                               tabs: [
@@ -88,7 +89,7 @@ class ListExamScreen extends StatelessWidget {
                           Navigator.of(context).pushNamed('/home');
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
+                          backgroundColor: theme.defaultColor,
                           shape: const CircleBorder(),
                           padding: EdgeInsets.all(12),
                         ),
@@ -132,7 +133,7 @@ class ListExamScreen extends StatelessWidget {
                                       style: ElevatedButton.styleFrom(
                                         elevation: 0,
                                         backgroundColor: Colors.amber,
-                                        foregroundColor: Colors.white,
+                                        foregroundColor: theme.defaultColor,
                                         padding: EdgeInsets.symmetric(
                                           horizontal: 20,
                                           vertical: 15,
@@ -185,7 +186,7 @@ class ListExamScreen extends StatelessWidget {
                                             onPressed: () => {},
                                             style: ElevatedButton.styleFrom(
                                               elevation: 0,
-                                              backgroundColor: Colors.white,
+                                              backgroundColor: theme.defaultColor,
                                               foregroundColor: Colors.black,
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 20,
@@ -213,7 +214,7 @@ class ListExamScreen extends StatelessWidget {
                                             style: ElevatedButton.styleFrom(
                                               elevation: 0,
                                               backgroundColor: Colors.amber,
-                                              foregroundColor: Colors.white,
+                                              foregroundColor: theme.defaultColor,
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 20,
                                                 vertical: 15,
@@ -317,7 +318,7 @@ class ExamDescription extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Icon(icon, color: Colors.blue),
+        Icon(icon, color: Color(0xFF39AAE0)),
         SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

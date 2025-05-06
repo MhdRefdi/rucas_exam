@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rucas_exam_project/data/promotion_data.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 import 'package:rucas_exam_project/provider/message_provider.dart';
 import 'package:rucas_exam_project/provider/page_provider.dart';
@@ -9,6 +10,7 @@ import 'package:rucas_exam_project/screens/exam.dart';
 import 'package:rucas_exam_project/screens/inbox_screen.dart';
 import 'package:rucas_exam_project/screens/list_exam.dart';
 import 'package:rucas_exam_project/screens/login.dart';
+import 'package:rucas_exam_project/screens/promotion_detail.dart';
 import 'package:rucas_exam_project/screens/register.dart';
 
 void main() {
@@ -47,6 +49,14 @@ class MainApp extends StatelessWidget {
             builder: (context) => ExamScreen(examId: examId),
           );
         }
+        if (settings.name == '/promotion') {
+          return MaterialPageRoute(
+            builder:
+                (context) =>
+                    PromotionDetail(promotion: settings.arguments as Promotion),
+          );
+        }
+
         return null;
       },
     );

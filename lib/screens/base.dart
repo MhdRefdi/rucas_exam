@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/provider/page_provider.dart';
 import 'package:rucas_exam_project/screens/home.dart';
-import 'package:rucas_exam_project/screens/list_exam.dart';
 
 class BaseScreen extends StatelessWidget {
   final AppTheme theme;
@@ -36,7 +35,7 @@ class BaseScreen extends StatelessWidget {
         },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: theme.primaryColor,
-        unselectedItemColor: theme.backgroundColor,
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
           // BottomNavigationBarItem(

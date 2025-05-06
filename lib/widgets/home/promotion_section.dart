@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/widgets/home/promotion_banner.dart';
+import 'package:rucas_exam_project/data/promotion_data.dart';
 
 class PromotionSection extends StatelessWidget {
   final AppTheme theme = AppTheme();
 
-
-   PromotionSection({
-    super.key,
-  });
+  PromotionSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +23,12 @@ class PromotionSection extends StatelessWidget {
         ),
         SizedBox(height: theme.mediumSpace),
         BannerPromosi(
-          banners: [
-            {'image': 'banners/th.jpg', 'title': 'Diskon 50% untuk Ujian!'},
-            {'image': 'banners/1.png', 'title': 'Paket Belajar Premium!'},
-            {
-              'image': 'banners/2.png',
-              'title': 'Try Out Nasional Segera Dimulai!',
-            },
-          ],
-          bannerHeight: 140,
-          bannerWidth: 320,
-          spacing: 12,
-          borderRadius: 16,
-          gradientColor: Colors.black45,
+          bannerHeight: 150,
+          bannerWidth: MediaQuery.of(context).size.width - 32,
+          onPromotionTap: (promotion) {
+            Navigator.pushNamed(context, '/promotion', arguments: promotion);
+          },
+          promotions: promotions,
         ),
       ],
     );
