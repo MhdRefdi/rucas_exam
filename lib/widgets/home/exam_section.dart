@@ -17,29 +17,29 @@ class ExamSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Pilihan Ujian",
+              "Kategori Ujian",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: theme.textColor,
               ),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/list-exam',
-                  (route) => false,
-                );
-              },
-              child: Text(
-                "Lihat Selengkapnya",
-                style: TextStyle(
-                  color: theme.primaryColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+            // TextButton(
+            //   onPressed: () {
+            //     Navigator.pushNamedAndRemoveUntil(
+            //       context,
+            //       '/list-exam',
+            //       (route) => false,
+            //     );
+            //   },
+            //   child: Text(
+            //     "Lihat Selengkapnya",
+            //     style: TextStyle(
+            //       color: theme.primaryColor,
+            //       fontWeight: FontWeight.w600,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
         SizedBox(height: theme.mediumSpace),

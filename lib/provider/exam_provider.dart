@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:rucas_exam_project/data/exam_data.dart';
+import 'package:rucas_exam_project/models/exam/category_model.dart';
 import 'package:rucas_exam_project/models/exam_model.dart';
 import 'package:rucas_exam_project/models/question_model.dart';
 
@@ -16,6 +17,15 @@ class ExamProvider with ChangeNotifier {
   bool _isReviewMode = false;
 
   // Getters
+  List<ExamData> getExamByCategory(ExamCategoryData category) {
+    final filtered =
+        category.id != -1
+            ? _exams.where((exam) => exam.category.id == category.id).toList()
+            : _exams;
+
+    return filtered;
+  }
+
   List<ExamData> get exams => _exams;
 
   ExamData? get currentExam =>

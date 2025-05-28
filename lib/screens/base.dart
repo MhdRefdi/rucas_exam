@@ -42,10 +42,10 @@ class BaseScreen extends StatelessWidget {
           //   icon: Icon(Icons.explore),
           //   label: 'Daftar Ujian',
           // ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment),
-            label: 'Hasil ujian',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.assignment),
+          //   label: 'Hasil ujian',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Akun saya',

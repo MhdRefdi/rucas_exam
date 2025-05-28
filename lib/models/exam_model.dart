@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rucas_exam_project/models/exam/category_model.dart';
 import 'package:rucas_exam_project/models/question_model.dart';
 
 class ExamData {
@@ -9,6 +10,7 @@ class ExamData {
   final List<Question> questions;
   final Icon icon;
   final Image banner;
+  final ExamCategoryData category;
 
   ExamData({
     required this.id,
@@ -17,6 +19,7 @@ class ExamData {
     required this.time,
     required this.icon,
     required this.banner,
+    required this.category,
     required this.questions,
   });
 }

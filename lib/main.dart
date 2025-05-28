@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/data/promotion_data.dart';
+import 'package:rucas_exam_project/provider/exam/categories_provider.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 import 'package:rucas_exam_project/provider/message_provider.dart';
 import 'package:rucas_exam_project/provider/page_provider.dart';
+import 'package:rucas_exam_project/provider/screens/list_exam_provider.dart';
 import 'package:rucas_exam_project/screens/ForgotPassword.dart';
 import 'package:rucas_exam_project/screens/base.dart';
 import 'package:rucas_exam_project/screens/exam.dart';
@@ -20,6 +22,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => PageProvider()),
         ChangeNotifierProvider(create: (_) => ExamProvider()),
         ChangeNotifierProvider(create: (_) => MessageProvider()),
+        ChangeNotifierProvider(create: (_) => ExamCategoriesProvider()),
+        ChangeNotifierProvider(create: (_) => ListExamScreenProvider()),
       ],
       child: const MainApp(),
     ),

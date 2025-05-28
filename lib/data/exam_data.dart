@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:rucas_exam_project/models/exam/category_model.dart';
 import 'package:rucas_exam_project/models/exam_model.dart';
 import 'package:rucas_exam_project/models/question_model.dart';
 
 final List<ExamData> questionBank = [
   ExamData(
     id: "1",
-    title: "Matematika Dasar",
+    title: "Matematika Dasar: Mengenal Penjumlahan",
     icon: Icon(Icons.calculate, size: 35, color: Colors.blue),
     banner: Image.asset("assets/banners/3.png"),
     date: "Senin, 3 Juli 2025",
     time: "00:00 - 23:59",
+    category: ExamCategoryData(
+      id: 1,
+      name: "Matematika Dasar",
+      icon: Icon(Icons.calculate, size: 35, color: Colors.blue),
+    ),
     questions: [
       Question(
         id: "1",
@@ -95,11 +101,47 @@ final List<ExamData> questionBank = [
   ),
   ExamData(
     id: "2",
-    title: "IPA Umum",
+    title: "IPA Umum: Suhu Ruang",
     icon: Icon(Icons.science, color: Colors.blue, size: 35),
     banner: Image.asset("assets/banners/3.png"),
     date: "Senin, 4 Juli 2025",
     time: "00:00 - 23:59",
+    category: ExamCategoryData(
+      id: 2,
+      name: "IPA Umum",
+      icon: Icon(Icons.science, color: Colors.blue, size: 35),
+    ),
+    questions: [
+      Question(
+        id: "1",
+        question: "Air membeku pada suhu berapa derajat?",
+        options: {"A": "0°C", "B": "100°C", "C": "50°C", "D": "25°C"},
+        correctAnswer: "A",
+        solution:
+            "Air murni membeku pada 0°C pada tekanan 1 atmosfer. Ini adalah titik beku standar air dimana fase cair berubah menjadi fase padat (es).",
+      ),
+      Question(
+        id: "2",
+        question: "Planet ke-3 dari Matahari adalah?",
+        options: {"A": "Mars", "B": "Venus", "C": "Bumi", "D": "Jupiter"},
+        correctAnswer: "C",
+        solution:
+            "Urutan planet dari Matahari: 1. Merkurius, 2. Venus, 3. Bumi, 4. Mars, 5. Jupiter, dst. Bumi adalah planet ketiga dan satu-satunya yang diketahui memiliki kehidupan.",
+      ),
+    ],
+  ),
+  ExamData(
+    id: "3",
+    title: "IPA Umum: Suhu Ruang 2",
+    icon: Icon(Icons.science, color: Colors.blue, size: 35),
+    banner: Image.asset("assets/banners/3.png"),
+    date: "Senin, 4 Juli 2025",
+    time: "00:00 - 23:59",
+    category: ExamCategoryData(
+      id: 2,
+      name: "IPA Umum",
+      icon: Icon(Icons.science, color: Colors.blue, size: 35),
+    ),
     questions: [
       Question(
         id: "1",
