@@ -10,6 +10,10 @@ final List<ExamData> questionBank = [
     banner: Image.asset("assets/banners/3.png"),
     date: "Senin, 3 Juli 2025",
     time: "00:00 - 23:59",
+    description:
+        "Ujian Matematika Dasar untuk menguji pemahaman aritmatika dan logika sederhana.",
+    duration: 60,
+    totalQuestions: 10,
     questions: [
       Question(
         id: "1",
@@ -27,6 +31,7 @@ final List<ExamData> questionBank = [
         solution:
             "Pengurangan sederhana: 10 - 7 = 3. Jika Anda memiliki 10 item dan mengambil 7, sisanya adalah 3.",
       ),
+      // ... (lanjutkan dengan data yang sama, cukup copy dari yang kamu punya)
       Question(
         id: "3",
         question: "Berapakah hasil dari 2 + 2?",
@@ -100,6 +105,10 @@ final List<ExamData> questionBank = [
     banner: Image.asset("assets/banners/3.png"),
     date: "Senin, 4 Juli 2025",
     time: "00:00 - 23:59",
+    description:
+        "Ujian IPA Umum untuk menguji pengetahuan dasar sains sehari-hari.",
+    duration: 40,
+    totalQuestions: 2,
     questions: [
       Question(
         id: "1",

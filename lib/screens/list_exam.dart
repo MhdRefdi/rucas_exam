@@ -125,10 +125,15 @@ class ListExamScreen extends StatelessWidget {
                                     width: 200,
                                     child: ElevatedButton(
                                       onPressed:
-                                          () => Navigator.of(context).pushNamed(
-                                            '/exam',
-                                            arguments:
-                                                examProvider.exams[index].id,
+                                          () => showModalBottomSheet(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            builder:
+                                                (_) => ExamDetailBottomSheet(
+                                                  exam:
+                                                      examProvider.exams[index],
+                                                ),
                                           ),
                                       style: ElevatedButton.styleFrom(
                                         elevation: 0,
@@ -186,7 +191,8 @@ class ListExamScreen extends StatelessWidget {
                                             onPressed: () => {},
                                             style: ElevatedButton.styleFrom(
                                               elevation: 0,
-                                              backgroundColor: theme.defaultColor,
+                                              backgroundColor:
+                                                  theme.defaultColor,
                                               foregroundColor: Colors.black,
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 20,
@@ -214,7 +220,8 @@ class ListExamScreen extends StatelessWidget {
                                             style: ElevatedButton.styleFrom(
                                               elevation: 0,
                                               backgroundColor: Colors.amber,
-                                              foregroundColor: theme.defaultColor,
+                                              foregroundColor:
+                                                  theme.defaultColor,
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: 20,
                                                 vertical: 15,
@@ -330,4 +337,281 @@ class ExamDescription extends StatelessWidget {
       ],
     );
   }
+}
+
+class ExamDetailBottomSheet extends StatelessWidget {
+  final ExamData exam;
+  const ExamDetailBottomSheet({super.key, required this.exam});
+
+  @override
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.75,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 24,
+                offset: Offset(0, -8),
+              ),
+            ],
+          ),
+          child: SingleChildScrollView(
+            controller: scrollController,
+            padding: EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Garis penarik
+                Center(
+                  child: Container(
+                    width: 48,
+                    height: 5,
+                    margin: EdgeInsets.only(bottom: 24),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: exam.banner,
+                ),
+                SizedBox(height: 24),
+                Text(
+                  exam.title,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  exam.description ?? "Deskripsi tidak tersedia.",
+                  style: TextStyle(fontSize: 15, color: Colors.grey[800]),
+                ),
+                SizedBox(height: 24),
+                Row(
+                  children: [
+                    Icon(Icons.date_range, color: Colors.blueAccent),
+                    SizedBox(width: 12),
+                    Text(
+                      "Tanggal: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(exam.date),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.lock_clock_rounded, color: Colors.orangeAccent),
+                    SizedBox(width: 12),
+                    Text(
+                      "Jam: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(exam.time),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.timer, color: Colors.green),
+                    SizedBox(width: 12),
+                    Text(
+                      "Durasi: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text('${exam.duration ?? "?"} menit'),
+                  ],
+                ),
+                SizedBox(height: 24),
+                Divider(height: 1, color: Colors.grey[300]),
+                SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            "Jumlah Soal",
+                            style: TextStyle(color: Colors.black54),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            '${exam.totalQuestions ?? exam.questions.length}',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.blueAccent,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 32),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder:
+                                (context) =>
+                                    _buildStartExamDialog(context, exam),
+                          );
+                        },
+                        icon: Icon(
+                          Icons.play_arrow_rounded,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          "Mulai Ujian",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 4,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 18),
+                // Tombol Tutup Lebih Menarik
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.blueAccent,
+                      elevation: 2,
+                      side: BorderSide(color: Colors.blueAccent, width: 1.6),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 42,
+                        vertical: 14,
+                      ),
+                    ),
+                    child: Text(
+                      "Tutup",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.blueAccent,
+                        letterSpacing: 1.2,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+Widget _buildStartExamDialog(BuildContext context, ExamData exam) {
+  return Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    insetPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+    backgroundColor: Colors.white,
+    child: Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 48),
+          SizedBox(height: 16),
+          Text(
+            "Perhatian!",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          SizedBox(height: 12),
+          Text(
+            "Soal akan dikerjakan dalam waktu *${exam.duration ?? "?"} menit*. "
+            "Harap baca soal dengan teliti dan *jangan keluar dari aplikasi selama ujian berlangsung*.",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.black54, fontSize: 14),
+          ),
+          SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.grey[700],
+                    side: BorderSide(color: Colors.grey),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: Text("Kembali"),
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Tutup dialog
+                    Navigator.pop(context); // Tutup bottom sheet
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Ujian dimulai. Semoga sukses!"),
+                        backgroundColor: Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: Text(
+                    "Mulai Sekarang",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
 }

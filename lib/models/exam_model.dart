@@ -9,6 +9,9 @@ class ExamData {
   final List<Question> questions;
   final Icon icon;
   final Image banner;
+  final String? description;
+  final int? duration;
+  final int? totalQuestions;
 
   ExamData({
     required this.id,
@@ -18,5 +21,8 @@ class ExamData {
     required this.icon,
     required this.banner,
     required this.questions,
+    required this.description,
+    required this.duration,
+    required this.totalQuestions,
   });
 }
