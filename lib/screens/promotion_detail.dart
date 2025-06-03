@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rucas_exam_project/config/spacing_constans.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/data/promotion_data.dart';
 
@@ -988,7 +987,7 @@ class _ClaimButton extends StatelessWidget {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text('Mengarahkan ke aplikasi Ruangguru...'),
+                            content: const Text('Promo berhasil digunakan'),
                             behavior: SnackBarBehavior.floating,
                             backgroundColor: theme.primaryColor,
                           ),
