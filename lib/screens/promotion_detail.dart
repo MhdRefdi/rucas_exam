@@ -15,6 +15,18 @@ class PromotionDetail extends StatefulWidget {
 class _PromotionDetailState extends State<PromotionDetail> {
   bool _showBanner = true;
   bool _isBookmarked = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Simulasikan loading data
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +34,33 @@ class _PromotionDetailState extends State<PromotionDetail> {
     final Size size = MediaQuery.of(context).size;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: colorScheme.surface,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Memuat detail promo...',
+                style: TextStyle(color: colorScheme.onSurface.withOpacity(0.7)),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         slivers: [
           // Enhanced App Bar with Hero Animation
           SliverAppBar(
@@ -93,12 +128,11 @@ class _PromotionDetailState extends State<PromotionDetail> {
                       ),
                       const PopupMenuDivider(height: 8),
                       _buildPopupMenuItem(
-                        'report',
-                        Icons.flag_outlined,
-                        'Laporkan Promo',
-                        'Jika menemukan masalah',
-                        Colors.red.shade600,
-                        isDestructive: true,
+                        'feedback_submit',
+                        Icons.feedback_outlined,
+                        'Saran dan Kritik',
+                        'Berikan saran dan kritik terkait promo',
+                        Colors.purple.shade600,
                       ),
                     ],
               ),
@@ -109,7 +143,6 @@ class _PromotionDetailState extends State<PromotionDetail> {
                   horizontal: 16,
                   vertical: 4,
                 ),
-
                 child: Text(
                   widget.promotion.title,
                   style: const TextStyle(
@@ -173,10 +206,13 @@ class _PromotionDetailState extends State<PromotionDetail> {
                     isBookmarked: _isBookmarked,
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
                   // Stats in card with shadow
-                  _PromotionStatsCard(theme: theme),
+                  _PromotionStatsCard(
+                    theme: theme,
+                    promotion: widget.promotion,
+                  ),
 
                   const SizedBox(height: 24),
 
@@ -189,7 +225,10 @@ class _PromotionDetailState extends State<PromotionDetail> {
                   const SizedBox(height: 24),
 
                   // Related promotions with horizontal scroll
-                  _RelatedPromotionsSection(theme: theme),
+                  _RelatedPromotionsSection(
+                    theme: theme,
+                    isLoading: _isLoading,
+                  ),
 
                   const SizedBox(height: 24),
 
@@ -318,8 +357,8 @@ class _PromotionDetailState extends State<PromotionDetail> {
       case 'how_to_use':
         _showHowToUseGuide();
         break;
-      case 'report':
-        _showReportDialog();
+      case 'feedback_submit':
+        _showFeedbackDialog();
         break;
     }
   }
@@ -1031,10 +1070,12 @@ class _PromotionDetailState extends State<PromotionDetail> {
     );
   }
 
-  void _showReportDialog() {
-    String selectedReason = '';
-    String customReason = '';
+  void _showFeedbackDialog() {
+    String selectedFeedbackType = '';
+    String customFeedback = '';
+    double rating = 0.0; // 0 means no rating yet
     final TextEditingController _controller = TextEditingController();
+    bool isSubmitting = false;
 
     showDialog(
       context: context,
@@ -1051,19 +1092,19 @@ class _PromotionDetailState extends State<PromotionDetail> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
+                          color: Colors.blue.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          Icons.flag_rounded,
-                          color: Colors.red.shade600,
+                          Icons.feedback_rounded,
+                          color: Colors.blue.shade600,
                           size: 24,
                         ),
                       ),
                       const SizedBox(width: 12),
                       const Expanded(
                         child: Text(
-                          'Laporkan Promosi',
+                          'Beri Masukan untuk Promo Ini',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -1077,240 +1118,441 @@ class _PromotionDetailState extends State<PromotionDetail> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Mengapa Anda melaporkan promosi ini?',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                        if (isSubmitting) ...[
+                          const SizedBox(height: 20),
+                          const Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation(
+                                Color(0xFF39AAE0),
+                              ),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Report reasons with radio buttons
-                        _ReportOption(
-                          title: 'Konten menyesatkan',
-                          subtitle: 'Informasi promosi tidak sesuai kenyataan',
-                          icon: Icons.warning_rounded,
-                          value: 'misleading',
-                          groupValue: selectedReason,
-                          onChanged:
-                              (value) =>
-                                  setState(() => selectedReason = value!),
-                        ),
-
-                        _ReportOption(
-                          title: 'Spam atau promosi palsu',
-                          subtitle: 'Promosi ini terlihat mencurigakan',
-                          icon: Icons.block_rounded,
-                          value: 'spam',
-                          groupValue: selectedReason,
-                          onChanged:
-                              (value) =>
-                                  setState(() => selectedReason = value!),
-                        ),
-
-                        _ReportOption(
-                          title: 'Konten tidak pantas',
-                          subtitle: 'Berisi konten yang tidak sesuai',
-                          icon: Icons.visibility_off_rounded,
-                          value: 'inappropriate',
-                          groupValue: selectedReason,
-                          onChanged:
-                              (value) =>
-                                  setState(() => selectedReason = value!),
-                        ),
-
-                        _ReportOption(
-                          title: 'Pelanggaran hak cipta',
-                          subtitle: 'Menggunakan konten tanpa izin',
-                          icon: Icons.copyright_rounded,
-                          value: 'copyright',
-                          groupValue: selectedReason,
-                          onChanged:
-                              (value) =>
-                                  setState(() => selectedReason = value!),
-                        ),
-
-                        _ReportOption(
-                          title: 'Lainnya',
-                          subtitle: 'Alasan lain yang tidak disebutkan',
-                          icon: Icons.more_horiz_rounded,
-                          value: 'other',
-                          groupValue: selectedReason,
-                          onChanged:
-                              (value) =>
-                                  setState(() => selectedReason = value!),
-                        ),
-
-                        // Custom reason text field (shown when "Lainnya" is selected)
-                        if (selectedReason == 'other') ...[
-                          const SizedBox(height: 16),
-                          Text(
-                            'Jelaskan alasan Anda:',
+                          const SizedBox(height: 20),
+                          const Center(
+                            child: Text(
+                              'Mengirim masukan...',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ] else ...[
+                          // Rating Slider Section
+                          const Text(
+                            'Bagaimana penilaian Anda tentang promo ini?',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: Colors.grey.shade700,
                             ),
                           ),
                           const SizedBox(height: 8),
-                          TextField(
-                            controller: _controller,
-                            decoration: InputDecoration(
-                              hintText: 'Tuliskan penjelasan detail...',
-                              hintStyle: TextStyle(color: Colors.grey.shade400),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: Colors.grey.shade300,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: AppTheme().primaryColor,
-                                  width: 2,
-                                ),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey.shade50,
-                              contentPadding: const EdgeInsets.all(16),
-                            ),
-                            maxLines: 4,
-                            maxLength: 500,
-                            onChanged: (value) => customReason = value,
-                          ),
-                        ],
-
-                        const SizedBox(height: 16),
-
-                        // Warning notice
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.amber.shade50,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.amber.shade200),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
                               Icon(
-                                Icons.info_outline_rounded,
-                                color: Colors.amber.shade700,
-                                size: 20,
+                                Icons.sentiment_very_dissatisfied,
+                                color:
+                                    rating < 1
+                                        ? Colors.grey
+                                        : _getRatingColor(rating),
+                                size: 28,
                               ),
-                              const SizedBox(width: 8),
                               Expanded(
-                                child: Text(
-                                  'Laporan akan ditinjau dalam 1-2 hari kerja. Laporan palsu dapat mengakibatkan pemblokiran akun.',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.amber.shade800,
-                                    height: 1.3,
-                                  ),
+                                child: Slider(
+                                  value: rating,
+                                  min: 0,
+                                  max: 5,
+                                  divisions: 5,
+                                  label:
+                                      rating > 0
+                                          ? rating.toStringAsFixed(1)
+                                          : '0 (Belum dinilai)',
+                                  onChanged: (value) {
+                                    setState(() {
+                                      rating = value;
+                                    });
+                                  },
+                                  activeColor: _getRatingColor(rating),
+                                  inactiveColor: Colors.grey.shade300,
                                 ),
+                              ),
+                              Icon(
+                                Icons.sentiment_very_satisfied,
+                                color:
+                                    rating < 1
+                                        ? Colors.grey
+                                        : _getRatingColor(rating),
+                                size: 28,
                               ),
                             ],
                           ),
-                        ),
+                          Center(
+                            child: Text(
+                              rating > 0
+                                  ? _getRatingText(rating)
+                                  : 'Geser slider untuk memberi rating',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color:
+                                    rating > 0
+                                        ? _getRatingColor(rating)
+                                        : Colors.grey,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          const Text(
+                            'Apa yang ingin Anda sampaikan tentang promo ini? (Opsional)',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Feedback options
+                          _FeedbackOption(
+                            title: 'Saran perbaikan',
+                            subtitle: 'Ada yang bisa diperbaiki dari promo ini',
+                            icon: Icons.construction_rounded,
+                            value: 'improvement',
+                            groupValue: selectedFeedbackType,
+                            onChanged:
+                                (value) => setState(
+                                  () => selectedFeedbackType = value!,
+                                ),
+                          ),
+
+                          _FeedbackOption(
+                            title: 'Kesalahan informasi',
+                            subtitle:
+                                'Ada informasi yang tidak sesuai/tidak akurat',
+                            icon: Icons.info_outline_rounded,
+                            value: 'incorrect_info',
+                            groupValue: selectedFeedbackType,
+                            onChanged:
+                                (value) => setState(
+                                  () => selectedFeedbackType = value!,
+                                ),
+                          ),
+
+                          _FeedbackOption(
+                            title: 'Permintaan fitur',
+                            subtitle: 'Saya ingin ada fitur/tawaran tertentu',
+                            icon: Icons.lightbulb_outline_rounded,
+                            value: 'feature_request',
+                            groupValue: selectedFeedbackType,
+                            onChanged:
+                                (value) => setState(
+                                  () => selectedFeedbackType = value!,
+                                ),
+                          ),
+
+                          _FeedbackOption(
+                            title: 'Pengalaman pengguna',
+                            subtitle:
+                                'Saya mengalami kesulitan saat menggunakan promo',
+                            icon: Icons.accessibility_rounded,
+                            value: 'user_experience',
+                            groupValue: selectedFeedbackType,
+                            onChanged:
+                                (value) => setState(
+                                  () => selectedFeedbackType = value!,
+                                ),
+                          ),
+
+                          _FeedbackOption(
+                            title: 'Lainnya',
+                            subtitle: 'Masukan lain yang ingin disampaikan',
+                            icon: Icons.more_horiz_rounded,
+                            value: 'other',
+                            groupValue: selectedFeedbackType,
+                            onChanged:
+                                (value) => setState(
+                                  () => selectedFeedbackType = value!,
+                                ),
+                          ),
+
+                          // Custom feedback text field
+                          if (selectedFeedbackType.isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            Text(
+                              selectedFeedbackType == 'other'
+                                  ? 'Tuliskan masukan Anda:'
+                                  : 'Jelaskan lebih detail:',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            TextField(
+                              controller: _controller,
+                              decoration: InputDecoration(
+                                hintText: 'Tuliskan penjelasan detail...',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey.shade400,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade300,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: AppTheme().primaryColor,
+                                    width: 2,
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey.shade50,
+                                contentPadding: const EdgeInsets.all(16),
+                              ),
+                              maxLines: 4,
+                              maxLength: 500,
+                              onChanged: (value) => customFeedback = value,
+                            ),
+                          ],
+
+                          const SizedBox(height: 16),
+
+                          // Appreciation notice
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Color(0xFF39AAE0)),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.thumb_up_rounded,
+                                  color: Colors.blue.shade700,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Terima kasih atas masukannya! Masukan Anda membantu kami meningkatkan kualitas promo dan layanan.',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.blue.shade800,
+                                      height: 1.3,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
                   actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-                  actions: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _controller.dispose();
-                              Navigator.pop(context);
-                            },
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              side: BorderSide(color: Colors.grey.shade400),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: Text(
-                              'Batal',
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed:
-                                selectedReason.isEmpty
-                                    ? null
-                                    : () {
+                  actions:
+                      isSubmitting
+                          ? []
+                          : [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () {
                                       _controller.dispose();
                                       Navigator.pop(context);
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                      side: BorderSide(
+                                        color: Colors.grey.shade400,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Nanti Saja',
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed:
+                                        rating == 0
+                                            ? null
+                                            : () async {
+                                              setState(
+                                                () => isSubmitting = true,
+                                              );
 
-                                      // Show success snackbar
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.check_circle,
-                                                color: Colors.white,
-                                                size: 20,
-                                              ),
-                                              const SizedBox(width: 12),
-                                              const Expanded(
-                                                child: Text(
-                                                  'Laporan berhasil dikirim. Tim kami akan meninjau dalam 1-2 hari kerja.',
-                                                  style: TextStyle(
-                                                    fontSize: 14,
+                                              // Simulate network delay
+                                              await Future.delayed(
+                                                const Duration(seconds: 1),
+                                              );
+
+                                              _controller.dispose();
+                                              Navigator.pop(context);
+
+                                              // Show success snackbar
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.check_circle,
+                                                        color: Colors.white,
+                                                        size: 20,
+                                                      ),
+                                                      const SizedBox(width: 12),
+                                                      const Expanded(
+                                                        child: Text(
+                                                          'Terima kasih! Masukan Anda telah kami terima.',
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  backgroundColor: Colors.green,
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
+                                                  ),
+                                                  duration: const Duration(
+                                                    seconds: 3,
+                                                  ),
+                                                  margin: const EdgeInsets.all(
+                                                    16,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          backgroundColor: Colors.green,
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                          ),
-                                          duration: const Duration(seconds: 4),
-                                          margin: const EdgeInsets.all(16),
-                                        ),
-                                      );
-                                    },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  selectedReason.isEmpty
-                                      ? Colors.grey.shade300
-                                      : Colors.red.shade600,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: selectedReason.isEmpty ? 0 : 2,
+                                              );
+                                            },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                          rating == 0
+                                              ? Colors.grey.shade300
+                                              : Colors.blue.shade600,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      elevation: rating == 0 ? 0 : 2,
+                                    ),
+                                    child: const Text(
+                                      'Kirim Masukan',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            child: const Text(
-                              'Kirim Laporan',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          ],
                 ),
           ),
+    );
+  }
+
+  // Helper function to get color based on rating
+  Color _getRatingColor(double rating) {
+    if (rating < 2) return Colors.red;
+    if (rating < 3) return Colors.orange;
+    if (rating < 4) return Colors.yellow.shade700;
+    return Colors.green;
+  }
+
+  // Helper function to get text based on rating
+  String _getRatingText(double rating) {
+    if (rating < 1.5) return 'Tidak Puas';
+    if (rating < 2.5) return 'Kurang Puas';
+    if (rating < 3.5) return 'Cukup Puas';
+    if (rating < 4.5) return 'Puas';
+    return 'Sangat Puas';
+  }
+}
+
+class _FeedbackOption extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final String value;
+  final String groupValue;
+  final ValueChanged<String?> onChanged;
+
+  const _FeedbackOption({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => onChanged(value),
+        child: Row(
+          children: [
+            Radio<String>(
+              value: value,
+              groupValue: groupValue,
+              onChanged: onChanged,
+              activeColor: Colors.blue.shade600,
+            ),
+            const SizedBox(width: 8),
+            Icon(icon, color: Colors.blue.shade600, size: 24),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1746,61 +1988,128 @@ class _PromoBadge extends StatelessWidget {
 // Stats Card Component
 class _PromotionStatsCard extends StatelessWidget {
   final AppTheme theme;
+  final Promotion promotion; // Terima data promosi lengkap
 
-  const _PromotionStatsCard({required this.theme});
+  const _PromotionStatsCard({required this.theme, required this.promotion});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+    // Ambil validUntil dari data promosi
+    final validUntil = promotion.validUntil;
+    final currentDate = DateTime.now();
+    final remainingDays = validUntil.difference(currentDate).inDays;
+    final totalDuration = validUntil.difference(promotion.validUntil).inDays;
+    final progress =
+        remainingDays / totalDuration.clamp(1, double.maxFinite.toInt());
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Berlaku hingga: ${_formatDate(promotion.validUntil)}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                  Text(
+                    remainingDays > 0
+                        ? '$remainingDays hari tersisa'
+                        : 'Promo berakhir',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: _getRemainingDaysColor(remainingDays),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: LinearProgressIndicator(
+                  value: remainingDays > 0 ? progress : 0,
+                  minHeight: 8,
+                  backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    _getProgressColor(progress),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          const _StatItem(
-            icon: Icons.verified_user_rounded,
-            value: '100%',
-            label: 'Terverifikasi',
-            color: Colors.green,
+        ),
+        SizedBox(height: 16),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          // Add vertical divider
-          Container(
-            height: 40,
-            width: 1,
-            color: Theme.of(context).dividerColor.withOpacity(0.2),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _StatItem(
+                icon: Icons.verified_user_rounded,
+                value: '94%',
+                label: 'Terverifikasi',
+                color: Colors.green,
+              ),
+              Container(
+                height: 40,
+                width: 1,
+                color: Theme.of(context).dividerColor.withOpacity(0.2),
+              ),
+              _StatItem(
+                icon: Icons.people_alt_rounded,
+                value: '500+',
+                label: 'Pengguna',
+                color: Colors.blue,
+              ),
+              Container(
+                height: 40,
+                width: 1,
+                color: Theme.of(context).dividerColor.withOpacity(0.2),
+              ),
+              _StatItem(
+                icon: Icons.thumb_up_alt_rounded,
+                value: '96%',
+                label: 'Sukses',
+                color: Colors.orange,
+              ),
+            ],
           ),
-          const _StatItem(
-            icon: Icons.people_alt_rounded,
-            value: '500+',
-            label: 'Pengguna',
-            color: Colors.blue,
-          ),
-          // Add vertical divider
-          Container(
-            height: 40,
-            width: 1,
-            color: Theme.of(context).dividerColor.withOpacity(0.2),
-          ),
-          const _StatItem(
-            icon: Icons.thumb_up_alt_rounded,
-            value: '95%',
-            label: 'Sukses',
-            color: Colors.orange,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
+  }
+
+  Color _getProgressColor(double progress) {
+    if (progress > 0.5) return Colors.green;
+    if (progress > 0.25) return Colors.orange;
+    return Colors.red;
+  }
+
+  Color _getRemainingDaysColor(int days) {
+    if (days <= 0) return Colors.red;
+    if (days > 7) return Colors.green;
+    if (days > 3) return Colors.orange;
+    return Colors.red;
   }
 }
 
@@ -1893,8 +2202,12 @@ class _AboutPromotionSection extends StatelessWidget {
 // Related Promotions Section
 class _RelatedPromotionsSection extends StatelessWidget {
   final AppTheme theme;
+  final bool isLoading;
 
-  const _RelatedPromotionsSection({required this.theme});
+  const _RelatedPromotionsSection({
+    required this.theme,
+    this.isLoading = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1915,16 +2228,19 @@ class _RelatedPromotionsSection extends StatelessWidget {
         const SizedBox(height: 12),
         SizedBox(
           height: 160,
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            scrollDirection: Axis.horizontal,
-            itemCount: promotions.length > 4 ? 4 : promotions.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 16),
-            itemBuilder: (context, index) {
-              final promo = promotions[index];
-              return _RelatedPromoCard(promotion: promo);
-            },
-          ),
+          child:
+              isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.separated(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: promotions.length > 4 ? 4 : promotions.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 16),
+                    itemBuilder: (context, index) {
+                      final promo = promotions[index];
+                      return _RelatedPromoCard(promotion: promo);
+                    },
+                  ),
         ),
       ],
     );
