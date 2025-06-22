@@ -3,15 +3,20 @@ class Promotion {
   final String imagePath;
   final String title;
   final String description;
+  final String promoCode;
+  final DateTime validUntil;
+  final List<String> termsConditions;
 
   Promotion({
     required this.id,
     required this.imagePath,
     required this.title,
     required this.description,
+    required this.promoCode,
+    required this.validUntil,
+    required this.termsConditions,
   });
 }
-
 
 final List<Promotion> promotions = [
   Promotion(
@@ -32,14 +37,22 @@ final List<Promotion> promotions = [
         '3. Lakukan pembayaran dengan kartu debit/kredit BRI\n'
         '4. Nikmati diskon langsung di halaman checkout!\n\n'
         '⏰ PERIODE PROMO:\n'
-        'Berlaku hingga 31 Desember 2024\n'
+        'Berlaku hingga 31 Desember 2025\n'
         'Kuota terbatas untuk 1.000 pengguna pertama setiap minggunya\n\n'
         '❓ SYARAT & KETENTUAN:\n'
         '• Berlaku untuk semua jenis kartu BRI\n'
         '• Minimal transaksi Rp500.000\n'
         '• Maksimal diskon Rp270.000\n'
-        '• Tidak dapat digabung dengan promo lainnya\n\n'
-        'Kesempatan emas! Tingkatkan prestasi belajarmu bersama Ruangguru dan BRI sekarang juga!',
+        '• Tidak dapat digabung dengan promo lainnya',
+    promoCode: 'BRIJAYA27',
+    validUntil: DateTime(2025, 12, 31),
+    termsConditions: [
+      'Berlaku untuk semua jenis kartu BRI',
+      'Minimal transaksi Rp500.000',
+      'Maksimal diskon Rp270.000',
+      'Tidak dapat digabung dengan promo lainnya',
+      'Kuota terbatas untuk 1.000 pengguna pertama setiap minggunya'
+    ],
   ),
   Promotion(
     id: 'promo2',
@@ -74,8 +87,15 @@ final List<Promotion> promotions = [
         '💲 PROMO PENDAFTARAN:\n'
         '• Diskon 30% untuk pendaftaran bulan ini\n'
         '• Gratis 4 sesi trial tanpa syarat\n'
-        '• Cicilan 0% hingga 12 bulan\n\n'
-        'Daftar sekarang dan mulai perjalanan menuju prestasi gemilang bersama BRAIN ACADEMY!',
+        '• Cicilan 0% hingga 12 bulan',
+    promoCode: 'BRAIN30',
+    validUntil: DateTime(2025, 12, 31),
+    termsConditions: [
+      'Diskon 30% untuk pendaftaran bulan ini',
+      'Gratis 4 sesi trial tanpa syarat',
+      'Cicilan 0% hingga 12 bulan',
+      'Garansi nilai meningkat minimal 20% atau uang kembali'
+    ],
   ),
   Promotion(
     id: 'promo3',
@@ -111,8 +131,15 @@ final List<Promotion> promotions = [
         '🔥 PROMO SPESIAL:\n'
         '• Diskon 25% dengan kode: IDOLAKU\n'
         '• Merchandise bertanda tangan idola untuk 50 pendaftar pertama\n'
-        '• Kesempatan tampil di social media Ruangguru bersama idolamu\n\n'
-        'Belajar kini tidak lagi kaku dan membosankan! Gabung sekarang dan temukan motivasi baru dalam pendidikanmu bersama para idola!',
+        '• Kesempatan tampil di social media Ruangguru bersama idolamu',
+    promoCode: 'IDOLAKU',
+    validUntil: DateTime(2025, 12, 31),
+    termsConditions: [
+      'Diskon 25% dengan kode: IDOLAKU',
+      'Merchandise terbatas untuk 50 pendaftar pertama',
+      'Kesempatan tampil di social media Ruangguru',
+      'Berlaku untuk paket minimal 6 bulan'
+    ],
   ),
   Promotion(
     id: 'promo4',
@@ -153,8 +180,15 @@ final List<Promotion> promotions = [
         '🔹 PROMO PELUNCURAN:\n'
         '• Akses gratis 7 hari untuk mencoba semua fitur premium\n'
         '• Diskon 40% untuk upgrade ke paket tahunan\n'
-        '• Bonus 50 token untuk mengakses sesi konsultasi dengan master teacher\n\n'
-        'Selamat tinggal kebosanan, halo pemahaman! Upgrade pengalaman belajarmu sekarang!',
+        '• Bonus 50 token untuk mengakses sesi konsultasi dengan master teacher',
+    promoCode: 'VIDEOBARU',
+    validUntil: DateTime(2025, 12, 31),
+    termsConditions: [
+      'Akses gratis 7 hari untuk pengguna baru',
+      'Diskon 40% untuk upgrade ke paket tahunan',
+      'Bonus 50 token untuk sesi konsultasi',
+      'Fitur AR hanya tersedia di perangkat tertentu'
+    ],
   ),
   Promotion(
     id: 'promo5',
@@ -202,13 +236,22 @@ final List<Promotion> promotions = [
         '"Nilai rapor naik signifikan setelah 3 bulan!" - Budi, kelas 9\n\n'
         'JANGAN LEWATKAN! Kesempatan emas yang tidak akan terulang!\n'
         'DAFTAR SEKARANG SEBELUM KAMU MENYESAL!',
+    promoCode: 'JADIJUARA',
+    validUntil: DateTime(2025, 7, 29),
+    termsConditions: [
+      'Harga normal Rp775.000/tahun',
+      'Garansi refund 7 hari jika tidak puas',
+      'Bonus merchandise selama persediaan ada',
+      'Maksimal 2 paket per pengguna',
+      'Kuota terbatas 5.000 pendaftar'
+    ],
   ),
   Promotion(
     id: 'promo6',
     imagePath: 'banners/th1.jpg',
     title: 'Paket Super Intensif SIMAK UI!',
     description:
-        '🎓 JAMINAN LOLOS SIMAK UI 2024! 🎓\n\n'
+        '🎓 JAMINAN LOLOS SIMAK UI 2025! 🎓\n\n'
         'PROGRAM PERSIAPAN PALING KOMPREHENSIF UNTUK MENAKLUKKAN UJIAN MASUK UNIVERSITAS INDONESIA!\n\n'
         '💎 PENAWARAN SPEKTAKULER TERBATAS:\n'
         '• Harga normal: Rp16.500.000\n'
@@ -250,7 +293,7 @@ final List<Promotion> promotions = [
         '• Akses gratis ke perpustakaan digital UI selama program\n'
         '• Mentoring personal oleh mahasiswa UI aktif (1 mentor untuk 5 siswa)\n\n'
         '⏱️ PERIODE PENDAFTARAN:\n'
-        '• Batch terakhir untuk persiapan SIMAK UI 2024\n'
+        '• Batch terakhir untuk persiapan SIMAK UI 2025\n'
         '• Kuota: 35 siswa per kelas (total 3 kelas)\n'
         '• Status: HAMPIR PENUH! (80% terisi)\n'
         '• Batas akhir pendaftaran: 30 Agustus 2023\n\n'
@@ -264,5 +307,14 @@ final List<Promotion> promotions = [
         '(*syarat & ketentuan berlaku)\n\n'
         'INVESTASI TERBAIK UNTUK MASA DEPAN CEMERLANG DI UNIVERSITAS INDONESIA!\n'
         'JANGAN TUNDA LAGI - KUOTA HAMPIR PENUH!',
+    promoCode: 'MASUKUI',
+    validUntil: DateTime(2025, 8, 30),
+    termsConditions: [
+      'Pembayaran dapat dicicil 12x tanpa bunga',
+      'Garansi mengulang gratis jika tidak lolos',
+      'Wajib mengikuti placement test',
+      'Kuota terbatas 35 siswa/kelas',
+      'Tidak termasuk biaya pendaftaran SIMAK UI'
+    ],
   ),
 ];

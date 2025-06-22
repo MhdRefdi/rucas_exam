@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/data/promotion_data.dart';
 
@@ -37,43 +38,77 @@ class _PromotionDetailState extends State<PromotionDetail> {
             leadingWidth: 45,
             actions: [
               IconButton(
+                onPressed:
+                    () => _showSnackBar('Fitur berbagi akan segera hadir'),
+                icon: const Icon(Icons.share, color: Colors.white, size: 24),
+              ),
+              IconButton(
                 onPressed: _toggleBookmark,
                 icon: Icon(
-                  _isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
+                  _isBookmarked ? Icons.bookmark_add : Icons.bookmark_outline,
                   color: Colors.white,
                   size: 24,
                 ),
               ),
               PopupMenuButton<String>(
                 onSelected: _handleMenuSelection,
-                icon: const Icon(Icons.more_vert, color: Colors.white),
-                itemBuilder: (BuildContext context) => [
-                  const PopupMenuItem<String>(
-                    value: 'share',
-                    child: Row(
-                      children: [
-                        Icon(Icons.share, size: 20),
-                        SizedBox(width: 12),
-                        Text('Bagikan'),
-                      ],
-                    ),
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  child: const Icon(
+                    Icons.more_vert,
+                    color: Colors.white,
+                    size: 20,
                   ),
-                  const PopupMenuItem<String>(
-                    value: 'report',
-                    child: Row(
-                      children: [
-                        Icon(Icons.flag, size: 20),
-                        SizedBox(width: 12),
-                        Text('Laporkan'),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
+                offset: const Offset(0, 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 8,
+                color: Colors.white,
+                itemBuilder:
+                    (BuildContext context) => [
+                      _buildPopupMenuItem(
+                        'copy',
+                        Icons.content_copy_outlined,
+                        'Salin Kode Promo',
+                        'Salin ${widget.promotion.promoCode}',
+                        Colors.blue.shade600,
+                      ),
+                      const PopupMenuDivider(height: 8),
+                      _buildPopupMenuItem(
+                        'reminder',
+                        Icons.schedule_outlined,
+                        'Atur Pengingat',
+                        'Ingatkan sebelum promo berakhir',
+                        Colors.orange.shade600,
+                      ),
+                      const PopupMenuDivider(height: 8),
+                      _buildPopupMenuItem(
+                        'how_to_use',
+                        Icons.help_outline,
+                        'Panduan Penggunaan',
+                        'Lihat cara menggunakan promo',
+                        Colors.green.shade600,
+                      ),
+                      const PopupMenuDivider(height: 8),
+                      _buildPopupMenuItem(
+                        'report',
+                        Icons.flag_outlined,
+                        'Laporkan Promo',
+                        'Jika menemukan masalah',
+                        Colors.red.shade600,
+                        isDestructive: true,
+                      ),
+                    ],
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
               title: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
 
                 child: Text(
                   widget.promotion.title,
@@ -91,12 +126,17 @@ class _PromotionDetailState extends State<PromotionDetail> {
                 child: Image.asset(
                   widget.promotion.imagePath,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: Icon(Icons.image_not_supported, size: 48, color: Colors.grey),
-                    ),
-                  ),
+                  errorBuilder:
+                      (context, error, stackTrace) => Container(
+                        color: Colors.grey[200],
+                        child: const Center(
+                          child: Icon(
+                            Icons.image_not_supported,
+                            size: 48,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
                 ),
               ),
             ),
@@ -127,28 +167,38 @@ class _PromotionDetailState extends State<PromotionDetail> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Promotion header with better visual hierarchy
-                  _PromotionHeader(promotion: widget.promotion, theme: theme),
-                  
+                  _PromotionHeader(
+                    promotion: widget.promotion,
+                    theme: theme,
+                    isBookmarked: _isBookmarked,
+                  ),
+
                   const SizedBox(height: 16),
-                  
+
                   // Stats in card with shadow
                   _PromotionStatsCard(theme: theme),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // About section with better typography
-                  _AboutPromotionSection(promotion: widget.promotion, theme: theme),
-                  
+                  _AboutPromotionSection(
+                    promotion: widget.promotion,
+                    theme: theme,
+                  ),
+
                   const SizedBox(height: 24),
-                  
+
                   // Related promotions with horizontal scroll
                   _RelatedPromotionsSection(theme: theme),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Terms and conditions with expandable sections
-                  _TermsAndConditionsSection(promotion: widget.promotion, theme: theme),
-                  
+                  _TermsAndConditionsSection(
+                    promotion: widget.promotion,
+                    theme: theme,
+                  ),
+
                   const SizedBox(height: 24),
                 ],
               ),
@@ -156,9 +206,69 @@ class _PromotionDetailState extends State<PromotionDetail> {
           ),
         ],
       ),
-      
+
       // Sticky CTA button at bottom
-      bottomNavigationBar: _ClaimButton(promotion: widget.promotion, theme: theme),
+      bottomNavigationBar: _ClaimButton(
+        promotion: widget.promotion,
+        theme: theme,
+      ),
+    );
+  }
+
+  PopupMenuItem<String> _buildPopupMenuItem(
+    String value,
+    IconData icon,
+    String title,
+    String subtitle,
+    Color iconColor, {
+    bool isDestructive = false,
+  }) {
+    return PopupMenuItem<String>(
+      value: value,
+      height: 64,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: iconColor.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: iconColor, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color:
+                          isDestructive
+                              ? Colors.red.shade700
+                              : Colors.grey.shade800,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -170,7 +280,13 @@ class _PromotionDetailState extends State<PromotionDetail> {
         color: Colors.white,
         child: InkWell(
           customBorder: const CircleBorder(),
-          onTap: () => Navigator.of(context).pop(),
+          onTap: () {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              '/home', // route tujuan
+              (Route<dynamic> route) =>
+                  false, // menghapus semua route sebelumnya
+            );
+          },
           child: const Padding(
             padding: EdgeInsets.all(8),
             child: Icon(Icons.arrow_back, color: Colors.black87, size: 20),
@@ -184,20 +300,23 @@ class _PromotionDetailState extends State<PromotionDetail> {
     setState(() {
       _isBookmarked = !_isBookmarked;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(_isBookmarked ? 'Ditambahkan ke bookmark' : 'Dihapus dari bookmark'),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        duration: const Duration(seconds: 1),
-      ),
+    _showSnackBar(
+      _isBookmarked
+          ? 'Promo ditambahkan ke favorit'
+          : 'Promo dihapus dari favorit',
     );
   }
 
-  void _handleMenuSelection(String value) {
+  void _handleMenuSelection(String value) async {
     switch (value) {
-      case 'share':
-        _showSnackBar('Fitur berbagi akan segera hadir');
+      case 'copy':
+        await _copyPromoCode();
+        break;
+      case 'reminder':
+        _setReminder();
+        break;
+      case 'how_to_use':
+        _showHowToUseGuide();
         break;
       case 'report':
         _showReportDialog();
@@ -205,63 +324,1132 @@ class _PromotionDetailState extends State<PromotionDetail> {
     }
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
+  void _showHowToUseGuide() {
+    final theme = AppTheme();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder:
+          (context) => Container(
+            height: MediaQuery.of(context).size.height * 0.7,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, -5),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                // Handle bar
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(top: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+
+                // Header
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: theme.primaryColor.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.help_outline,
+                          color: theme.primaryColor,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Panduan Penggunaan',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: theme.primaryColor,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Ikuti langkah berikut untuk menggunakan promo',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Steps
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      children: [
+                        _buildStep(
+                          1,
+                          'Salin Kode Promo',
+                          'Salin kode "${widget.promotion.promoCode}" atau langsung klik tombol "Klaim Promo"',
+                          Icons.content_copy,
+                          Colors.blue,
+                        ),
+                        _buildStep(
+                          2,
+                          'Buka Aplikasi Ruangguru',
+                          'Pilih produk atau layanan yang ingin Anda beli dari katalog yang tersedia',
+                          Icons.phone_android,
+                          Colors.green,
+                        ),
+                        _buildStep(
+                          3,
+                          'Masukkan Kode Promo',
+                          'Pada halaman pembayaran, temukan kolom "Kode Promo" dan masukkan kode yang telah disalin',
+                          Icons.payment,
+                          Colors.orange,
+                        ),
+                        _buildStep(
+                          4,
+                          'Verifikasi Diskon',
+                          'Pastikan diskon sudah terapkan dengan benar sebelum menyelesaikan pembayaran',
+                          Icons.verified,
+                          Colors.purple,
+                          isLast: true,
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        // Important note
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.amber.shade200),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.lightbulb_outline,
+                                color: Colors.amber.shade700,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Tips Penting',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.amber.shade800,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Promo berlaku hingga ${_formatDate(widget.promotion.validUntil)}. Pastikan menggunakan sebelum masa berlaku habis.',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.amber.shade700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 32),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Bottom actions
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            side: BorderSide(color: Colors.grey.shade400),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            'Tutup',
+                            style: TextStyle(
+                              color: Colors.grey.shade700,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            await _copyPromoCode();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
+                          ),
+                          child: const Text(
+                            'Salin Kode',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
     );
   }
 
-  void _showReportDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Laporkan Promosi'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Apa masalah dengan promosi ini?'),
-            const SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Jelaskan masalahnya...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+  Widget _buildStep(
+    int number,
+    String title,
+    String description,
+    IconData icon,
+    Color color, {
+    bool isLast = false,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 24),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Step indicator with line
+          Column(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: color, width: 2),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(icon, color: color, size: 16),
+                    Text(
+                      number.toString(),
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              maxLines: 3,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
+              if (!isLast)
+                Container(
+                  width: 2,
+                  height: 40,
+                  margin: const EdgeInsets.only(top: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(1),
+                  ),
+                ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _showSnackBar('Laporan telah dikirim. Terima kasih!');
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme().primaryColor,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+
+          const SizedBox(width: 16),
+
+          // Content
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 8),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                    height: 1.4,
+                  ),
+                ),
+              ],
             ),
-            child: const Text('Kirim'),
           ),
         ],
       ),
     );
   }
+
+  void _showSnackBar(String message) {
+    final theme = AppTheme();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: const TextStyle(fontSize: 14)),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        margin: const EdgeInsets.all(16),
+        elevation: 2,
+        backgroundColor: theme.primaryColor,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  Future<void> _copyPromoCode() async {
+    await Clipboard.setData(ClipboardData(text: widget.promotion.promoCode));
+    if (mounted) {
+      _showSnackBar('Kode promo berhasil disalin');
+    }
+  }
+
+  Future<void> _setReminder() async {
+    final now = DateTime.now();
+    final timeLeft = widget.promotion.validUntil.difference(now);
+
+    final theme = AppTheme();
+
+    if (timeLeft.inDays <= 0) {
+      if (mounted) {
+        _showSnackBar('Promosi sudah berakhir');
+      }
+      return;
+    }
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (context) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 10,
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header dengan icon
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: theme.primaryColor.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.notifications_active,
+                      size: 32,
+                      color: theme.primaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Title
+                  Text(
+                    'Atur Pengingat',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Subtitle
+                  Text(
+                    'Kapan Anda ingin diingatkan tentang promosi ini?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Reminder options
+                  Column(
+                    children: [
+                      _buildReminderCard(
+                        icon: Icons.today,
+                        title: '1 hari sebelum berakhir',
+                        subtitle: _formatDate(
+                          widget.promotion.validUntil.subtract(
+                            const Duration(days: 1),
+                          ),
+                        ),
+                        color: Colors.orange,
+                        onTap:
+                            () => _confirmReminder(
+                              widget.promotion.validUntil.subtract(
+                                const Duration(days: 1),
+                              ),
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildReminderCard(
+                        icon: Icons.calendar_today,
+                        title: '3 hari sebelum berakhir',
+                        subtitle: _formatDate(
+                          widget.promotion.validUntil.subtract(
+                            const Duration(days: 3),
+                          ),
+                        ),
+                        color: Colors.blue,
+                        onTap:
+                            () => _confirmReminder(
+                              widget.promotion.validUntil.subtract(
+                                const Duration(days: 3),
+                              ),
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildReminderCard(
+                        icon: Icons.date_range,
+                        title: '1 minggu sebelum berakhir',
+                        subtitle: _formatDate(
+                          widget.promotion.validUntil.subtract(
+                            const Duration(days: 7),
+                          ),
+                        ),
+                        color: theme.primaryColor,
+                        onTap:
+                            () => _confirmReminder(
+                              widget.promotion.validUntil.subtract(
+                                const Duration(days: 7),
+                              ),
+                            ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Cancel button
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    child: Text(
+                      'Batal',
+                      style: TextStyle(
+                        color: Colors.red.shade400,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
+  }
+
+  Widget _buildReminderCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade100,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.grey.shade400,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _confirmReminder(DateTime date) {
+    final theme = AppTheme();
+
+    Navigator.pop(context);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (context) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 10,
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Success icon with animation effect
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: theme.primaryColor.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.check_circle,
+                      size: 48,
+                      color: theme.primaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Success title
+                  Text(
+                    'Pengingat Berhasil Diatur!',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Details card
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.schedule,
+                              size: 20,
+                              color: theme.primaryColor,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Waktu Pengingat:',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _formatDate(date),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey.shade800,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.local_offer,
+                              size: 20,
+                              color: Colors.orange.shade600,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Tentang Promo:',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.promotion.title,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // OK button
+                  // OK button
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Tutup dialog terlebih dahulu
+                      _showSnackBar(
+                        'Pengingat berhasil disetel untuk ${_formatDate(date)}',
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.primaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 48,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      elevation: 2,
+                    ),
+                    child: const Text(
+                      'Mengerti',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
+  }
+
+  void _showReportDialog() {
+    String selectedReason = '';
+    String customReason = '';
+    final TextEditingController _controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (context) => StatefulBuilder(
+            builder:
+                (context, setState) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  title: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.flag_rounded,
+                          color: Colors.red.shade600,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Text(
+                          'Laporkan Promosi',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Mengapa Anda melaporkan promosi ini?',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Report reasons with radio buttons
+                        _ReportOption(
+                          title: 'Konten menyesatkan',
+                          subtitle: 'Informasi promosi tidak sesuai kenyataan',
+                          icon: Icons.warning_rounded,
+                          value: 'misleading',
+                          groupValue: selectedReason,
+                          onChanged:
+                              (value) =>
+                                  setState(() => selectedReason = value!),
+                        ),
+
+                        _ReportOption(
+                          title: 'Spam atau promosi palsu',
+                          subtitle: 'Promosi ini terlihat mencurigakan',
+                          icon: Icons.block_rounded,
+                          value: 'spam',
+                          groupValue: selectedReason,
+                          onChanged:
+                              (value) =>
+                                  setState(() => selectedReason = value!),
+                        ),
+
+                        _ReportOption(
+                          title: 'Konten tidak pantas',
+                          subtitle: 'Berisi konten yang tidak sesuai',
+                          icon: Icons.visibility_off_rounded,
+                          value: 'inappropriate',
+                          groupValue: selectedReason,
+                          onChanged:
+                              (value) =>
+                                  setState(() => selectedReason = value!),
+                        ),
+
+                        _ReportOption(
+                          title: 'Pelanggaran hak cipta',
+                          subtitle: 'Menggunakan konten tanpa izin',
+                          icon: Icons.copyright_rounded,
+                          value: 'copyright',
+                          groupValue: selectedReason,
+                          onChanged:
+                              (value) =>
+                                  setState(() => selectedReason = value!),
+                        ),
+
+                        _ReportOption(
+                          title: 'Lainnya',
+                          subtitle: 'Alasan lain yang tidak disebutkan',
+                          icon: Icons.more_horiz_rounded,
+                          value: 'other',
+                          groupValue: selectedReason,
+                          onChanged:
+                              (value) =>
+                                  setState(() => selectedReason = value!),
+                        ),
+
+                        // Custom reason text field (shown when "Lainnya" is selected)
+                        if (selectedReason == 'other') ...[
+                          const SizedBox(height: 16),
+                          Text(
+                            'Jelaskan alasan Anda:',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextField(
+                            controller: _controller,
+                            decoration: InputDecoration(
+                              hintText: 'Tuliskan penjelasan detail...',
+                              hintStyle: TextStyle(color: Colors.grey.shade400),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade300,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: AppTheme().primaryColor,
+                                  width: 2,
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.shade50,
+                              contentPadding: const EdgeInsets.all(16),
+                            ),
+                            maxLines: 4,
+                            maxLength: 500,
+                            onChanged: (value) => customReason = value,
+                          ),
+                        ],
+
+                        const SizedBox(height: 16),
+
+                        // Warning notice
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.amber.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.amber.shade200),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.info_outline_rounded,
+                                color: Colors.amber.shade700,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Laporan akan ditinjau dalam 1-2 hari kerja. Laporan palsu dapat mengakibatkan pemblokiran akun.',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.amber.shade800,
+                                    height: 1.3,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+                  actions: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              _controller.dispose();
+                              Navigator.pop(context);
+                            },
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              side: BorderSide(color: Colors.grey.shade400),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text(
+                              'Batal',
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed:
+                                selectedReason.isEmpty
+                                    ? null
+                                    : () {
+                                      _controller.dispose();
+                                      Navigator.pop(context);
+
+                                      // Show success snackbar
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.check_circle,
+                                                color: Colors.white,
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              const Expanded(
+                                                child: Text(
+                                                  'Laporan berhasil dikirim. Tim kami akan meninjau dalam 1-2 hari kerja.',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          backgroundColor: Colors.green,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          duration: const Duration(seconds: 4),
+                                          margin: const EdgeInsets.all(16),
+                                        ),
+                                      );
+                                    },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  selectedReason.isEmpty
+                                      ? Colors.grey.shade300
+                                      : Colors.red.shade600,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: selectedReason.isEmpty ? 0 : 2,
+                            ),
+                            child: const Text(
+                              'Kirim Laporan',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+          ),
+    );
+  }
 }
 
-// Banner Widget with improved design
+class _ReminderOption extends StatelessWidget {
+  final String title;
+  final DateTime value;
+  final DateTime? groupValue;
+  final ValueChanged<DateTime> onSelected;
+
+  const _ReminderOption({
+    required this.title,
+    required this.value,
+    required this.groupValue,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AppTheme();
+    return InkWell(
+      onTap: () => onSelected(value),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).dividerColor.withOpacity(0.2),
+          ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.notifications_none, color: theme.primaryColor),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _formatDate(value),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ReportOption extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final String value;
+  final String groupValue;
+  final ValueChanged<String?> onChanged;
+
+  const _ReportOption({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isSelected = value == groupValue;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected ? AppTheme().primaryColor : Colors.grey.shade300,
+          width: isSelected ? 2 : 1,
+        ),
+        color: isSelected ? AppTheme().primaryColor.withOpacity(0.05) : null,
+      ),
+      child: RadioListTile<String>(
+        value: value,
+        groupValue: groupValue,
+        onChanged: onChanged,
+        activeColor: AppTheme().primaryColor,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        title: Row(
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color:
+                  isSelected ? AppTheme().primaryColor : Colors.grey.shade600,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color:
+                          isSelected
+                              ? AppTheme().primaryColor
+                              : Colors.grey.shade800,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _PromoBanner extends StatelessWidget {
   final VoidCallback onDismiss;
 
@@ -287,7 +1475,11 @@ class _PromoBanner extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            Icon(Icons.local_fire_department, color: Colors.orange.shade700, size: 28),
+            Icon(
+              Icons.local_fire_department,
+              color: Colors.orange.shade700,
+              size: 28,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -326,13 +1518,18 @@ class _PromoBanner extends StatelessWidget {
 class _PromotionHeader extends StatelessWidget {
   final Promotion promotion;
   final AppTheme theme;
+  final bool isBookmarked;
 
-  const _PromotionHeader({required this.promotion, required this.theme});
+  const _PromotionHeader({
+    required this.promotion,
+    required this.theme,
+    required this.isBookmarked,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -353,19 +1550,23 @@ class _PromotionHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Tawaran Khusus Ruangguru',
+                      promotion.title,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: theme.primaryColor,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'ID: ${promotion.id} • 500+ Digunakan',
+                      'Kode: ${promotion.promoCode} • Valid hingga ${_formatDate(promotion.validUntil)}',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                   ],
@@ -373,35 +1574,133 @@ class _PromotionHeader extends StatelessWidget {
               ),
             ],
           ),
-          
-          const SizedBox(height: 16),
-          
+
+          const SizedBox(height: 12),
+
           // Badges row
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: [
-              _PromoBadge(
-                icon: Icons.timelapse_rounded,
-                label: 'Tawaran Terbatas',
-                color: Colors.orange,
-              ),
-              _PromoBadge(
-                icon: Icons.verified_rounded,
-                label: 'Terverifikasi',
-                color: Colors.green,
-              ),
-              _PromoBadge(
-                icon: Icons.star_rounded,
-                label: 'Populer',
-                color: Colors.blue,
-              ),
-            ],
+            children: _generatePromoBadges(promotion, isBookmarked),
           ),
         ],
       ),
     );
   }
+
+  List<Widget> _generatePromoBadges(Promotion promotion, bool isBookmarked) {
+    List<Widget> badges = [];
+
+    // Badge berdasarkan tanggal expired
+    final now = DateTime.now();
+    final daysLeft = promotion.validUntil.difference(now).inDays;
+
+    if (daysLeft <= 0) {
+      badges.add(
+        _PromoBadge(
+          icon: Icons.timelapse_rounded,
+          label: 'Promo Sudah Kadaluarsa',
+          color: Colors.red,
+        ),
+      );
+    }
+
+    if (isBookmarked) {
+      badges.add(
+        _PromoBadge(
+          icon: Icons.bookmark_rounded,
+          label: 'Ditandai',
+          color: Colors.green,
+        ),
+      );
+    }
+
+    if (daysLeft <= 7 && daysLeft > 0) {
+      badges.add(
+        _PromoBadge(
+          icon: Icons.timelapse_rounded,
+          label: 'Berakhir $daysLeft hari',
+          color: Colors.red,
+        ),
+      );
+    } else if (daysLeft > 0) {
+      badges.add(
+        _PromoBadge(
+          icon: Icons.timelapse_rounded,
+          label: 'Tawaran Terbatas',
+          color: Colors.orange,
+        ),
+      );
+    }
+
+    // Badge berdasarkan terms & conditions
+    if (promotion.termsConditions.any(
+      (term) => term.toLowerCase().contains('garansi'),
+    )) {
+      badges.add(
+        _PromoBadge(
+          icon: Icons.verified_rounded,
+          label: 'Bergaransi',
+          color: Colors.green,
+        ),
+      );
+    }
+
+    if (promotion.termsConditions.any(
+      (term) => term.toLowerCase().contains('gratis'),
+    )) {
+      badges.add(
+        _PromoBadge(
+          icon: Icons.star_rounded,
+          label: 'Bonus Gratis',
+          color: Colors.blue,
+        ),
+      );
+    }
+
+    if (promotion.termsConditions.any(
+      (term) => term.toLowerCase().contains('cicilan'),
+    )) {
+      badges.add(
+        _PromoBadge(
+          icon: Icons.credit_card,
+          label: 'Cicilan 0%',
+          color: Colors.purple,
+        ),
+      );
+    }
+
+    // Default badge jika tidak ada yang cocok
+    if (badges.isEmpty) {
+      badges.add(
+        _PromoBadge(
+          icon: Icons.local_offer,
+          label: 'Promo Aktif',
+          color: Colors.blue,
+        ),
+      );
+    }
+
+    return badges;
+  }
+}
+
+String _formatDate(DateTime date) {
+  final months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'Mei',
+    'Jun',
+    'Jul',
+    'Agu',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Des',
+  ];
+  return '${date.day} ${months[date.month - 1]} ${date.year}';
 }
 
 // Promo Badge Component
@@ -466,22 +1765,34 @@ class _PromotionStatsCard extends StatelessWidget {
           ),
         ],
       ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _StatItem(
+          const _StatItem(
             icon: Icons.verified_user_rounded,
             value: '100%',
             label: 'Terverifikasi',
             color: Colors.green,
           ),
-          _StatItem(
+          // Add vertical divider
+          Container(
+            height: 40,
+            width: 1,
+            color: Theme.of(context).dividerColor.withOpacity(0.2),
+          ),
+          const _StatItem(
             icon: Icons.people_alt_rounded,
             value: '500+',
             label: 'Pengguna',
             color: Colors.blue,
           ),
-          _StatItem(
+          // Add vertical divider
+          Container(
+            height: 40,
+            width: 1,
+            color: Theme.of(context).dividerColor.withOpacity(0.2),
+          ),
+          const _StatItem(
             icon: Icons.thumb_up_alt_rounded,
             value: '95%',
             label: 'Sukses',
@@ -621,7 +1932,6 @@ class _RelatedPromotionsSection extends StatelessWidget {
 }
 
 // Related Promo Card
-// Related Promo Card with navigation
 class _RelatedPromoCard extends StatelessWidget {
   final Promotion promotion;
 
@@ -664,7 +1974,10 @@ class _RelatedPromoCard extends StatelessWidget {
                       return Container(
                         color: Colors.grey[100],
                         child: const Center(
-                          child: Icon(Icons.image_not_supported, color: Colors.grey),
+                          child: Icon(
+                            Icons.image_not_supported,
+                            color: Colors.grey,
+                          ),
                         ),
                       );
                     },
@@ -694,7 +2007,9 @@ class _RelatedPromoCard extends StatelessWidget {
                             'Terverifikasi',
                             style: TextStyle(
                               fontSize: 10,
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.6),
                             ),
                           ),
                         ],
@@ -710,12 +2025,16 @@ class _RelatedPromoCard extends StatelessWidget {
     );
   }
 }
+
 // Terms and Conditions Section
 class _TermsAndConditionsSection extends StatelessWidget {
   final Promotion promotion;
   final AppTheme theme;
 
-  const _TermsAndConditionsSection({required this.promotion, required this.theme});
+  const _TermsAndConditionsSection({
+    required this.promotion,
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -739,34 +2058,55 @@ class _TermsAndConditionsSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          
+
           // Terms list with expandable items
           Column(
-            children: [
-              _TermItem(
-                title: 'Berlaku hingga akhir bulan',
-                description: 'Promo ini berlaku sampai tanggal 31 Desember 2024',
-              ),
-              const Divider(height: 24, thickness: 0.5),
-              _TermItem(
-                title: 'Tidak dapat digabungkan',
-                description: 'Tidak bisa digabungkan dengan promosi lainnya',
-              ),
-              const Divider(height: 24, thickness: 0.5),
-              _TermItem(
-                title: 'Berlaku untuk semua pengguna',
-                description: 'Baik pengguna baru maupun lama bisa menggunakan promo ini',
-              ),
-              const Divider(height: 24, thickness: 0.5),
-              _TermItem(
-                title: 'Terbatas satu penggunaan',
-                description: 'Hanya bisa digunakan sekali per akun',
-              ),
-            ],
+            children:
+                promotion.termsConditions.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  String term = entry.value;
+
+                  return Column(
+                    children: [
+                      _TermItem(
+                        title: term,
+                        description: _getTermDescription(term),
+                      ),
+                      if (index < promotion.termsConditions.length - 1)
+                        const Divider(height: 24, thickness: 0.5),
+                    ],
+                  );
+                }).toList(),
           ),
         ],
       ),
     );
+  }
+
+  String _getTermDescription(String term) {
+    // Buat mapping sederhana berdasarkan kata kunci
+    if (term.toLowerCase().contains('berlaku')) {
+      return 'Ketentuan waktu berlaku untuk promosi ini';
+    } else if (term.toLowerCase().contains('minimal') ||
+        term.toLowerCase().contains('transaksi')) {
+      return 'Syarat minimum transaksi yang harus dipenuhi';
+    } else if (term.toLowerCase().contains('maksimal') ||
+        term.toLowerCase().contains('diskon')) {
+      return 'Batas maksimal potongan yang bisa didapatkan';
+    } else if (term.toLowerCase().contains('tidak dapat') ||
+        term.toLowerCase().contains('digabung')) {
+      return 'Tidak bisa dikombinasikan dengan promo lainnya';
+    } else if (term.toLowerCase().contains('kuota') ||
+        term.toLowerCase().contains('terbatas')) {
+      return 'Jumlah pengguna yang bisa menggunakan promo ini terbatas';
+    } else if (term.toLowerCase().contains('cicilan') ||
+        term.toLowerCase().contains('bunga')) {
+      return 'Tersedia opsi pembayaran dengan cicilan';
+    } else if (term.toLowerCase().contains('garansi')) {
+      return 'Jaminan yang diberikan untuk produk/layanan';
+    } else {
+      return 'Ketentuan tambahan yang berlaku untuk promosi ini';
+    }
   }
 }
 
@@ -775,10 +2115,7 @@ class _TermItem extends StatefulWidget {
   final String title;
   final String description;
 
-  const _TermItem({
-    required this.title,
-    required this.description,
-  });
+  const _TermItem({required this.title, required this.description});
 
   @override
   State<_TermItem> createState() => _TermItemState();
@@ -795,11 +2132,7 @@ class _TermItemState extends State<_TermItem> {
           onTap: () => setState(() => _expanded = !_expanded),
           child: Row(
             children: [
-              Icon(
-                Icons.check_circle_rounded,
-                size: 18,
-                color: Colors.green,
-              ),
+              Icon(Icons.check_circle_rounded, size: 18, color: Colors.green),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -867,10 +2200,7 @@ class _ClaimButton extends StatelessWidget {
               SizedBox(width: 8),
               Text(
                 'KLAIM PROMO SEKARANG',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -916,7 +2246,9 @@ class _ClaimButton extends StatelessWidget {
               Text(
                 'Kode promo telah disimpan di akun Anda',
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.7),
                 ),
               ),
               const SizedBox(height: 24),
@@ -925,7 +2257,9 @@ class _ClaimButton extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: theme.primaryColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: theme.primaryColor.withOpacity(0.3)),
+                  border: Border.all(
+                    color: theme.primaryColor.withOpacity(0.3),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -939,7 +2273,7 @@ class _ClaimButton extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'RUANGGURU2024',
+                      promotion.promoCode, // Ganti dari 'RUANGGURU2024'
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -949,10 +2283,12 @@ class _ClaimButton extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Berlaku hingga 31 Des 2024',
+                      'Berlaku hingga ${_formatDate(promotion.validUntil)}', // Ganti dari 'Berlaku hingga 31 Des 2024'
                       style: TextStyle(
                         fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.6),
                       ),
                     ),
                   ],
@@ -1003,9 +2339,7 @@ class _ClaimButton extends StatelessWidget {
                       ),
                       child: const Text(
                         'Gunakan',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
