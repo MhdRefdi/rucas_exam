@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/models/exam_model.dart';
@@ -119,6 +118,7 @@ class ListExamScreen extends StatelessWidget {
                           itemBuilder:
                               (_, index) => ListExamCard(
                                 exam: examProvider.exams[index],
+                                theme: theme,
                                 actions: Align(
                                   alignment: Alignment.centerRight,
                                   child: SizedBox(
@@ -184,6 +184,7 @@ class ListExamScreen extends StatelessWidget {
                               itemBuilder:
                                   (_, index) => ListExamCard(
                                     exam: examProvider.exams[index],
+                                    theme: theme,
                                     actions: Row(
                                       children: <Widget>[
                                         Expanded(
@@ -258,8 +259,14 @@ class ListExamScreen extends StatelessWidget {
 class ListExamCard extends StatelessWidget {
   final ExamData exam;
   final Widget? actions;
+  final AppTheme theme;
 
-  const ListExamCard({super.key, required this.exam, this.actions});
+  const ListExamCard({
+    super.key,
+    required this.exam,
+    this.actions,
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -270,9 +277,14 @@ class ListExamCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: exam.banner,
+            // ClipRRect(
+            //   borderRadius: BorderRadius.circular(10),
+            //   child: exam.banner,
+            // ),
+            BannerWithLoading(
+              banner: exam.banner,
+              theme: theme,
+              borderRadius: BorderRadius.circular(theme.mediumRadius),
             ),
             SizedBox(height: 20),
             Text(
@@ -593,6 +605,12 @@ Widget _buildStartExamDialog(BuildContext context, ExamData exam) {
                         duration: Duration(seconds: 2),
                       ),
                     );
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/exam',
+                      (route) => false,
+                      arguments: exam.id,
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
@@ -614,4 +632,67 @@ Widget _buildStartExamDialog(BuildContext context, ExamData exam) {
       ),
     ),
   );
+}
+
+class BannerWithLoading extends StatelessWidget {
+  final Image banner;
+  final double? height;
+  final double? width;
+  final BorderRadius? borderRadius;
+  final AppTheme theme;
+
+  const BannerWithLoading({
+    super.key,
+    required this.banner,
+    required this.theme,
+    this.height,
+    this.width,
+    this.borderRadius,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+      future: _precacheImage(banner.image, context),
+      builder: (context, snapshot) {
+        return Container(
+          height: height,
+          width: width ?? double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            color: theme.backgroundColor.withValues(alpha: 0.3),
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              if (snapshot.connectionState == ConnectionState.done)
+                ClipRRect(
+                  borderRadius: borderRadius ?? BorderRadius.circular(0),
+                  child: banner,
+                ),
+              if (snapshot.connectionState != ConnectionState.done)
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.primaryColor, // Menggunakan primaryColor dari theme
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _precacheImage(ImageProvider image, BuildContext context) async {
+    try {
+      await precacheImage(image, context);
+    } catch (e) {
+      debugPrint('Error loading image: $e');
+    }
+  }
 }
