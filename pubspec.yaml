@@ -23,3 +23,5 @@ flutter:
     - assets/images/icon-background.png
     - assets/images/wave.svg
     - assets/banners/
+    - assets/profil.jpg
+    - assets/mailbox.png

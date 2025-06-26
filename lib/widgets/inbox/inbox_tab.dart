@@ -54,6 +54,13 @@ class InboxTab extends StatelessWidget {
                     color: Colors.black87,
                   ),
                 ),
+                onLongPress: () {
+                  // Mengaktifkan mode pemilihan saat long press
+                  provider.toggleSelectionMode();
+                  provider.toggleCheck(
+                    message,
+                  ); // Langsung pilih pesan saat long press
+                },
               );
             },
           ),
