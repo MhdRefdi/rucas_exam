@@ -10,87 +10,100 @@ class InboxScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<MessageProvider>(context);
 
-    // Warna utama biru muda
-    final Color primaryBlue = Color.fromARGB(255, 27, 135, 236); // Biru muda
-    final Color accentBlue = Color(0xFF03A9F4); // Aksen biru muda
+    final Color primaryBlue = const Color.fromARGB(255, 27, 135, 236);
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0, // Menghilangkan bayangan
-          backgroundColor: primaryBlue, // App bar warna biru
-          leading: BackButton(color: Colors.white),
-          title: Text(
-            'Kotak Masuk Saya',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(120), // tinggi custom
+          child: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/icon-background.png"),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          actions: [
-            if (provider.selectionMode)
-              IconButton(
-                icon: Icon(Icons.close, color: Colors.white),
-                onPressed: () => provider.toggleSelectionMode(),
+            child: AppBar(
+              backgroundColor: Colors.transparent, // supaya gambar kelihatan
+              elevation: 0,
+              leading: const BackButton(color: Colors.white),
+              title: const Text(
+                'Kotak Masuk Saya',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
-          ],
-          bottom: TabBar(
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            indicatorColor: Colors.white,
-            indicatorWeight: 3.0,
-            labelStyle: TextStyle(fontWeight: FontWeight.bold),
-            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
-            tabs: [
-              Tab(
-                child: FittedBox(
-                  child: Row(
-                    children: [
-                      Icon(Icons.warning_amber_rounded, size: 20),
-                      SizedBox(width: 6),
-                      Text('Peringatan'),
-                      SizedBox(width: 4),
-                      BadgeCounter(
-                        count: provider.countByCategory('Peringatan'),
+              actions: [
+                if (provider.selectionMode)
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    onPressed: () => provider.toggleSelectionMode(),
+                  ),
+              ],
+              bottom: TabBar(
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white70,
+                indicatorColor: Colors.white,
+                indicatorWeight: 3.0,
+                labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                unselectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.normal,
+                ),
+                tabs: [
+                  Tab(
+                    child: FittedBox(
+                      child: Row(
+                        children: [
+                          const Icon(Icons.warning_amber_rounded, size: 20),
+                          const SizedBox(width: 6),
+                          const Text('Peringatan'),
+                          const SizedBox(width: 4),
+                          BadgeCounter(
+                            count: provider.countByCategory('Peringatan'),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              Tab(
-                child: FittedBox(
-                  child: Row(
-                    children: [
-                      Icon(Icons.lightbulb_outline, size: 20),
-                      SizedBox(width: 6),
-                      Text('Kiat'),
-                      SizedBox(width: 4),
-                      BadgeCounter(count: provider.countByCategory('Kiat')),
-                    ],
+                  Tab(
+                    child: FittedBox(
+                      child: Row(
+                        children: [
+                          const Icon(Icons.lightbulb_outline, size: 20),
+                          const SizedBox(width: 6),
+                          const Text('Kiat'),
+                          const SizedBox(width: 4),
+                          BadgeCounter(count: provider.countByCategory('Kiat')),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Tab(
-                child: FittedBox(
-                  child: Row(
-                    children: [
-                      Icon(Icons.local_offer_outlined, size: 20),
-                      SizedBox(width: 6),
-                      Text('Tawaran'),
-                      SizedBox(width: 4),
-                      BadgeCounter(count: provider.countByCategory('Tawaran')),
-                    ],
+                  Tab(
+                    child: FittedBox(
+                      child: Row(
+                        children: [
+                          const Icon(Icons.local_offer_outlined, size: 20),
+                          const SizedBox(width: 6),
+                          const Text('Tawaran'),
+                          const SizedBox(width: 4),
+                          BadgeCounter(
+                            count: provider.countByCategory('Tawaran'),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
         body: Container(
           color: Colors.white,
-          child: TabBarView(
+          child: const TabBarView(
             children: [
               InboxTab(category: 'Peringatan'),
               InboxTab(category: 'Kiat'),
@@ -110,19 +123,23 @@ class BadgeCounter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (count == 0) return SizedBox.shrink();
+    if (count == 0) return const SizedBox.shrink();
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: Colors.redAccent,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          BoxShadow(color: Colors.black26, blurRadius: 2, offset: Offset(0, 1)),
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
         ],
       ),
       child: Text(
         '$count',
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 12,
           fontWeight: FontWeight.bold,

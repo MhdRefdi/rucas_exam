@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: const Text('Ubah Foto Profil'),
                 onTap: () {
                   Navigator.pop(context);
-                  // _pickImage(); // Jika ingin implementasi image picker
+                  // _pickImage(); // Kalau ingin implementasi image picker
                 },
               ),
               ListTile(
@@ -97,23 +97,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Profil Saya', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue,
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: _handleMenuSelection,
-            itemBuilder:
-                (context) => const [
-                  PopupMenuItem(value: 'edit', child: Text('Edit Profil')),
-                  PopupMenuItem(value: 'help', child: Text('Bantuan')),
-                  PopupMenuItem(value: 'settings', child: Text('Pengaturan')),
-                ],
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(56), // Tinggi default AppBar
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/icon-background.png"),
+              fit: BoxFit.cover,
+            ),
           ),
-        ],
-        iconTheme: const IconThemeData(color: Colors.white),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: const Text(
+              'Profil Saya',
+              style: TextStyle(color: Colors.white),
+            ),
+            actions: [
+              PopupMenuButton<String>(
+                onSelected: _handleMenuSelection,
+                itemBuilder:
+                    (context) => const [
+                      PopupMenuItem(value: 'edit', child: Text('Edit Profil')),
+                      PopupMenuItem(value: 'help', child: Text('Bantuan')),
+                      PopupMenuItem(
+                        value: 'settings',
+                        child: Text('Pengaturan'),
+                      ),
+                    ],
+              ),
+            ],
+            iconTheme: const IconThemeData(color: Colors.white),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -129,7 +148,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Stack(
                       alignment: Alignment.topRight,
                       children: [
-                        // Jika ingin pakai background dengan dekorasi
                         Container(
                           width: 100,
                           height: 100,
