@@ -64,7 +64,7 @@ class _ExamScreenState extends State<ExamScreen> {
         children: [
           // Progress indicator
           ExamProgressIndicator(
-            theme: widget.theme, 
+            theme: widget.theme,
             examProvider: examProvider,
             examLength: exam.questions.length,
           ),
@@ -134,13 +134,14 @@ class _ExamScreenState extends State<ExamScreen> {
     if (unansweredCount > 0) {
       showDialog(
         context: context,
-        builder: (context) => UnansweredQuestionsDialog(
-          theme: widget.theme,
-          unansweredCount: unansweredCount,
-          unansweredIndices: unansweredIndices,
-          examProvider: examProvider,
-          onFinish: () => _showResults(context),
-        ),
+        builder:
+            (context) => UnansweredQuestionsDialog(
+              theme: widget.theme,
+              unansweredCount: unansweredCount,
+              unansweredIndices: unansweredIndices,
+              examProvider: examProvider,
+              onFinish: () => _showResults(context),
+            ),
       );
     } else {
       _showResults(context);
@@ -156,11 +157,12 @@ class _ExamScreenState extends State<ExamScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => ExamResultsDialog(
-        theme: widget.theme,
-        results: results,
-        examProvider: examProvider,
-      ),
+      builder:
+          (context) => ExamResultsDialog(
+            theme: widget.theme,
+            results: results,
+            examProvider: examProvider,
+          ),
     );
   }
 }

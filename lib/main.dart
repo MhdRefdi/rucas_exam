@@ -4,14 +4,17 @@ import 'package:rucas_exam_project/data/promotion_data.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 import 'package:rucas_exam_project/provider/message_provider.dart';
 import 'package:rucas_exam_project/provider/page_provider.dart';
+import 'package:rucas_exam_project/provider/text_scale_provider.dart';
+import 'package:rucas_exam_project/provider/user_provider.dart';
 import 'package:rucas_exam_project/screens/ForgotPassword.dart';
 import 'package:rucas_exam_project/screens/base.dart';
 import 'package:rucas_exam_project/screens/exam.dart';
 import 'package:rucas_exam_project/screens/inbox_screen.dart';
 import 'package:rucas_exam_project/screens/list_exam.dart';
 import 'package:rucas_exam_project/screens/login.dart';
-import 'package:rucas_exam_project/screens/promotion_detail.dart';
 import 'package:rucas_exam_project/screens/register.dart';
+import 'package:rucas_exam_project/screens/promotion_detail.dart';
+import 'package:rucas_exam_project/screens/profile_screen.dart';
 
 void main() {
   runApp(
@@ -20,6 +23,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => PageProvider()),
         ChangeNotifierProvider(create: (_) => ExamProvider()),
         ChangeNotifierProvider(create: (_) => MessageProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => TextScaleProvider()),
       ],
       child: const MainApp(),
     ),
@@ -41,6 +46,7 @@ class MainApp extends StatelessWidget {
         '/notification': (context) => InboxScreen(),
         '/list-exam': (context) => ListExamScreen(),
         '/ForgotPassword': (context) => ForgotPasswordScreen(),
+        '/profile': (context) => const ProfileScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/exam') {
@@ -56,7 +62,6 @@ class MainApp extends StatelessWidget {
                     PromotionDetail(promotion: settings.arguments as Promotion),
           );
         }
-
         return null;
       },
     );

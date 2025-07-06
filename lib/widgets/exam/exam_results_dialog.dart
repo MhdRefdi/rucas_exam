@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 
-class ExamResultsDialog extends StatelessWidget {
+class ExamResultsDialog extends StatefulWidget {
   final AppTheme theme;
   final Map<String, dynamic> results;
   final ExamProvider examProvider;
@@ -15,62 +15,117 @@ class ExamResultsDialog extends StatelessWidget {
   });
 
   @override
+  State<ExamResultsDialog> createState() => _ExamResultsDialogState();
+}
+
+class _ExamResultsDialogState extends State<ExamResultsDialog> {
+  double _rating = 5;
+  double _difficulty = 5;
+  final TextEditingController _commentController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
-    final correct = results['correct'] ?? 0;
-    final total = results['total'] ?? 0;
-    final percentage = results['percentage'] ?? 0.0;
+    final correct = widget.results['correct'] ?? 0;
+    final total = widget.results['total'] ?? 0;
+    final percentage = widget.results['percentage'] ?? 0.0;
 
     return AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(theme.mediumRadius),
+        borderRadius: BorderRadius.circular(widget.theme.mediumRadius),
       ),
-      backgroundColor: theme.defaultColor,
+      backgroundColor: widget.theme.defaultColor,
       title: Text(
         'Hasil Ujian',
         style: TextStyle(
-          color: theme.primaryColor,
+          color: widget.theme.primaryColor,
           fontWeight: FontWeight.bold,
         ),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildScoreCircle(percentage),
-          SizedBox(height: theme.mediumSpace),
-          Text(
-            'Jawaban benar: $correct dari $total',
-            style: TextStyle(fontSize: 18, color: theme.textColor),
-          ),
-          SizedBox(height: theme.mediumSpace),
-          Text(
-            _getFeedbackMessage(percentage),
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: theme.textColor,
-              fontWeight: FontWeight.w500,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildScoreCircle(percentage),
+            const SizedBox(height: 16),
+            Text(
+              'Jawaban benar: $correct dari $total',
+              style: TextStyle(fontSize: 18, color: widget.theme.textColor),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            Text(
+              _getFeedbackMessage(percentage),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: widget.theme.textColor,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Divider(color: widget.theme.textColor.withOpacity(0.3)),
+            const SizedBox(height: 12),
+
+            // Feedback UI
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Feedback Ujian',
+                style: TextStyle(
+                  color: widget.theme.textColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            _buildSlider(
+              label: 'Kepuasan (1–10)',
+              value: _rating,
+              onChanged: (v) => setState(() => _rating = v),
+            ),
+            const SizedBox(height: 8),
+
+            _buildSlider(
+              label: 'Tingkat Kesulitan (1–10)',
+              value: _difficulty,
+              onChanged: (v) => setState(() => _difficulty = v),
+            ),
+            const SizedBox(height: 12),
+
+            TextField(
+              controller: _commentController,
+              maxLines: 2,
+              decoration: InputDecoration(
+                labelText: 'Komentar (opsional)',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
       ),
       actions: [
         ElevatedButton.icon(
           onPressed: () {
             Navigator.pop(context);
-            examProvider.reviewMode();
+            widget.examProvider.reviewMode();
           },
           icon: const Icon(Icons.visibility),
           label: const Text('Review Jawaban'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: theme.backgroundColor,
-            foregroundColor: theme.textColor,
+            backgroundColor: widget.theme.backgroundColor,
+            foregroundColor: widget.theme.textColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(theme.mediumRadius),
+              borderRadius: BorderRadius.circular(widget.theme.mediumRadius),
             ),
           ),
         ),
         ElevatedButton.icon(
           onPressed: () {
-            examProvider.resetExam();
+            // Dummy handling
+            debugPrint('Rating: $_rating');
+            debugPrint('Difficulty: $_difficulty');
+            debugPrint('Comment: ${_commentController.text}');
+
+            widget.examProvider.resetExam();
             Navigator.pushNamedAndRemoveUntil(
               context,
               '/home',
@@ -78,12 +133,12 @@ class ExamResultsDialog extends StatelessWidget {
             );
           },
           icon: const Icon(Icons.home),
-          label: const Text('Kembali ke Home'),
+          label: const Text('Simpan & Kembali'),
           style: ElevatedButton.styleFrom(
-            backgroundColor: theme.primaryColor,
-            foregroundColor: theme.defaultColor,
+            backgroundColor: widget.theme.primaryColor,
+            foregroundColor: widget.theme.defaultColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(theme.mediumRadius),
+              borderRadius: BorderRadius.circular(widget.theme.mediumRadius),
             ),
           ),
         ),
@@ -92,21 +147,19 @@ class ExamResultsDialog extends StatelessWidget {
   }
 
   Widget _buildScoreCircle(double percentage) {
-    Color circleColor = percentage >= 70
-        ? Colors.green
-        : percentage >= 50
+    Color circleColor =
+        percentage >= 70
+            ? Colors.green
+            : percentage >= 50
             ? Colors.amber
             : Colors.red;
 
     return Container(
-      padding: EdgeInsets.all(theme.largeSpace),
+      padding: EdgeInsets.all(widget.theme.largeSpace),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: circleColor.withOpacity(0.1),
-        border: Border.all(
-          color: circleColor,
-          width: 3,
-        ),
+        border: Border.all(color: circleColor, width: 3),
       ),
       child: Text(
         '${percentage.toStringAsFixed(0)}%',
@@ -116,6 +169,28 @@ class ExamResultsDialog extends StatelessWidget {
           color: circleColor,
         ),
       ),
+    );
+  }
+
+  Widget _buildSlider({
+    required String label,
+    required double value,
+    required Function(double) onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(color: widget.theme.textColor)),
+        Slider(
+          value: value,
+          min: 1,
+          max: 10,
+          divisions: 9,
+          label: value.toStringAsFixed(0),
+          activeColor: widget.theme.primaryColor,
+          onChanged: onChanged,
+        ),
+      ],
     );
   }
 

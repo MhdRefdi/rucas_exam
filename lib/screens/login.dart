@@ -18,7 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    // default color before focus
     _focusNode.addListener(() {
       setState(() {});
     });
@@ -31,6 +30,25 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final message = ModalRoute.of(context)?.settings.arguments as String?;
+    if (message != null && message.isNotEmpty) {
+      Future.microtask(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = widget.theme;
 
@@ -38,13 +56,18 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/icon-background.png'), fit: BoxFit.cover)),
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/icon-background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Column(
           children: [
             Container(
               width: double.infinity,
               height: 300,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: Svg('assets/images/wave.svg'),
                   alignment: Alignment.bottomCenter,
@@ -53,15 +76,30 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.fromLTRB(theme.mediumSpace, 80, theme.mediumSpace, 0),
-                child: Text("Selamat Datang\nKembali", style: TextStyle(color: theme.defaultColor, fontSize: 25, fontWeight: FontWeight.bold)),
+                padding: EdgeInsets.fromLTRB(
+                  theme.mediumSpace,
+                  80,
+                  theme.mediumSpace,
+                  0,
+                ),
+                child: Text(
+                  "Selamat Datang\nKembali",
+                  style: TextStyle(
+                    color: theme.defaultColor,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
             Expanded(
               child: Container(
                 width: double.infinity,
                 color: theme.defaultColor,
-                child: Padding(padding: EdgeInsets.symmetric(horizontal: theme.mediumSpace), child: LoginForm()),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: theme.mediumSpace),
+                  child: const LoginForm(),
+                ),
               ),
             ),
           ],
