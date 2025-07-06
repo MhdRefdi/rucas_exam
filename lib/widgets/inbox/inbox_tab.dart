@@ -18,7 +18,11 @@ class InboxTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/mailbox.png', height: 180),
+            Icon(
+              Icons.inbox,
+              size: 80,
+              color: Colors.grey[400],
+            ),
             SizedBox(height: 20),
             Text(
               'Selesai! Anda tidak memiliki pesan baru.',
