@@ -204,7 +204,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
           color: Colors.blue,
@@ -282,11 +282,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _buildSectionHeader('LAINNYA', context),
                 ListTile(
                   leading: const Icon(Icons.exit_to_app, color: Colors.red),
-                  title: const Text(
-                    'Keluar',
-                    style: TextStyle(color: Colors.red),
+                  title: GestureDetector(
+                    onTap: () => _showLogoutConfirmation(context),
+                    child: const Text(
+                      'Keluar',
+                      style: TextStyle(color: Colors.red),
+                    ),
                   ),
-                  onTap: () => _showLogoutConfirmation(context),
                 ),
                 const SizedBox(height: 32),
                 const Center(
