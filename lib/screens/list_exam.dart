@@ -22,7 +22,7 @@ class ListExamScreen extends StatelessWidget {
                 height: 130,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage("images/icon-background.png"),
+                    image: AssetImage("assets/images/icon-background.png"),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.only(
@@ -172,7 +172,7 @@ class ListExamScreen extends StatelessWidget {
                                       onTap: () {},
                                       child: Image(
                                         fit: BoxFit.fill,
-                                        image: AssetImage("banners/1.png"),
+                                        image: AssetImage("assets/banners/1.png"),
                                       ),
                                     ),
                                   ),

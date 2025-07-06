@@ -43,7 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _imageFile = null; // Clear the image from state
                   });
                   context.read<UserProvider>().updateUserPartial(
-                    imageUrl: 'assets/profil.jpg', // Reset to default image
+                    imageUrl: 'assets/images/profil.jpg', // Reset to default image
                   );
                 },
               ),
@@ -117,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ? (user.imageUrl!.startsWith('assets/')
                                           ? AssetImage(user.imageUrl!)
                                           : FileImage(File(user.imageUrl!)))
-                                      : const AssetImage('assets/profil.jpg')),
+                                      : const AssetImage('assets/images/profil.jpg')),
                         ),
                         Positioned(
                           right: 0,
