@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: const Text('Ubah Foto Profil'),
                 onTap: () {
                   Navigator.pop(context);
-                  // _pickImage(); // Kalau mau implementasi picker
+                  // _pickImage(); // Jika ingin implementasi image picker
                 },
               ),
               ListTile(
@@ -43,8 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _imageFile = null;
                   });
                   context.read<UserProvider>().updateUserPartial(
-                    imageUrl:
-                        'assets/images/profil.jpg', // Reset to default image
+                    imageUrl: 'assets/images/profil.jpg', // default
                   );
                 },
               ),
@@ -130,19 +129,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Stack(
                       alignment: Alignment.topRight,
                       children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage:
-                              _imageFile != null
-                                  ? FileImage(_imageFile!) as ImageProvider
-                                  : (user.imageUrl != null &&
-                                          user.imageUrl!.isNotEmpty
-                                      ? (user.imageUrl!.startsWith('assets/')
-                                          ? AssetImage(user.imageUrl!)
-                                          : FileImage(File(user.imageUrl!)))
+                        // Jika ingin pakai background dengan dekorasi
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image:
+                                  _imageFile != null
+                                      ? FileImage(_imageFile!)
                                       : const AssetImage(
-                                        'assets/images/profil.jpg',
-                                      )),
+                                            "assets/images/profil.jpg",
+                                          )
+                                          as ImageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                         Positioned(
                           right: 0,
