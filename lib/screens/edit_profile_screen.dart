@@ -18,6 +18,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late String location;
   late String bio;
 
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -27,6 +29,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     phone = user.phone;
     location = user.location ?? '';
     bio = user.bio ?? '';
+  }
+
+  Future<void> _saveProfile() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder:
+            (context) => AlertDialog(
+              content: Row(
+                children: const [
+                  CircularProgressIndicator(),
+                  SizedBox(width: 20),
+                  Text('Menyimpan...'),
+                ],
+              ),
+            ),
+      );
+
+      await Future.delayed(const Duration(seconds: 2));
+
+      context.read<UserProvider>().updateUser(
+        UserModel(
+          name: name,
+          email: email,
+          phone: phone,
+          location: location,
+          bio: bio,
+          imageUrl: context.read<UserProvider>().user.imageUrl,
+        ),
+      );
+
+      Navigator.pop(context); // Tutup dialog loading
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      // ✅ Tampilkan snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Data berhasil diubah'),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+      Navigator.pop(context); // Kembali ke layar sebelumnya
+    }
   }
 
   @override
@@ -54,17 +111,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             : null,
               ),
               const SizedBox(height: 10),
-              // Disable editing the email field
               TextFormField(
                 initialValue: email,
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  suffixIcon: Icon(
-                    Icons.lock,
-                    color: Colors.grey,
-                  ), // Indicates it's locked
+                  suffixIcon: Icon(Icons.lock, color: Colors.grey),
                 ),
-                enabled: false, // Disables the email field
+                enabled: false,
                 onSaved: (val) => email = val!,
                 validator:
                     (val) =>
@@ -73,17 +126,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             : null,
               ),
               const SizedBox(height: 10),
-              // Disable editing the phone number field
               TextFormField(
                 initialValue: phone,
                 decoration: const InputDecoration(
                   labelText: 'Nomor HP',
-                  suffixIcon: Icon(
-                    Icons.lock,
-                    color: Colors.grey,
-                  ), // Indicates it's locked
+                  suffixIcon: Icon(Icons.lock, color: Colors.grey),
                 ),
-                enabled: false, // Disables the phone number field
+                enabled: false,
                 onSaved: (val) => phone = val!,
                 validator:
                     (val) =>
@@ -105,22 +154,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-                    context.read<UserProvider>().updateUser(
-                      UserModel(
-                        name: name,
-                        email: email, // Email remains unchanged
-                        phone: phone, // Phone remains unchanged
-                        location: location,
-                        bio: bio,
-                        imageUrl: context.read<UserProvider>().user.imageUrl,
-                      ),
-                    );
-                    Navigator.pop(context);
-                  }
-                },
+                onPressed: _isLoading ? null : _saveProfile,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue[700],
                   foregroundColor: Colors.white,

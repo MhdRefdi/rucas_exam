@@ -45,53 +45,51 @@ class InboxScreen extends StatelessWidget {
             unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
             tabs: [
               Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.warning_amber_rounded, size: 20),
-                    SizedBox(width: 6),
-                    Text('Peringatan'),
-                    SizedBox(width: 4),
-                    BadgeCounter(count: provider.countByCategory('Peringatan')),
-                  ],
+                child: FittedBox(
+                  child: Row(
+                    children: [
+                      Icon(Icons.warning_amber_rounded, size: 20),
+                      SizedBox(width: 6),
+                      Text('Peringatan'),
+                      SizedBox(width: 4),
+                      BadgeCounter(
+                        count: provider.countByCategory('Peringatan'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.lightbulb_outline, size: 20),
-                    SizedBox(width: 6),
-                    Text('Kiat'),
-                    SizedBox(width: 4),
-                    BadgeCounter(count: provider.countByCategory('Kiat')),
-                  ],
+                child: FittedBox(
+                  child: Row(
+                    children: [
+                      Icon(Icons.lightbulb_outline, size: 20),
+                      SizedBox(width: 6),
+                      Text('Kiat'),
+                      SizedBox(width: 4),
+                      BadgeCounter(count: provider.countByCategory('Kiat')),
+                    ],
+                  ),
                 ),
               ),
               Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.local_offer_outlined, size: 20),
-                    SizedBox(width: 6),
-                    Text('Tawaran'),
-                    SizedBox(width: 4),
-                    BadgeCounter(count: provider.countByCategory('Tawaran')),
-                  ],
+                child: FittedBox(
+                  child: Row(
+                    children: [
+                      Icon(Icons.local_offer_outlined, size: 20),
+                      SizedBox(width: 6),
+                      Text('Tawaran'),
+                      SizedBox(width: 4),
+                      BadgeCounter(count: provider.countByCategory('Tawaran')),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ),
         body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [primaryBlue.withOpacity(0.05), Colors.white],
-              stops: [0.0, 0.3],
-            ),
-          ),
+          color: Colors.white,
           child: TabBarView(
             children: [
               InboxTab(category: 'Peringatan'),

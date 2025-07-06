@@ -2,9 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/provider/user_provider.dart';
-import 'package:rucas_exam_project/screens/setting_screen.dart';
 import 'package:rucas_exam_project/widgets/profil/profile_item.dart';
 import 'edit_profile_screen.dart';
+import 'setting_screen.dart';
+import 'help_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -16,7 +17,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   File? _imageFile;
 
-  // Show options for changing or deleting the profile picture
   void _showPhotoOptions() {
     showDialog(
       context: context,
@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: const Text('Ubah Foto Profil'),
                 onTap: () {
                   Navigator.pop(context);
-                  // _pickImage(); // Uncomment to enable picking image from gallery
+                  // _pickImage(); // Kalau mau implementasi picker
                 },
               ),
               ListTile(
@@ -40,10 +40,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onTap: () {
                   Navigator.pop(context);
                   setState(() {
-                    _imageFile = null; // Clear the image from state
+                    _imageFile = null;
                   });
                   context.read<UserProvider>().updateUserPartial(
-                    imageUrl: 'assets/profil.jpg', // Reset to default image
+                    imageUrl: 'assets/profil.jpg',
                   );
                 },
               ),
@@ -54,22 +54,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // Handle menu item selection
   void _handleMenuSelection(String value) {
     if (value == 'edit') {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const EditProfileScreen()),
       );
-    } else if (value == 'activity' || value == 'settings' || value == 'help') {
-      if (value == 'settings') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const SettingsScreen(),
-          ), // Navigate to settings
-        );
-      }
+    } else if (value == 'settings') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const SettingsScreen()),
+      );
+    } else if (value == 'help') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const HelpScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Fitur "${_getFeatureName(value)}" belum bisa digunakan.',
+          ),
+          backgroundColor: Colors.orange,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  String _getFeatureName(String key) {
+    switch (key) {
+      case 'help':
+        return 'Bantuan';
+      case 'settings':
+        return 'Pengaturan';
+      default:
+        return 'Fitur';
     }
   }
 
@@ -87,6 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             itemBuilder:
                 (context) => const [
                   PopupMenuItem(value: 'edit', child: Text('Edit Profil')),
+                  PopupMenuItem(value: 'help', child: Text('Bantuan')),
                   PopupMenuItem(value: 'settings', child: Text('Pengaturan')),
                 ],
           ),

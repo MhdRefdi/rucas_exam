@@ -192,6 +192,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  // Helper method to build section headers
   Widget _buildSectionHeader(String title) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
