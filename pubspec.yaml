@@ -20,6 +20,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/icon-background.png
-    - assets/images/wave.svg
+    - assets/images/
     - assets/banners/

@@ -21,7 +21,7 @@ class Promotion {
 final List<Promotion> promotions = [
   Promotion(
     id: 'promo1',
-    imagePath: 'banners/th2.jpeg',
+    imagePath: 'assets/banners/th2.jpeg',
     title: 'PROMO HUT BRI x Ruangguru!',
     description:
         '🎉 SPESIAL ULANG TAHUN BRI 🎉\n\n'
@@ -56,7 +56,7 @@ final List<Promotion> promotions = [
   ),
   Promotion(
     id: 'promo2',
-    imagePath: 'banners/1.png',
+    imagePath: 'assets/banners/1.png',
     title: 'Brain Academy: Bimbel TER TER TER!',
     description:
         '✨ BRAIN ACADEMY: REVOLUSI CARA BELAJAR ✨\n\n'
@@ -99,7 +99,7 @@ final List<Promotion> promotions = [
   ),
   Promotion(
     id: 'promo3',
-    imagePath: 'banners/2.png',
+    imagePath: 'assets/banners/2.png',
     title: 'Belajar Bareng Idola Favoritmu!',
     description:
         '🤩 INSPIRASI BELAJAR DARI PARA BINTANG 🤩\n\n'
@@ -143,7 +143,7 @@ final List<Promotion> promotions = [
   ),
   Promotion(
     id: 'promo4',
-    imagePath: 'banners/4.png',
+    imagePath: 'assets/banners/4.png',
     title: 'Fitur Video Belajar Baru di Ruangguru!',
     description:
         '🎬 REVOLUSI BELAJAR VISUAL TELAH TIBA! 🎬\n\n'
@@ -192,7 +192,7 @@ final List<Promotion> promotions = [
   ),
   Promotion(
     id: 'promo5',
-    imagePath: 'banners/th.jpg',
+    imagePath: 'assets/banners/th.jpg',
     title: 'Promo GILA-GILAAN 55% OFF!',
     description:
         '💥 DISKON DAHSYAT YANG TIDAK MASUK AKAL! 💥\n\n'
@@ -248,7 +248,7 @@ final List<Promotion> promotions = [
   ),
   Promotion(
     id: 'promo6',
-    imagePath: 'banners/th1.jpg',
+    imagePath: 'assets/banners/th1.jpg',
     title: 'Paket Super Intensif SIMAK UI!',
     description:
         '🎓 JAMINAN LOLOS SIMAK UI 2025! 🎓\n\n'
