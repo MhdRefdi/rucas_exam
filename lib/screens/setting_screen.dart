@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/provider/text_scale_provider.dart';
-import 'package:rucas_exam_project/screens/login.dart';
+import 'login.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -37,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 child: const Text("Keluar"),
                 onPressed: () async {
-                  Navigator.pop(context); // Tutup dialog konfirmasi
+                  Navigator.pop(context);
 
                   showDialog(
                     context: context,
@@ -51,7 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   await Future.delayed(const Duration(seconds: 2));
 
                   if (context.mounted) {
-                    Navigator.pop(context); // Tutup loading
+                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -74,23 +74,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     showModalBottomSheet(
       context: context,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (_) => Container(
+          (_) => Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'Pilih Bahasa',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 ...languages.map(
                   (lang) => ListTile(
-                    title: Text(lang),
+                    title: Text(
+                      lang,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
+                    ),
                     trailing:
                         _selectedLanguage == lang
                             ? const Icon(Icons.check, color: Colors.blue)
@@ -128,8 +138,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SizedBox(
-                        width: 100, // atur lebar tetap
-                        height: 50, // atur tinggi tetap
+                        width: 100,
+                        height: 50,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
@@ -155,9 +165,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   actions: [
                     TextButton(
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.grey[600], // teks abu gelap
-                        backgroundColor:
-                            Colors.grey[300], // background abu terang
+                        foregroundColor: Colors.grey[600],
+                        backgroundColor: Colors.grey[300],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -167,14 +176,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.blue, // teks biru
-                        backgroundColor: Colors.white, // latar putih
+                        foregroundColor: Colors.blue,
+                        backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        side: const BorderSide(
-                          color: Colors.blue,
-                        ), // border biru
+                        side: const BorderSide(color: Colors.blue),
                         elevation: 0,
                       ),
                       onPressed: () {
@@ -192,13 +199,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  // Helper method to build section headers
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(String title, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
           color: Colors.blue,
@@ -207,8 +213,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildDivider() {
-    return const Divider(height: 1, indent: 16, endIndent: 16);
+  Widget _buildDivider(BuildContext context) {
+    return Divider(
+      height: 1,
+      indent: 16,
+      endIndent: 16,
+      color: Theme.of(context).dividerColor,
+    );
   }
 
   @override
@@ -216,80 +227,79 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final textScale = Provider.of<TextScaleProvider>(context).scale;
 
     return Theme(
-      data:
-          _darkMode
-              ? ThemeData.dark().copyWith(
-                appBarTheme: const AppBarTheme(elevation: 0, centerTitle: true),
-              )
-              : ThemeData.light().copyWith(
-                appBarTheme: const AppBarTheme(elevation: 0, centerTitle: true),
+      data: _darkMode ? ThemeData.dark() : ThemeData.light(),
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: const Color(0xFF2196F3),
+              elevation: 0,
+              centerTitle: true,
+              title: const Text(
+                'Pengaturan',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF2196F3),
-          elevation: 0,
-          centerTitle: true,
-          title: const Text(
-            'Pengaturan',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          iconTheme: const IconThemeData(color: Colors.white),
-        ),
-        body: ListView(
-          children: [
-            _buildSectionHeader('APLIKASI'),
-            SwitchListTile(
-              secondary: Icon(
-                _darkMode ? Icons.dark_mode : Icons.light_mode,
-                color: _darkMode ? Colors.amber : Colors.amber[700],
-              ),
-              title: const Text('Mode Gelap'),
-              subtitle: Text(_darkMode ? 'Aktif' : 'Tidak aktif'),
-              value: _darkMode,
-              activeColor: Colors.blue,
-              onChanged: (value) {
-                setState(() => _darkMode = value);
-              },
+              iconTheme: const IconThemeData(color: Colors.white),
             ),
-            ListTile(
-              leading: const Icon(Icons.language),
-              title: const Text('Bahasa'),
-              subtitle: Text(_selectedLanguage),
-              onTap: () => _showLanguageSelector(context),
+            body: ListView(
+              children: [
+                _buildSectionHeader('APLIKASI', context),
+                SwitchListTile(
+                  secondary: Icon(
+                    _darkMode ? Icons.dark_mode : Icons.light_mode,
+                    color: _darkMode ? Colors.amber : Colors.amber[700],
+                  ),
+                  title: const Text('Mode Gelap'),
+                  subtitle: Text(_darkMode ? 'Aktif' : 'Tidak aktif'),
+                  value: _darkMode,
+                  activeColor: Colors.blue,
+                  onChanged: (value) => setState(() => _darkMode = value),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.language),
+                  title: const Text('Bahasa'),
+                  subtitle: Text(_selectedLanguage),
+                  onTap: () => _showLanguageSelector(context),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.text_fields),
+                  title: const Text('Ukuran Teks'),
+                  subtitle: Text('Skala: ${textScale.toStringAsFixed(2)}x'),
+                  onTap: () => _showTextSizeSelector(context),
+                ),
+                SwitchListTile(
+                  secondary: const Icon(Icons.notifications),
+                  title: const Text('Notifikasi'),
+                  subtitle: Text(_notifications ? 'Aktif' : 'Tidak aktif'),
+                  value: _notifications,
+                  activeColor: Colors.blue,
+                  onChanged: (value) => setState(() => _notifications = value),
+                ),
+                _buildDivider(context),
+                _buildSectionHeader('LAINNYA', context),
+                ListTile(
+                  leading: const Icon(Icons.exit_to_app, color: Colors.red),
+                  title: const Text(
+                    'Keluar',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onTap: () => _showLogoutConfirmation(context),
+                ),
+                const SizedBox(height: 32),
+                const Center(
+                  child: Text(
+                    'Versi 1.0.0',
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.text_fields),
-              title: const Text('Ukuran Teks'),
-              subtitle: Text('Skala: ${textScale.toStringAsFixed(2)}x'),
-              onTap: () => _showTextSizeSelector(context),
-            ),
-            SwitchListTile(
-              secondary: const Icon(Icons.notifications),
-              title: const Text('Notifikasi'),
-              subtitle: Text(_notifications ? 'Aktif' : 'Tidak aktif'),
-              value: _notifications,
-              activeColor: Colors.blue,
-              onChanged: (value) {
-                setState(() => _notifications = value);
-              },
-            ),
-            _buildDivider(),
-            _buildSectionHeader('LAINNYA'),
-            ListTile(
-              leading: const Icon(Icons.exit_to_app, color: Colors.red),
-              title: const Text('Keluar', style: TextStyle(color: Colors.red)),
-              onTap: () => _showLogoutConfirmation(context),
-            ),
-            const SizedBox(height: 32),
-            const Center(
-              child: Text(
-                'Versi 1.0.0',
-                style: TextStyle(color: Colors.grey, fontSize: 12),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
