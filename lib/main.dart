@@ -7,8 +7,8 @@ import 'package:rucas_exam_project/provider/page_provider.dart';
 import 'package:rucas_exam_project/provider/text_scale_provider.dart';
 import 'package:rucas_exam_project/provider/user_provider.dart';
 import 'package:rucas_exam_project/screens/ForgotPassword.dart';
-import 'package:rucas_exam_project/screens/base.dart';
 import 'package:rucas_exam_project/screens/exam.dart';
+import 'package:rucas_exam_project/screens/home.dart';
 import 'package:rucas_exam_project/screens/inbox_screen.dart';
 import 'package:rucas_exam_project/screens/list_exam.dart';
 import 'package:rucas_exam_project/screens/login.dart';
@@ -40,7 +40,7 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/login',
       routes: {
-        '/home': (context) => BaseScreen(),
+        '/home': (context) => const HomeScreen(),
         '/register': (context) => const RegisterScreen(),
         '/login': (context) => const LoginScreen(),
         '/notification': (context) => InboxScreen(),

@@ -85,7 +85,7 @@ class ListExamScreen extends StatelessWidget {
                       left: 0,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamed('/home');
+                          Navigator.of(context).pushReplacementNamed('/home');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.defaultColor,
