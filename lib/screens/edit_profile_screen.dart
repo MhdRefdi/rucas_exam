@@ -21,6 +21,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late String phone;
   late String location;
   late String bio;
+  String? _imagePath;
   File? _selectedImage;
 
   bool _isLoading = false;
@@ -34,6 +35,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     phone = user.phone;
     location = user.location ?? '';
     bio = user.bio ?? '';
+    _imagePath = user.imageUrl;
+    if (_imagePath != null && _imagePath!.isNotEmpty) {
+      _selectedImage = File(_imagePath!);
+    }
   }
 
   Future<void> _pickImage() async {
@@ -126,7 +131,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _getImage(ImageSource source) async {
     Navigator.pop(context); // Tutup bottom sheet
-
     try {
       final XFile? image = await _picker.pickImage(
         source: source,
@@ -138,6 +142,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (image != null) {
         setState(() {
           _selectedImage = File(image.path);
+          _imagePath = image.path;
         });
       }
     } catch (e) {
@@ -154,6 +159,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     Navigator.pop(context);
     setState(() {
       _selectedImage = null;
+      _imagePath = null;
     });
   }
 
@@ -230,20 +236,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
       );
 
-      // Simulasi delay
       await Future.delayed(const Duration(seconds: 2));
 
-      String? newImageUrl = _selectedImage?.path;
-
-      context.read<UserProvider>().updateUser(
-        UserModel(
-          name: name,
-          email: email,
-          phone: phone,
-          location: location,
-          bio: bio,
-          imageUrl: newImageUrl,
-        ),
+      // Update via Provider
+      context.read<UserProvider>().updateUserPartial(
+        name: name,
+        location: location,
+        bio: bio,
+        imageUrl: _imagePath,
       );
 
       Navigator.pop(context); // Tutup dialog loading

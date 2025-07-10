@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/provider/user_provider.dart';
-import 'package:rucas_exam_project/widgets/profil/profile_item.dart';
 import 'edit_profile_screen.dart';
 import 'setting_screen.dart';
 import 'help_screen.dart';
@@ -15,8 +14,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  File? _imageFile;
-
   void _handleMenuSelection(String value) {
     if (value == 'edit') {
       Navigator.push(
@@ -64,6 +61,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
+
+    // Cek apakah ada imageUrl
+    ImageProvider imageProvider;
+    if (user.imageUrl != null && user.imageUrl!.isNotEmpty) {
+      imageProvider = FileImage(File(user.imageUrl!));
+    } else {
+      imageProvider = const AssetImage("assets/images/profil.jpg");
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -137,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
               child: Column(
                 children: [
-                  // Profile Picture (tidak bisa diklik lagi)
+                  // Profile Picture
                   Container(
                     width: 120,
                     height: 120,
@@ -154,11 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: CircleAvatar(
                       radius: 56,
-                      backgroundImage:
-                          _imageFile != null
-                              ? FileImage(_imageFile!)
-                              : const AssetImage("assets/images/profil.jpg")
-                                  as ImageProvider,
+                      backgroundImage: imageProvider,
                     ),
                   ),
                   const SizedBox(height: 20),
