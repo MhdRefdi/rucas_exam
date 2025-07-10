@@ -26,10 +26,9 @@ class ExamSection extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
+                Navigator.pushNamed(
                   context,
                   '/list-exam',
-                  (route) => false,
                 );
               },
               child: Text(
