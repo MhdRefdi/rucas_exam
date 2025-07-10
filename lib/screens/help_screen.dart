@@ -4,11 +4,19 @@ import 'package:url_launcher/url_launcher.dart';
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
 
-  // Buka pub.dev
+  // Buka pub.dev (menggunakan 5 properti)
   Future<void> _launchPubDev() async {
     final url = Uri.parse('https://pub.dev/packages/url_launcher');
     if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
+      await launchUrl(
+        url,
+        mode: LaunchMode.inAppWebView,
+        webViewConfiguration: const WebViewConfiguration(
+          enableJavaScript: true,
+          enableDomStorage: true,
+        ),
+        webOnlyWindowName: '_blank',
+      );
     } else {
       throw 'Tidak dapat membuka URL: $url';
     }
@@ -62,7 +70,6 @@ class HelpScreen extends StatelessWidget {
     if (await canLaunchUrl(emailUri)) {
       await launchUrl(emailUri, mode: LaunchMode.externalApplication);
     } else {
-      // Fallback: pakai Gmail via browser
       final gmailUrl = Uri.parse(
         'https://mail.google.com/mail/?view=cm&fs=1&to=febiantonurihsan@gmail.com&su=Butuh%20Bantuan&body=Halo,%20saya%20membutuhkan%20bantuan%20terkait%20aplikasi%20ini.',
       );
@@ -176,7 +183,6 @@ class HelpScreen extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // Contact Options
             _buildContactCard(
               icon: Icons.chat_bubble,
               title: 'WhatsApp',
@@ -209,9 +215,15 @@ class HelpScreen extends StatelessWidget {
               iconColor: Colors.red,
             ),
 
+            // _buildContactCard(
+            //   icon: Icons.web,
+            //   title: 'Kunjungi pub.dev',
+            //   subtitle: 'Lihat package url_launcher di pub.dev',
+            //   onTap: _launchPubDev,
+            //   iconColor: Colors.purple,
+            // ),
             const SizedBox(height: 24),
 
-            // Info Box
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
