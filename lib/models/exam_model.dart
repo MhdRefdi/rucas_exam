@@ -8,7 +8,7 @@ class ExamData {
   final String time;
   final List<Question> questions;
   final Icon icon;
-  final Image banner;
+  final String imagePath;
   final String? description;
   final int? duration;
   final int? totalQuestions;
@@ -19,7 +19,7 @@ class ExamData {
     required this.date,
     required this.time,
     required this.icon,
-    required this.banner,
+    required this.imagePath,
     required this.questions,
     required this.description,
     required this.duration,

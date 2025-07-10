@@ -284,7 +284,7 @@ class ListExamCard extends StatelessWidget {
             //   child: exam.banner,
             // ),
             BannerWithLoading(
-              banner: exam.banner,
+              banner: exam.imagePath,
               theme: theme,
               borderRadius: BorderRadius.circular(theme.mediumRadius),
             ),
@@ -396,7 +396,7 @@ class ExamDetailBottomSheet extends StatelessWidget {
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: exam.banner,
+                  child: Image.asset(exam.imagePath, fit: BoxFit.cover),
                 ),
                 SizedBox(height: 24),
                 Text(
@@ -637,7 +637,7 @@ Widget _buildStartExamDialog(BuildContext context, ExamData exam) {
 }
 
 class BannerWithLoading extends StatelessWidget {
-  final Image banner;
+  final String banner; // ubah jadi String
   final double? height;
   final double? width;
   final BorderRadius? borderRadius;
@@ -654,15 +654,17 @@ class BannerWithLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageWidget = Image.asset(banner, fit: BoxFit.cover);
+
     return FutureBuilder<void>(
-      future: _precacheImage(banner.image, context),
+      future: _precacheImage(imageWidget.image, context),
       builder: (context, snapshot) {
         return Container(
           height: height,
           width: width ?? double.infinity,
           decoration: BoxDecoration(
             borderRadius: borderRadius,
-            color: theme.backgroundColor.withValues(alpha: 0.3),
+            color: theme.backgroundColor.withAlpha(30),
           ),
           child: Stack(
             alignment: Alignment.center,
@@ -670,7 +672,7 @@ class BannerWithLoading extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.done)
                 ClipRRect(
                   borderRadius: borderRadius ?? BorderRadius.circular(0),
-                  child: banner,
+                  child: imageWidget,
                 ),
               if (snapshot.connectionState != ConnectionState.done)
                 SizedBox(
@@ -679,7 +681,7 @@ class BannerWithLoading extends StatelessWidget {
                   child: CircularProgressIndicator(
                     strokeWidth: 2.5,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      theme.primaryColor, // Menggunakan primaryColor dari theme
+                      theme.primaryColor,
                     ),
                   ),
                 ),

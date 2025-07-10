@@ -12,6 +12,7 @@ dependencies:
   flutter_svg_provider: ^1.0.7
   provider: ^6.1.4
   url_launcher: ^6.2.5
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +24,4 @@ flutter:
   assets:
     - assets/images/
     - assets/banners/
+    - assets/exam/
