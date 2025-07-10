@@ -35,10 +35,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     phone = user.phone;
     location = user.location ?? '';
     bio = user.bio ?? '';
-    _imagePath = user.imageUrl;
-    if (_imagePath != null && _imagePath!.isNotEmpty) {
-      _selectedImage = File(_imagePath!);
-    }
   }
 
   Future<void> _pickImage() async {
@@ -169,11 +165,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         CircleAvatar(
           radius: 50,
           backgroundColor: Colors.grey[300],
-          backgroundImage:
-              _selectedImage != null
-                  ? FileImage(_selectedImage!)
-                  : const AssetImage('assets/images/profil.jpg')
-                      as ImageProvider,
+          backgroundImage: _selectedImage != null ? FileImage(_selectedImage!) : Image.asset('assets/images/profil.jpg').image,
         ),
         Positioned(
           bottom: 0,
