@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:rucas_exam_project/data/promotion_data.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 import 'package:rucas_exam_project/provider/message_provider.dart';
@@ -7,7 +8,6 @@ import 'package:rucas_exam_project/provider/page_provider.dart';
 import 'package:rucas_exam_project/provider/text_scale_provider.dart';
 import 'package:rucas_exam_project/provider/user_provider.dart';
 import 'package:rucas_exam_project/screens/ForgotPassword.dart';
-import 'package:rucas_exam_project/screens/activity_page.dart';
 import 'package:rucas_exam_project/screens/exam.dart';
 import 'package:rucas_exam_project/screens/home.dart';
 import 'package:rucas_exam_project/screens/inbox_screen.dart';
@@ -16,6 +16,7 @@ import 'package:rucas_exam_project/screens/login.dart';
 import 'package:rucas_exam_project/screens/register.dart';
 import 'package:rucas_exam_project/screens/promotion_detail.dart';
 import 'package:rucas_exam_project/screens/profile_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   runApp(
@@ -39,7 +40,16 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+      home: AnimatedSplashScreen(
+        duration: 2500,
+        splash: const SplashContent(),
+        nextScreen: const LoginScreen(),
+        splashTransition: SplashTransition.fadeTransition,
+        backgroundColor: Colors.white,
+        curve: Curves.easeInOutQuint,
+        splashIconSize: MediaQuery.of(context).size.height,
+        animationDuration: const Duration(milliseconds: 1200),
+      ),
       routes: {
         '/home': (context) => const HomeScreen(),
         '/register': (context) => const RegisterScreen(),
@@ -48,7 +58,6 @@ class MainApp extends StatelessWidget {
         '/list-exam': (context) => ListExamScreen(),
         '/ForgotPassword': (context) => ForgotPasswordScreen(),
         '/profile': (context) => const ProfileScreen(),
-        '/activity': (context) => const ActivityPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/exam') {
@@ -59,9 +68,8 @@ class MainApp extends StatelessWidget {
         }
         if (settings.name == '/promotion') {
           return MaterialPageRoute(
-            builder:
-                (context) =>
-                    PromotionDetail(promotion: settings.arguments as Promotion),
+            builder: (context) =>
+                PromotionDetail(promotion: settings.arguments as Promotion),
           );
         }
         return null;
