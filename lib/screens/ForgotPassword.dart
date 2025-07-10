@@ -93,7 +93,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF4FC3F7), Color(0xFF0288D1)], // 🌊 biru muda
+            colors: [Color(0xFF4FC3F7), Color(0xFF0288D1)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -101,7 +101,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
         child: SafeArea(
           child: Column(
             children: [
-              _buildHeader(),
+              // Header dihapus, tidak ada back button
               Expanded(
                 child: FadeTransition(
                   opacity: _fadeAnimation,
@@ -118,34 +118,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white.withOpacity(0.3),
-                width: 1,
-              ),
-            ),
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios_rounded,
-                color: Colors.white,
-                size: 22,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -272,8 +244,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
       child: ElevatedButton(
         onPressed: _isLoading ? null : _resetPassword,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF0288D1), // 🔵 Biru terang
-          foregroundColor: Colors.white, // ✅ Pastikan teks putih
+          backgroundColor: const Color(0xFF0288D1),
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -321,7 +293,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
           Navigator.of(context).pushReplacementNamed('/login');
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.orange, // 🟠 Warna orange seperti contoh
+          backgroundColor: Colors.orange,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
