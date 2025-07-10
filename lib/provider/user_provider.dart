@@ -24,7 +24,7 @@ class UserProvider with ChangeNotifier {
       name: name,
       email: email,
       phone: phone,
-      imageUrl: imageUrl ?? 'assets/profil.jpg', // Gambar default
+      imageUrl: imageUrl ?? 'assets/profil.jpg', // Default jika null
       bio: bio,
       location: location,
     );
