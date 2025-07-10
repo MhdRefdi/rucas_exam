@@ -207,7 +207,7 @@ class ExamNavigationButtons extends StatelessWidget {
         children: [
           // Tombol "Sebelumnya"
           _buildPreviousButton(),
-          
+
           // Tombol "Selanjutnya" atau "Selesai" atau "Kembali ke Home"
           if (isReviewMode && isLastQuestion)
             _buildHomeButton(context)
@@ -220,11 +220,12 @@ class ExamNavigationButtons extends StatelessWidget {
 
   Widget _buildPreviousButton() {
     return ElevatedButton.icon(
-      onPressed: examProvider.currentQuestionIndex > 0
-          ? () {
-              examProvider.previousQuestion();
-            }
-          : null,
+      onPressed:
+          examProvider.currentQuestionIndex > 0
+              ? () {
+                examProvider.previousQuestion();
+              }
+              : null,
       icon: const Icon(Icons.arrow_back),
       label: const Text('Sebelumnya'),
       style: ElevatedButton.styleFrom(
@@ -243,11 +244,12 @@ class ExamNavigationButtons extends StatelessWidget {
 
   Widget _buildNextOrFinishButton() {
     return ElevatedButton.icon(
-      onPressed: isLastQuestion
-          ? onFinish
-          : () {
-              examProvider.nextQuestion();
-            },
+      onPressed:
+          isLastQuestion
+              ? onFinish
+              : () {
+                examProvider.nextQuestion();
+              },
       icon: Icon(isLastQuestion ? Icons.check_circle : Icons.arrow_forward),
       label: Text(isLastQuestion ? 'Selesai' : 'Selanjutnya'),
       style: ElevatedButton.styleFrom(
@@ -429,8 +431,11 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
         ElevatedButton.icon(
           onPressed: () {
             _saveExamResult(context); // Simpan hasil sebelum review
-            Navigator.pushNamed(context, '/review', 
-              arguments: widget.examProvider.currentExam?.id);
+            Navigator.pushNamed(
+              context,
+              '/review',
+              arguments: widget.examProvider.currentExam?.id,
+            );
           },
           icon: const Icon(Icons.check, color: Colors.black),
           label: const Text('Review Jawaban'),
@@ -468,14 +473,8 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
 
   // Method untuk menyimpan hasil ujian
   void _saveExamResult(BuildContext context) {
-    final resultProvider = Provider.of<ResultProvider>(
-      context,
-      listen: false,
-    );
-    final examProvider = Provider.of<ExamProvider>(
-      context,
-      listen: false,
-    );
+    final resultProvider = Provider.of<ResultProvider>(context, listen: false);
+    final examProvider = Provider.of<ExamProvider>(context, listen: false);
     final exam = examProvider.currentExam;
 
     if (exam != null) {
@@ -513,8 +512,8 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
         percentage >= 70
             ? Colors.green
             : percentage >= 50
-                ? Colors.amber
-                : Colors.red;
+            ? Colors.amber
+            : Colors.red;
 
     return Container(
       padding: EdgeInsets.all(widget.theme.largeSpace),
@@ -567,7 +566,6 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
   }
 }
 
-
 class OptionItem extends StatelessWidget {
   final AppTheme theme;
   final ExamProvider examProvider;
@@ -590,40 +588,45 @@ class OptionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSelected = userAnswer == option.key;
     final isCorrect = isReviewMode && question.correctAnswer == option.key;
-    final isWrong = isReviewMode && isSelected && question.correctAnswer != option.key;
+    final isWrong =
+        isReviewMode && isSelected && question.correctAnswer != option.key;
 
-    Color borderColor = isCorrect
-        ? Colors.green
-        : isWrong
+    Color borderColor =
+        isCorrect
+            ? Colors.green
+            : isWrong
             ? Colors.red
             : isSelected
-                ? theme.primaryColor
-                : theme.backgroundColor;
+            ? theme.primaryColor
+            : theme.backgroundColor;
 
-    Color fillColor = isCorrect
-        ? Colors.green.withOpacity(0.1)
-        : isWrong
+    Color fillColor =
+        isCorrect
+            ? Colors.green.withOpacity(0.1)
+            : isWrong
             ? Colors.red.withOpacity(0.1)
             : isSelected
-                ? theme.backgroundColor.withOpacity(0.2)
-                : Colors.transparent;
+            ? theme.backgroundColor.withOpacity(0.2)
+            : Colors.transparent;
 
-    Color circleColor = isCorrect
-        ? Colors.green
-        : isWrong
+    Color circleColor =
+        isCorrect
+            ? Colors.green
+            : isWrong
             ? Colors.red
             : isSelected
-                ? theme.primaryColor
-                : theme.backgroundColor;
+            ? theme.primaryColor
+            : theme.backgroundColor;
 
     return Padding(
       padding: EdgeInsets.only(bottom: theme.mediumSpace),
       child: InkWell(
-        onTap: isReviewMode
-            ? null
-            : () {
-                examProvider.answerQuestion(question.id, option.key);
-              },
+        onTap:
+            isReviewMode
+                ? null
+                : () {
+                  examProvider.answerQuestion(question.id, option.key);
+                },
         borderRadius: BorderRadius.circular(theme.mediumRadius),
         child: Container(
           decoration: BoxDecoration(
@@ -657,7 +660,8 @@ class OptionItem extends StatelessWidget {
                   option.value,
                   style: TextStyle(
                     color: theme.textColor,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               ),
@@ -673,7 +677,6 @@ class OptionItem extends StatelessWidget {
   }
 }
 
-
 class QuestionCard extends StatelessWidget {
   final AppTheme theme;
   final ExamProvider examProvider;
@@ -688,7 +691,7 @@ class QuestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final question = examProvider.currentQuestion;
     final isReviewMode = examProvider.isReviewMode;
-    
+
     if (question == null) {
       return const SizedBox();
     }
@@ -761,10 +764,7 @@ class QuestionCard extends StatelessWidget {
                 ),
               ),
               SizedBox(height: theme.smallSpace),
-              Text(
-                solution,
-                style: TextStyle(color: theme.textColor),
-              ),
+              Text(solution, style: TextStyle(color: theme.textColor)),
             ],
           ),
         ),
@@ -772,7 +772,6 @@ class QuestionCard extends StatelessWidget {
     );
   }
 }
-
 
 class QuestionNavigation extends StatelessWidget {
   final AppTheme theme;
@@ -861,4 +860,3 @@ class QuestionNavigation extends StatelessWidget {
     );
   }
 }
-
