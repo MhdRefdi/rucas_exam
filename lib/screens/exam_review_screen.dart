@@ -157,8 +157,6 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
             children: [
               // AppBar custom tetap paling atas
               _buildCustomAppBar(context, exam),
-
-              // Nilai Akhir (ganti rata-rata)
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,

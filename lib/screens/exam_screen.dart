@@ -208,7 +208,6 @@ class ExamNavigationButtons extends StatelessWidget {
           // Tombol "Sebelumnya"
           _buildPreviousButton(),
           
-          // Tombol "Selanjutnya" atau "Selesai" atau "Kembali ke Home"
           if (isReviewMode && isLastQuestion)
             _buildHomeButton(context)
           else
@@ -428,7 +427,7 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
       actions: [
         ElevatedButton.icon(
           onPressed: () {
-            _saveExamResult(context); // Simpan hasil sebelum review
+            _saveExamResult(context);
             Navigator.pushNamed(context, '/review', 
               arguments: widget.examProvider.currentExam?.id);
           },
@@ -444,7 +443,7 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
         ),
         ElevatedButton.icon(
           onPressed: () {
-            _saveExamResult(context); // Simpan hasil
+            _saveExamResult(context);
             widget.examProvider.resetExam();
             Navigator.pushNamedAndRemoveUntil(
               context,
@@ -504,7 +503,6 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
       );
 
       resultProvider.addResult(examResult);
-      debugPrint('Exam result saved: ${examResult.toMap()}');
     }
   }
 

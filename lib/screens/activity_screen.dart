@@ -44,7 +44,7 @@ class ActivityScreen extends StatelessWidget {
                         const SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       final result = results.reversed.toList()[index];
-                      return _buildResultCard(result, theme, index == 0);
+                      return _buildResultCard(result, theme, index == 0, context);
                     },
                   ),
                 ),
@@ -146,11 +146,21 @@ class ActivityScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildResultCard(ExamResult result, AppTheme theme, bool isLatest) {
-    final dateFormatted = "${result.dateTaken.day}/${result.dateTaken.month}/${result.dateTaken.year}";
-    final timeFormatted = "${result.dateTaken.hour}:${result.dateTaken.minute.toString().padLeft(2, '0')}";
+ Widget _buildResultCard(ExamResult result, AppTheme theme, bool isLatest ,BuildContext context) {
+  final dateFormatted =
+      "${result.dateTaken.day}/${result.dateTaken.month}/${result.dateTaken.year}";
+  final timeFormatted =
+      "${result.dateTaken.hour}:${result.dateTaken.minute.toString().padLeft(2, '0')}";
 
-    return Container(
+  return GestureDetector(
+    onTap: () {
+      Navigator.pushNamed(
+        context,
+        '/review',
+        arguments:  result.examId,
+      );
+    },
+    child: Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: theme.defaultColor,
@@ -246,8 +256,7 @@ class ActivityScreen extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: _getScoreColor(result.scorePercentage)
-                      .withOpacity(0.1),
+                  color: _getScoreColor(result.scorePercentage).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
@@ -283,8 +292,10 @@ class ActivityScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildEmptyState(BuildContext context, AppTheme theme) {
     return Center(
