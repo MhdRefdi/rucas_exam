@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/models/exam_model.dart';
+import 'package:rucas_exam_project/models/result_model.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
+import 'package:rucas_exam_project/provider/result_provider.dart';
 
 class ListExamScreen extends StatelessWidget {
   const ListExamScreen({super.key});
@@ -10,7 +12,13 @@ class ListExamScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final examProvider = context.watch<ExamProvider>();
+    final resultProvider = context.watch<ResultProvider>();
     final AppTheme theme = AppTheme();
+
+    // Add null check for exams
+    if (examProvider.exams.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return SafeArea(
       child: DefaultTabController(
@@ -18,14 +26,15 @@ class ListExamScreen extends StatelessWidget {
         child: Scaffold(
           body: Column(
             children: <Widget>[
+              // Header with tabs (unchanged)
               Container(
                 height: 130,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
+                  image: const DecorationImage(
                     image: AssetImage("assets/images/icon-background.png"),
                     fit: BoxFit.cover,
                   ),
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(40),
                     bottomRight: Radius.circular(40),
                   ),
@@ -45,11 +54,11 @@ class ListExamScreen extends StatelessWidget {
                               color: theme.defaultColor,
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Container(
-                            width: 300,
+                            width: MediaQuery.of(context).size.width * 0.8,
                             height: 42,
-                            padding: EdgeInsets.all(4),
+                            padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
                               color: theme.defaultColor,
                               borderRadius: BorderRadius.circular(50),
@@ -61,16 +70,18 @@ class ListExamScreen extends StatelessWidget {
                                 color: theme.primaryColor,
                                 borderRadius: BorderRadius.circular(50),
                               ),
-                              labelStyle: TextStyle(
+                              labelStyle: const TextStyle(
                                 fontWeight: FontWeight.bold,
+                                fontSize: 12,
                               ),
-                              unselectedLabelStyle: TextStyle(
+                              unselectedLabelStyle: const TextStyle(
                                 fontWeight: FontWeight.normal,
+                                fontSize: 12,
                               ),
                               labelColor: theme.defaultColor,
                               unselectedLabelColor: Colors.grey,
                               dividerHeight: 0,
-                              tabs: [
+                              tabs: const [
                                 Tab(text: "Daftar Ujian"),
                                 Tab(text: "Riwayat Ujian"),
                               ],
@@ -79,7 +90,6 @@ class ListExamScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-
                     Positioned(
                       top: 10,
                       left: 0,
@@ -90,162 +100,30 @@ class ListExamScreen extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.defaultColor,
                           shape: const CircleBorder(),
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                         ),
                         child: Icon(
                           Icons.arrow_back_rounded,
-                          color: Colors.grey,
+                          color: Colors.grey[700],
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-
+              // Main content area
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 15,
-                    horizontal: 45,
+                    horizontal: 20,
                   ),
                   child: TabBarView(
                     children: <Widget>[
-                      ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(
-                          context,
-                        ).copyWith(scrollbars: false, overscroll: false),
-                        child: ListView.separated(
-                          itemBuilder:
-                              (_, index) => ListExamCard(
-                                exam: examProvider.exams[index],
-                                theme: theme,
-                                actions: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: SizedBox(
-                                    width: 200,
-                                    child: ElevatedButton(
-                                      onPressed:
-                                          () => showModalBottomSheet(
-                                            context: context,
-                                            isScrollControlled: true,
-                                            backgroundColor: Colors.transparent,
-                                            builder:
-                                                (_) => ExamDetailBottomSheet(
-                                                  exam:
-                                                      examProvider.exams[index],
-                                                ),
-                                          ),
-                                      style: ElevatedButton.styleFrom(
-                                        elevation: 0,
-                                        backgroundColor: Colors.amber,
-                                        foregroundColor: theme.defaultColor,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                          vertical: 15,
-                                        ),
-                                        textStyle: TextStyle(fontSize: 15),
-                                      ),
-                                      child: Text("Lihat"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          separatorBuilder: (_, _) => SizedBox(height: 10),
-                          itemCount: examProvider.exams.length,
-                        ),
-                      ),
-                      ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(
-                          context,
-                        ).copyWith(scrollbars: false, overscroll: false),
-                        child: CustomScrollView(
-                          slivers: [
-                            SliverAppBar(
-                              toolbarHeight: 150,
-                              flexibleSpace: FlexibleSpaceBar(
-                                background: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: SizedBox(
-                                    height: 150,
-                                    width: double.infinity,
-                                    child: GestureDetector(
-                                      onTap: () {},
-                                      child: Image(
-                                        fit: BoxFit.fill,
-                                        image: AssetImage(
-                                          "assets/banners/1.png",
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SliverToBoxAdapter(child: SizedBox(height: 10)),
-                            SliverList.separated(
-                              itemBuilder:
-                                  (_, index) => ListExamCard(
-                                    exam: examProvider.exams[index],
-                                    theme: theme,
-                                    actions: Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed: () => {},
-                                            style: ElevatedButton.styleFrom(
-                                              elevation: 0,
-                                              backgroundColor:
-                                                  theme.defaultColor,
-                                              foregroundColor: Colors.black,
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 20,
-                                                vertical: 15,
-                                              ),
-                                              textStyle: TextStyle(
-                                                fontSize: 15,
-                                              ),
-                                              side: BorderSide(
-                                                color: Colors.grey,
-                                                width: 1,
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(50),
-                                              ),
-                                            ),
-                                            child: Text("Hasil Ujian"),
-                                          ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            onPressed: () {},
-                                            style: ElevatedButton.styleFrom(
-                                              elevation: 0,
-                                              backgroundColor: Colors.amber,
-                                              foregroundColor:
-                                                  theme.defaultColor,
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 20,
-                                                vertical: 15,
-                                              ),
-                                              textStyle: TextStyle(
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            child: Text("Pembahasan"),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              separatorBuilder:
-                                  (_, index) => SizedBox(height: 10),
-                              itemCount: examProvider.exams.length,
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Tab 1: Daftar Ujian (unchanged)
+                      _buildExamList(context, examProvider.exams, theme, false),
+                      // Tab 2: Riwayat Ujian - now using results
+                      _buildHistoryView(context, resultProvider.results, examProvider.exams, theme),
                     ],
                   ),
                 ),
@@ -256,17 +134,243 @@ class ListExamScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildExamList(BuildContext context, List<ExamData> exams, AppTheme theme, bool isHistory) {
+    // Ensure exams is not empty
+    if (exams.isEmpty) {
+      return const Center(child: Text("Tidak ada ujian tersedia"));
+    }
+
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(
+        scrollbars: false, 
+        overscroll: false
+      ),
+      child: isHistory 
+        ? _buildHistoryList(context, exams, theme)
+        : _buildUpcomingList(context, exams, theme),
+    );
+  }
+
+  Widget _buildHistoryView(BuildContext context, List<ExamResult> results, List<ExamData> exams, AppTheme theme) {
+    if (results.isEmpty) {
+      return _buildEmptyHistoryView(context, theme);
+    }
+
+    // Get unique exam IDs from results
+    final completedExamIds = results.map((r) => r.examId).toSet();
+    
+    // Filter exams that have results
+    final completedExams = exams.where((exam) => completedExamIds.contains(exam.id)).toList();
+
+    return _buildHistoryList(context, completedExams, theme);
+  }
+
+  Widget _buildEmptyHistoryView(BuildContext context, AppTheme theme) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Image.asset(
+          //   'assets/images/empty_history.png', // Replace with your empty state image
+          //   width: 200,
+          //   height: 200,
+          // ),
+          const SizedBox(height: 20),
+          Text(
+            "Belum Ada Riwayat Ujian",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: theme.defaultColor,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 40),
+            child: Text(
+              "Anda belum menyelesaikan ujian apapun. Selesaikan ujian untuk melihat riwayatnya di sini.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              // Optionally navigate to exams tab
+              DefaultTabController.of(context).animateTo(0);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+            child: Text(
+              "Lihat Daftar Ujian",
+              style: TextStyle(
+                color: theme.defaultColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUpcomingList(BuildContext context, List<ExamData> exams, AppTheme theme) {
+    return ListView.builder(
+      itemCount: exams.length,
+      itemBuilder: (context, index) {
+        final exam = exams[index];
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: ListExamCard(
+            exam: exam,
+            theme: theme,
+            actions: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => ExamDetailBottomSheet(exam: exam),
+                ),
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.amber,
+                  foregroundColor: theme.defaultColor,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  textStyle: const TextStyle(fontSize: 14),
+                ),
+                child: const Text("Lihat Detail"),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHistoryList(BuildContext context, List<ExamData> exams, AppTheme theme) {
+    final resultProvider = Provider.of<ResultProvider>(context, listen: false);
+
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final exam = exams[index];
+              final latestResult = resultProvider.getLatestResultForExam(exam.id);
+              
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: ListExamCard(
+                  exam: exam,
+                  theme: theme,
+                  additionalInfo: latestResult != null 
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 8),
+                          Text(
+                            "Terakhir dikerjakan: ${latestResult.dateTaken.toString()}",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Text(
+                            "Nilai: ${latestResult.scorePercentage.toStringAsFixed(1)}%",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
+                      )
+                    : null,
+                  actions: Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Navigate to result screen
+                            Navigator.pushNamed(
+                              context,
+                              '/exam_result',
+                              arguments: exam.id,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: theme.defaultColor,
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            textStyle: const TextStyle(fontSize: 12),
+                            side: BorderSide(
+                              color: Colors.grey[400]!,
+                              width: 1,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                          child: const Text("Hasil Ujian"),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Navigate to discussion screen
+                            Navigator.pushNamed(
+                              context,
+                              '/review',
+                              arguments: exam.id,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: Colors.amber,
+                            foregroundColor: theme.defaultColor,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            textStyle: const TextStyle(fontSize: 12),
+                          ),
+                          child: const Text("Pembahasan"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            childCount: exams.length,
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class ListExamCard extends StatelessWidget {
   final ExamData exam;
   final Widget? actions;
+  final Widget? additionalInfo;
   final AppTheme theme;
 
   const ListExamCard({
     super.key,
     required this.exam,
     this.actions,
+    this.additionalInfo,
     required this.theme,
   });
 
@@ -274,84 +378,90 @@ class ListExamCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // ClipRRect(
-            //   borderRadius: BorderRadius.circular(10),
-            //   child: exam.banner,
-            // ),
-            BannerWithLoading(
-              banner: exam.imagePath,
-              theme: theme,
-              borderRadius: BorderRadius.circular(theme.mediumRadius),
-            ),
-            SizedBox(height: 20),
-            Text(
-              exam.title,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+            // Banner with fixed height
+            SizedBox(
+              height: 120,
+              width: double.infinity,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  exam.imagePath,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => 
+                    Container(color: Colors.grey[200]),
+                ),
               ),
             ),
-            SizedBox(height: 20),
-            Row(
-              children: <Widget>[
-                ExamDescription(
-                  icon: Icons.date_range,
-                  title: "Tanggal",
-                  description: exam.date,
-                ),
-                SizedBox(width: 40),
-                ExamDescription(
-                  icon: Icons.lock_clock_rounded,
-                  title: "Waktu",
-                  description: exam.time,
-                ),
-              ],
+            const SizedBox(height: 10),
+            Text(
+              exam.title,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: 15),
-            if (actions != null) actions!,
+            const SizedBox(height: 10),
+            // Exam details row
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: <Widget>[
+                  _buildExamDetail(Icons.date_range, "Tanggal", exam.date),
+                  const SizedBox(width: 20),
+                  _buildExamDetail(Icons.lock_clock_rounded, "Waktu", exam.time),
+                ],
+              ),
+            ),
+            if (additionalInfo != null) additionalInfo!,
+            if (actions != null) ...[
+              const SizedBox(height: 10),
+              actions!,
+            ],
           ],
         ),
       ),
     );
   }
-}
 
-class ExamDescription extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-
-  const ExamDescription({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.description,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildExamDetail(IconData icon, String title, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Icon(icon, color: Color(0xFF39AAE0)),
-        SizedBox(width: 10),
+        Icon(icon, color: const Color(0xFF39AAE0), size: 18),
+        const SizedBox(width: 6),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(title),
-            Text(description, style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 11),
+            ),
+            Text(
+              value, 
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 11,
+              ),
+            ),
           ],
         ),
       ],
     );
   }
 }
+
+// Rest of the code (ExamDetailBottomSheet and _buildStartExamDialog) remains unchanged
 
 class ExamDetailBottomSheet extends StatelessWidget {
   final ExamData exam;
@@ -367,18 +477,18 @@ class ExamDetailBottomSheet extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black12,
                 blurRadius: 24,
-                offset: Offset(0, -8),
+                offset: const Offset(0, -8),
               ),
             ],
           ),
           child: SingleChildScrollView(
             controller: scrollController,
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -387,7 +497,7 @@ class ExamDetailBottomSheet extends StatelessWidget {
                   child: Container(
                     width: 48,
                     height: 5,
-                    margin: EdgeInsets.only(bottom: 24),
+                    margin: const EdgeInsets.only(bottom: 24),
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(3),
@@ -398,59 +508,59 @@ class ExamDetailBottomSheet extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   child: Image.asset(exam.imagePath, fit: BoxFit.cover),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Text(
                   exam.title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   exam.description ?? "Deskripsi tidak tersedia.",
                   style: TextStyle(fontSize: 15, color: Colors.grey[800]),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Row(
                   children: [
                     Icon(Icons.date_range, color: Colors.blueAccent),
-                    SizedBox(width: 12),
-                    Text(
+                    const SizedBox(width: 12),
+                    const Text(
                       "Tanggal: ",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(exam.date),
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Icon(Icons.lock_clock_rounded, color: Colors.orangeAccent),
-                    SizedBox(width: 12),
-                    Text(
+                    const SizedBox(width: 12),
+                    const Text(
                       "Jam: ",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(exam.time),
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     Icon(Icons.timer, color: Colors.green),
-                    SizedBox(width: 12),
-                    Text(
+                    const SizedBox(width: 12),
+                    const Text(
                       "Durasi: ",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text('${exam.duration ?? "?"} menit'),
                   ],
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Divider(height: 1, color: Colors.grey[300]),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Row(
                   children: [
                     Expanded(
@@ -460,10 +570,10 @@ class ExamDetailBottomSheet extends StatelessWidget {
                             "Jumlah Soal",
                             style: TextStyle(color: Colors.black54),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             '${exam.totalQuestions ?? exam.questions.length}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.blueAccent,
@@ -474,7 +584,7 @@ class ExamDetailBottomSheet extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 Row(
                   children: [
                     Expanded(
@@ -483,16 +593,15 @@ class ExamDetailBottomSheet extends StatelessWidget {
                           showDialog(
                             context: context,
                             barrierDismissible: false,
-                            builder:
-                                (context) =>
-                                    _buildStartExamDialog(context, exam),
+                            builder: (context) =>
+                                _buildStartExamDialog(context, exam),
                           );
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.play_arrow_rounded,
                           color: Colors.white,
                         ),
-                        label: Text(
+                        label: const Text(
                           "Mulai Ujian",
                           style: TextStyle(
                             color: Colors.white,
@@ -501,7 +610,7 @@ class ExamDetailBottomSheet extends StatelessWidget {
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blueAccent,
-                          padding: EdgeInsets.symmetric(vertical: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -511,8 +620,8 @@ class ExamDetailBottomSheet extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 18),
-                // Tombol Tutup Lebih Menarik
+                const SizedBox(height: 18),
+                // Tombol Tutup
                 Center(
                   child: ElevatedButton(
                     onPressed: () => Navigator.pop(context),
@@ -520,16 +629,16 @@ class ExamDetailBottomSheet extends StatelessWidget {
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.blueAccent,
                       elevation: 2,
-                      side: BorderSide(color: Colors.blueAccent, width: 1.6),
+                      side: const BorderSide(color: Colors.blueAccent, width: 1.6),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 42,
                         vertical: 14,
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       "Tutup",
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -552,7 +661,7 @@ class ExamDetailBottomSheet extends StatelessWidget {
 Widget _buildStartExamDialog(BuildContext context, ExamData exam) {
   return Dialog(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    insetPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+    insetPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
     backgroundColor: Colors.white,
     child: Padding(
       padding: const EdgeInsets.all(24),
@@ -560,8 +669,8 @@ Widget _buildStartExamDialog(BuildContext context, ExamData exam) {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 48),
-          SizedBox(height: 16),
-          Text(
+          const SizedBox(height: 16),
+          const Text(
             "Perhatian!",
             style: TextStyle(
               fontSize: 20,
@@ -569,14 +678,14 @@ Widget _buildStartExamDialog(BuildContext context, ExamData exam) {
               color: Colors.black87,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
             "Soal akan dikerjakan dalam waktu *${exam.duration ?? "?"} menit*. "
             "Harap baca soal dengan teliti dan *jangan keluar dari aplikasi selama ujian berlangsung*.",
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.black54, fontSize: 14),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           Row(
             children: [
               Expanded(
@@ -584,16 +693,16 @@ Widget _buildStartExamDialog(BuildContext context, ExamData exam) {
                   onPressed: () => Navigator.pop(context),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.grey[700],
-                    side: BorderSide(color: Colors.grey),
+                    side: BorderSide(color: Colors.grey[400]!),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 14),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: Text("Kembali"),
+                  child: const Text("Kembali"),
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
@@ -620,9 +729,9 @@ Widget _buildStartExamDialog(BuildContext context, ExamData exam) {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 14),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: Text(
+                  child: const Text(
                     "Mulai Sekarang",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -634,69 +743,4 @@ Widget _buildStartExamDialog(BuildContext context, ExamData exam) {
       ),
     ),
   );
-}
-
-class BannerWithLoading extends StatelessWidget {
-  final String banner; // ubah jadi String
-  final double? height;
-  final double? width;
-  final BorderRadius? borderRadius;
-  final AppTheme theme;
-
-  const BannerWithLoading({
-    super.key,
-    required this.banner,
-    required this.theme,
-    this.height,
-    this.width,
-    this.borderRadius,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final imageWidget = Image.asset(banner, fit: BoxFit.cover);
-
-    return FutureBuilder<void>(
-      future: _precacheImage(imageWidget.image, context),
-      builder: (context, snapshot) {
-        return Container(
-          height: height,
-          width: width ?? double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: borderRadius,
-            color: theme.backgroundColor.withAlpha(30),
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              if (snapshot.connectionState == ConnectionState.done)
-                ClipRRect(
-                  borderRadius: borderRadius ?? BorderRadius.circular(0),
-                  child: imageWidget,
-                ),
-              if (snapshot.connectionState != ConnectionState.done)
-                SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      theme.primaryColor,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _precacheImage(ImageProvider image, BuildContext context) async {
-    try {
-      await precacheImage(image, context);
-    } catch (e) {
-      debugPrint('Error loading image: $e');
-    }
-  }
 }

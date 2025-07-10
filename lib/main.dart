@@ -5,10 +5,11 @@ import 'package:rucas_exam_project/data/promotion_data.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 import 'package:rucas_exam_project/provider/message_provider.dart';
 import 'package:rucas_exam_project/provider/page_provider.dart';
+import 'package:rucas_exam_project/provider/result_provider.dart';
 import 'package:rucas_exam_project/provider/text_scale_provider.dart';
 import 'package:rucas_exam_project/provider/user_provider.dart';
 import 'package:rucas_exam_project/screens/ForgotPassword.dart';
-import 'package:rucas_exam_project/screens/exam.dart';
+import 'package:rucas_exam_project/screens/exam_screen.dart';
 import 'package:rucas_exam_project/screens/home.dart';
 import 'package:rucas_exam_project/screens/inbox_screen.dart';
 import 'package:rucas_exam_project/screens/list_exam.dart';
@@ -16,6 +17,8 @@ import 'package:rucas_exam_project/screens/login.dart';
 import 'package:rucas_exam_project/screens/register.dart';
 import 'package:rucas_exam_project/screens/promotion_detail.dart';
 import 'package:rucas_exam_project/screens/profile_screen.dart';
+import 'package:rucas_exam_project/screens/exam_review_screen.dart';
+import 'screens/exam_result_screen.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
@@ -27,6 +30,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => MessageProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => TextScaleProvider()),
+        ChangeNotifierProvider(create: (_) => ResultProvider()),
       ],
       child: const MainApp(),
     ),
@@ -70,6 +74,18 @@ class MainApp extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) =>
                 PromotionDetail(promotion: settings.arguments as Promotion),
+          );
+        }
+        if (settings.name == '/exam_result') {
+          final examId = settings.arguments as String;
+          return MaterialPageRoute(
+            builder: (context) => ExamResultScreen(examId: examId),
+          );
+        }
+        if(settings.name == '/review'){
+          final examId = settings.arguments as String;
+          return MaterialPageRoute(
+            builder: (context) => ExamReviewScreen(examId: examId),
           );
         }
         return null;

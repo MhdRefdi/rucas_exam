@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart' show Provider;
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
+
+import '../../models/result_model.dart';
+import '../../provider/result_provider.dart';
 
 class ExamResultsDialog extends StatefulWidget {
   final AppTheme theme;
@@ -120,12 +124,49 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
         ),
         ElevatedButton.icon(
           onPressed: () {
-            // Dummy handling
-            debugPrint('Rating: $_rating');
-            debugPrint('Difficulty: $_difficulty');
-            debugPrint('Comment: ${_commentController.text}');
+            final resultProvider = Provider.of<ResultProvider>(
+              context,
+              listen: false,
+            );
+            final examProvider = Provider.of<ExamProvider>(
+              context,
+              listen: false,
+            );
+            final exam = examProvider.currentExam;
 
-            widget.examProvider.resetExam();
+            if (exam != null) {
+              final results = examProvider.calculateResults();
+
+              // Create map of correct answers for all questions
+              final correctAnswersMap = {
+                for (var q in exam.questions) q.id: q.correctAnswer,
+              };
+
+              final examResult = ExamResult(
+                examId: exam.id,
+                examTitle: exam.title,
+                dateTaken: DateTime.now(),
+                correctAnswers: results['correct'] ?? 0,
+                totalQuestions: results['total'] ?? 0,
+                answeredQuestions: results['answered'] ?? 0,
+                flaggedQuestions: results['flagged'] ?? 0,
+                scorePercentage: results['percentage'] ?? 0.0,
+                userAnswers: examProvider.getUserAnswersForExam(exam.id),
+                correctAnswer: correctAnswersMap,
+                incorrectQuestionIds: List<String>.from(
+                  results['incorrectQuestionIds'] ?? [],
+                ),
+                rating: _rating,
+                difficulty: _difficulty,
+                comment: _commentController.text,
+              );
+
+              resultProvider.addResult(examResult);
+
+              debugPrint('Exam result saved: ${examResult.toMap()}');
+            }
+
+            examProvider.resetExam();
             Navigator.pushNamedAndRemoveUntil(
               context,
               '/home',
