@@ -67,7 +67,6 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
             const SizedBox(height: 24),
             Divider(color: widget.theme.textColor.withOpacity(0.3)),
             const SizedBox(height: 12),
-
             // Feedback UI
             Align(
               alignment: Alignment.centerLeft,
@@ -80,21 +79,18 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
               ),
             ),
             const SizedBox(height: 12),
-
             _buildSlider(
               label: 'Kepuasan (1–10)',
               value: _rating,
               onChanged: (v) => setState(() => _rating = v),
             ),
             const SizedBox(height: 8),
-
             _buildSlider(
               label: 'Tingkat Kesulitan (1–10)',
               value: _difficulty,
               onChanged: (v) => setState(() => _difficulty = v),
             ),
             const SizedBox(height: 12),
-
             TextField(
               controller: _commentController,
               maxLines: 2,
@@ -109,10 +105,11 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
       actions: [
         ElevatedButton.icon(
           onPressed: () {
-            Navigator.pop(context);
-            widget.examProvider.reviewMode();
+            _saveExamResult(context); // Simpan hasil sebelum review
+            Navigator.pushNamed(context, '/review', 
+              arguments: widget.examProvider.currentExam?.id);
           },
-          icon: const Icon(Icons.visibility),
+          icon: const Icon(Icons.check, color: Colors.black),
           label: const Text('Review Jawaban'),
           style: ElevatedButton.styleFrom(
             backgroundColor: widget.theme.backgroundColor,
@@ -124,49 +121,8 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
         ),
         ElevatedButton.icon(
           onPressed: () {
-            final resultProvider = Provider.of<ResultProvider>(
-              context,
-              listen: false,
-            );
-            final examProvider = Provider.of<ExamProvider>(
-              context,
-              listen: false,
-            );
-            final exam = examProvider.currentExam;
-
-            if (exam != null) {
-              final results = examProvider.calculateResults();
-
-              // Create map of correct answers for all questions
-              final correctAnswersMap = {
-                for (var q in exam.questions) q.id: q.correctAnswer,
-              };
-
-              final examResult = ExamResult(
-                examId: exam.id,
-                examTitle: exam.title,
-                dateTaken: DateTime.now(),
-                correctAnswers: results['correct'] ?? 0,
-                totalQuestions: results['total'] ?? 0,
-                answeredQuestions: results['answered'] ?? 0,
-                flaggedQuestions: results['flagged'] ?? 0,
-                scorePercentage: results['percentage'] ?? 0.0,
-                userAnswers: examProvider.getUserAnswersForExam(exam.id),
-                correctAnswer: correctAnswersMap,
-                incorrectQuestionIds: List<String>.from(
-                  results['incorrectQuestionIds'] ?? [],
-                ),
-                rating: _rating,
-                difficulty: _difficulty,
-                comment: _commentController.text,
-              );
-
-              resultProvider.addResult(examResult);
-
-              debugPrint('Exam result saved: ${examResult.toMap()}');
-            }
-
-            examProvider.resetExam();
+            _saveExamResult(context); // Simpan hasil
+            widget.examProvider.resetExam();
             Navigator.pushNamedAndRemoveUntil(
               context,
               '/home',
@@ -187,13 +143,55 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
     );
   }
 
+  // Method untuk menyimpan hasil ujian
+  void _saveExamResult(BuildContext context) {
+    final resultProvider = Provider.of<ResultProvider>(
+      context,
+      listen: false,
+    );
+    final examProvider = Provider.of<ExamProvider>(
+      context,
+      listen: false,
+    );
+    final exam = examProvider.currentExam;
+
+    if (exam != null) {
+      final results = examProvider.calculateResults();
+      final correctAnswersMap = {
+        for (var q in exam.questions) q.id: q.correctAnswer,
+      };
+
+      final examResult = ExamResult(
+        examId: exam.id,
+        examTitle: exam.title,
+        dateTaken: DateTime.now(),
+        correctAnswers: results['correct'] ?? 0,
+        totalQuestions: results['total'] ?? 0,
+        answeredQuestions: results['answered'] ?? 0,
+        flaggedQuestions: results['flagged'] ?? 0,
+        scorePercentage: results['percentage'] ?? 0.0,
+        userAnswers: examProvider.getUserAnswersForExam(exam.id),
+        correctAnswer: correctAnswersMap,
+        incorrectQuestionIds: List<String>.from(
+          results['incorrectQuestionIds'] ?? [],
+        ),
+        rating: _rating,
+        difficulty: _difficulty,
+        comment: _commentController.text,
+      );
+
+      resultProvider.addResult(examResult);
+      debugPrint('Exam result saved: ${examResult.toMap()}');
+    }
+  }
+
   Widget _buildScoreCircle(double percentage) {
     Color circleColor =
         percentage >= 70
             ? Colors.green
             : percentage >= 50
-            ? Colors.amber
-            : Colors.red;
+                ? Colors.amber
+                : Colors.red;
 
     return Container(
       padding: EdgeInsets.all(widget.theme.largeSpace),

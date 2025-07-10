@@ -15,13 +15,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = const AppTheme();
-    final resultProvider = Provider.of<ResultProvider>(context, listen: true);
+    final resultProvider = Provider.of<ResultProvider>(context);
     final recentResults = resultProvider.results.isNotEmpty
-        ? resultProvider.results
-            .take(3)
-            .toList()
-            .reversed
-            .toList() // Get latest 3 results
+        ? resultProvider.results.take(3).toList().reversed.toList()
         : [];
 
     return Scaffold(
@@ -50,10 +46,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: theme.textColor.withOpacity(0.1),
+                      color: Colors.black.withOpacity(0.05),
                       blurRadius: 12,
-                      spreadRadius: 0,
-                      offset: const Offset(0, -3),
+                      offset: Offset(0, -4),
                     ),
                   ],
                 ),
@@ -61,8 +56,6 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ExamSection(onSeeAll: onSeeAllExams),
-                    SizedBox(height: theme.largeSpace),
-                    _buildQuickActionsSection(theme),
                     SizedBox(height: theme.largeSpace),
                     _buildLearningProgressCard(theme, resultProvider),
                     SizedBox(height: theme.largeSpace),
@@ -79,73 +72,18 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActionsSection(AppTheme theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Aksi Cepat',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: theme.textColor,
-          ),
-        ),
-        SizedBox(height: theme.smallSpace),
-        Row(
-          children: [
-            Expanded(
-              child: _buildQuickActionCard(
-                theme: theme,
-                icon: Icons.quiz_outlined,
-                title: 'Latihan Soal',
-                subtitle: 'Kerjakan soal harian',
-                color: Colors.blue,
-                onTap: () {},
-              ),
-            ),
-            SizedBox(width: theme.smallSpace),
-            Expanded(
-              child: _buildQuickActionCard(
-                theme: theme,
-                icon: Icons.school_outlined,
-                title: 'Materi Belajar',
-                subtitle: 'Akses semua materi',
-                color: Colors.green,
-                onTap: () {},
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
   Widget _buildLearningProgressCard(AppTheme theme, ResultProvider resultProvider) {
     final totalExams = resultProvider.results.length;
     final completedExams = totalExams;
     final averageScore = totalExams > 0
-        ? resultProvider.results
-                .fold(0.0, (sum, result) => sum + result.scorePercentage) /
-            totalExams
+        ? resultProvider.results.fold(0.0, (sum, result) => sum + result.scorePercentage) / totalExams
         : 0;
 
     return Container(
       padding: EdgeInsets.all(theme.mediumSpace),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            theme.primaryColor.withOpacity(0.1),
-            theme.primaryColor.withOpacity(0.05),
-          ],
-        ),
         borderRadius: BorderRadius.circular(theme.mediumRadius),
-        border: Border.all(
-          color: theme.primaryColor.withOpacity(0.2),
-          width: 1,
-        ),
+        border: Border.all(color: theme.primaryColor.withOpacity(0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,63 +91,36 @@ class HomeScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Progress Belajar',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: theme.textColor,
-                ),
-              ),
+              Text('Progress Belajar',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: theme.textColor)),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: theme.primaryColor,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(
-                  '${averageScore.toStringAsFixed(1)}%',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: theme.defaultColor,
-                  ),
-                ),
+                child: Text('${averageScore.toStringAsFixed(1)}%',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
               ),
             ],
           ),
           SizedBox(height: theme.smallSpace),
-          LinearProgressIndicator(
-            value: totalExams > 0 ? (completedExams / (completedExams + 5)) : 0,
-            backgroundColor: theme.primaryColor.withOpacity(0.2),
-            valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
-            minHeight: 6,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LinearProgressIndicator(
+              value: totalExams > 0 ? (completedExams / (completedExams + 5)) : 0,
+              minHeight: 6,
+              backgroundColor: theme.primaryColor.withOpacity(0.2),
+              valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
+            ),
           ),
           SizedBox(height: theme.smallSpace),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildProgressItem(
-                theme: theme,
-                label: 'Selesai',
-                value: '$completedExams',
-                icon: Icons.check_circle_outline,
-                color: Colors.green,
-              ),
-              _buildProgressItem(
-                theme: theme,
-                label: 'Rata-rata',
-                value: '${averageScore.toStringAsFixed(1)}%',
-                icon: Icons.star_rate,
-                color: Colors.amber,
-              ),
-              _buildProgressItem(
-                theme: theme,
-                label: 'Total',
-                value: '$totalExams',
-                icon: Icons.library_books,
-                color: Colors.blue,
-              ),
+              _buildProgressItem(theme, 'Selesai', '$completedExams', Icons.check_circle_outline, Colors.green),
+              _buildProgressItem(theme, 'Rata-rata', '${averageScore.toStringAsFixed(1)}%', Icons.star_rate, Colors.amber),
+              _buildProgressItem(theme, 'Total', '$totalExams', Icons.library_books, Colors.blue),
             ],
           ),
         ],
@@ -217,8 +128,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRecentActivityCard(
-      BuildContext context, AppTheme theme, List<ExamResult> recentResults) {
+  Widget _buildRecentActivityCard(BuildContext context, AppTheme theme, List<ExamResult> recentResults) {
     return Container(
       padding: EdgeInsets.all(theme.mediumSpace),
       decoration: BoxDecoration(
@@ -226,81 +136,61 @@ class HomeScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(theme.mediumRadius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: Offset(0, 3),
           ),
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Aktivitas Terbaru',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: theme.textColor,
-                ),
-              ),
-              TextButton(
+              Text('Aktivitas Terbaru',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: theme.textColor)),
+              TextButton.icon(
                 onPressed: () {
                   Navigator.pushNamed(context, '/activity');
                 },
-                child: Text(
-                  'Lihat Semua',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: theme.primaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                icon: Icon(Icons.arrow_forward_ios, size: 12, color: theme.primaryColor),
+                label: Text('Lihat Semua',
+                    style: TextStyle(fontSize: 12, color: theme.primaryColor, fontWeight: FontWeight.w600)),
               ),
             ],
           ),
           SizedBox(height: theme.smallSpace),
           if (recentResults.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Text(
-                'Belum ada aktivitas ujian',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: theme.textColor.withOpacity(0.6),
-                ),
-              ),
-            )
-          else
             Column(
               children: [
-                ...recentResults.map((result) {
-                  final timeAgo = _getTimeAgo(result.dateTaken);
-                  return Column(
-                    children: [
-                      _buildActivityItem(
-                        theme: theme,
-                        title: result.examTitle,
-                        subtitle:
-                            '${result.correctAnswers}/${result.totalQuestions} jawaban benar',
-                        time: timeAgo,
-                        icon: result.scorePercentage >= 70
-                            ? Icons.check_circle
-                            : Icons.warning,
-                        iconColor: _getScoreColor(result.scorePercentage),
-                        score: result.scorePercentage,
-                      ),
-                      if (result != recentResults.last)
-                        Divider(
-                            height: 16,
-                            color: theme.textColor.withOpacity(0.1)),
-                    ],
-                  );
-                }).toList(),
+                Icon(Icons.inbox, size: 48, color: theme.textColor.withOpacity(0.2)),
+                SizedBox(height: 8),
+                Text(
+                  'Belum ada aktivitas ujian',
+                  style: TextStyle(fontSize: 14, color: theme.textColor.withOpacity(0.6)),
+                ),
               ],
-            ),
+            )
+          else
+            ...recentResults.map((result) {
+              final timeAgo = _getTimeAgo(result.dateTaken);
+              return Column(
+                children: [
+                  _buildActivityItem(
+                    theme: theme,
+                    title: result.examTitle,
+                    subtitle: '${result.correctAnswers}/${result.totalQuestions} jawaban benar',
+                    time: timeAgo,
+                    icon: result.scorePercentage >= 70 ? Icons.check_circle : Icons.warning,
+                    iconColor: _getScoreColor(result.scorePercentage),
+                    score: result.scorePercentage,
+                  ),
+                  if (result != recentResults.last)
+                    Divider(height: 16, color: theme.textColor.withOpacity(0.1)),
+                ],
+              );
+            }),
         ],
       ),
     );
@@ -318,7 +208,7 @@ class HomeScreen extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: iconColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
@@ -330,26 +220,15 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: theme.textColor,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text(title,
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: theme.textColor),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
               SizedBox(height: 2),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: theme.textColor.withOpacity(0.6),
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text(subtitle,
+                  style: TextStyle(fontSize: 12, color: theme.textColor.withOpacity(0.6)),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
             ],
           ),
         ),
@@ -357,23 +236,22 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             if (score != null)
-              Text(
-                '${score.toStringAsFixed(1)}%',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: _getScoreColor(score),
-                ),
-              ),
-            Text(
-              time,
-              style: TextStyle(
-                fontSize: 11,
-                color: theme.textColor.withOpacity(0.5),
-              ),
-            ),
+              Text('${score.toStringAsFixed(1)}%',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: _getScoreColor(score))),
+            Text(time, style: TextStyle(fontSize: 11, color: theme.textColor.withOpacity(0.5))),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildProgressItem(AppTheme theme, String label, String value, IconData icon, Color color) {
+    return Column(
+      children: [
+        Icon(icon, size: 16, color: color),
+        SizedBox(height: 2),
+        Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: theme.textColor)),
+        Text(label, style: TextStyle(fontSize: 10, color: theme.textColor.withOpacity(0.6))),
       ],
     );
   }
@@ -381,10 +259,8 @@ class HomeScreen extends StatelessWidget {
   String _getTimeAgo(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-
     if (difference.inDays > 30) {
-      final months = (difference.inDays / 30).floor();
-      return '$months bulan lalu';
+      return '${(difference.inDays / 30).floor()} bulan lalu';
     } else if (difference.inDays > 0) {
       return '${difference.inDays} hari lalu';
     } else if (difference.inHours > 0) {
@@ -401,97 +277,5 @@ class HomeScreen extends StatelessWidget {
     if (percentage >= 60) return Colors.blue;
     if (percentage >= 40) return Colors.orange;
     return Colors.red;
-  }
-
- 
-
-  Widget _buildQuickActionCard({
-    required AppTheme theme,
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(theme.mediumRadius),
-      child: Container(
-        padding: EdgeInsets.all(theme.mediumSpace),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(theme.mediumRadius),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            SizedBox(height: theme.smallSpace),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: theme.textColor,
-              ),
-            ),
-            SizedBox(height: 2),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 12,
-                color: theme.textColor.withOpacity(0.6),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  
-
-  Widget _buildProgressItem({
-    required AppTheme theme,
-    required String label,
-    required String value,
-    required IconData icon,
-    required Color color,
-  }) {
-    return Column(
-      children: [
-        Icon(icon, size: 16, color: color),
-        SizedBox(height: 2),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: theme.textColor,
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            color: theme.textColor.withOpacity(0.6),
-          ),
-        ),
-      ],
-    );
   }
 }

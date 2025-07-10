@@ -317,7 +317,7 @@ class ActivityScreen extends StatelessWidget {
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pushNamed(context, '/list-exam');
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: theme.primaryColor,
