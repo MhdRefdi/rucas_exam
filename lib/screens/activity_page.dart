@@ -41,14 +41,6 @@ class ActivityPage extends StatelessWidget {
             ),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list_rounded),
-            onPressed: () {
-              // Implementasi filter
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
