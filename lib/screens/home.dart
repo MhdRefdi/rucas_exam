@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
-import 'package:rucas_exam_project/screens/activity_page.dart'
-    show ActivityPage;
+import 'package:rucas_exam_project/models/result_model.dart';
+import 'package:rucas_exam_project/provider/result_provider.dart';
 import 'package:rucas_exam_project/widgets/Home/greeting_section.dart';
 import 'package:rucas_exam_project/widgets/home/promotion_section.dart';
 import 'package:rucas_exam_project/widgets/home/exam_section.dart';
@@ -14,6 +15,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = const AppTheme();
+    final resultProvider = Provider.of<ResultProvider>(context, listen: true);
+    final recentResults = resultProvider.results.isNotEmpty
+        ? resultProvider.results
+            .take(3)
+            .toList()
+            .reversed
+            .toList() // Get latest 3 results
+        : [];
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -55,9 +64,9 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: theme.largeSpace),
                     _buildQuickActionsSection(theme),
                     SizedBox(height: theme.largeSpace),
-                    _buildLearningProgressCard(theme),
+                    _buildLearningProgressCard(theme, resultProvider),
                     SizedBox(height: theme.largeSpace),
-                    _buildRecentActivityCard(context, theme),
+                    _buildRecentActivityCard(context, theme, resultProvider.results),
                     SizedBox(height: theme.largeSpace),
                     PromotionSection(),
                   ],
@@ -111,6 +120,290 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
+
+  Widget _buildLearningProgressCard(AppTheme theme, ResultProvider resultProvider) {
+    final totalExams = resultProvider.results.length;
+    final completedExams = totalExams;
+    final averageScore = totalExams > 0
+        ? resultProvider.results
+                .fold(0.0, (sum, result) => sum + result.scorePercentage) /
+            totalExams
+        : 0;
+
+    return Container(
+      padding: EdgeInsets.all(theme.mediumSpace),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.primaryColor.withOpacity(0.1),
+            theme.primaryColor.withOpacity(0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(theme.mediumRadius),
+        border: Border.all(
+          color: theme.primaryColor.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Progress Belajar',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: theme.textColor,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: theme.primaryColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${averageScore.toStringAsFixed(1)}%',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: theme.defaultColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: theme.smallSpace),
+          LinearProgressIndicator(
+            value: totalExams > 0 ? (completedExams / (completedExams + 5)) : 0,
+            backgroundColor: theme.primaryColor.withOpacity(0.2),
+            valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
+            minHeight: 6,
+          ),
+          SizedBox(height: theme.smallSpace),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildProgressItem(
+                theme: theme,
+                label: 'Selesai',
+                value: '$completedExams',
+                icon: Icons.check_circle_outline,
+                color: Colors.green,
+              ),
+              _buildProgressItem(
+                theme: theme,
+                label: 'Rata-rata',
+                value: '${averageScore.toStringAsFixed(1)}%',
+                icon: Icons.star_rate,
+                color: Colors.amber,
+              ),
+              _buildProgressItem(
+                theme: theme,
+                label: 'Total',
+                value: '$totalExams',
+                icon: Icons.library_books,
+                color: Colors.blue,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRecentActivityCard(
+      BuildContext context, AppTheme theme, List<ExamResult> recentResults) {
+    return Container(
+      padding: EdgeInsets.all(theme.mediumSpace),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(theme.mediumRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Aktivitas Terbaru',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: theme.textColor,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/activity');
+                },
+                child: Text(
+                  'Lihat Semua',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: theme.primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: theme.smallSpace),
+          if (recentResults.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                'Belum ada aktivitas ujian',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: theme.textColor.withOpacity(0.6),
+                ),
+              ),
+            )
+          else
+            Column(
+              children: [
+                ...recentResults.map((result) {
+                  final timeAgo = _getTimeAgo(result.dateTaken);
+                  return Column(
+                    children: [
+                      _buildActivityItem(
+                        theme: theme,
+                        title: result.examTitle,
+                        subtitle:
+                            '${result.correctAnswers}/${result.totalQuestions} jawaban benar',
+                        time: timeAgo,
+                        icon: result.scorePercentage >= 70
+                            ? Icons.check_circle
+                            : Icons.warning,
+                        iconColor: _getScoreColor(result.scorePercentage),
+                        score: result.scorePercentage,
+                      ),
+                      if (result != recentResults.last)
+                        Divider(
+                            height: 16,
+                            color: theme.textColor.withOpacity(0.1)),
+                    ],
+                  );
+                }).toList(),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActivityItem({
+    required AppTheme theme,
+    required String title,
+    required String subtitle,
+    required String time,
+    required IconData icon,
+    required Color iconColor,
+    double? score,
+  }) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: iconColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: iconColor, size: 16),
+        ),
+        SizedBox(width: theme.smallSpace),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: theme.textColor,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 2),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: theme.textColor.withOpacity(0.6),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (score != null)
+              Text(
+                '${score.toStringAsFixed(1)}%',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: _getScoreColor(score),
+                ),
+              ),
+            Text(
+              time,
+              style: TextStyle(
+                fontSize: 11,
+                color: theme.textColor.withOpacity(0.5),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  String _getTimeAgo(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays > 30) {
+      final months = (difference.inDays / 30).floor();
+      return '$months bulan lalu';
+    } else if (difference.inDays > 0) {
+      return '${difference.inDays} hari lalu';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} jam lalu';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} menit lalu';
+    } else {
+      return 'Baru saja';
+    }
+  }
+
+  Color _getScoreColor(double percentage) {
+    if (percentage >= 80) return Colors.green;
+    if (percentage >= 60) return Colors.blue;
+    if (percentage >= 40) return Colors.orange;
+    return Colors.red;
+  }
+
+ 
 
   Widget _buildQuickActionCard({
     required AppTheme theme,
@@ -170,93 +463,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLearningProgressCard(AppTheme theme) {
-    return Container(
-      padding: EdgeInsets.all(theme.mediumSpace),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            theme.primaryColor.withOpacity(0.1),
-            theme.primaryColor.withOpacity(0.05),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(theme.mediumRadius),
-        border: Border.all(
-          color: theme.primaryColor.withOpacity(0.2),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Progress Belajar Minggu Ini',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: theme.textColor,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: theme.primaryColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '78%',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: theme.defaultColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: theme.smallSpace),
-          LinearProgressIndicator(
-            value: 0.78,
-            backgroundColor: theme.primaryColor.withOpacity(0.2),
-            valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
-            minHeight: 6,
-          ),
-          SizedBox(height: theme.smallSpace),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildProgressItem(
-                theme: theme,
-                label: 'Selesai',
-                value: '12',
-                icon: Icons.check_circle_outline,
-                color: Colors.green,
-              ),
-              _buildProgressItem(
-                theme: theme,
-                label: 'Berlangsung',
-                value: '3',
-                icon: Icons.play_circle_outline,
-                color: Colors.orange,
-              ),
-              _buildProgressItem(
-                theme: theme,
-                label: 'Tersisa',
-                value: '5',
-                icon: Icons.pending_outlined,
-                color: Colors.grey,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  
 
   Widget _buildProgressItem({
     required AppTheme theme,
@@ -282,143 +489,6 @@ class HomeScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: 10,
             color: theme.textColor.withOpacity(0.6),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRecentActivityCard(BuildContext context, AppTheme theme) {
-    return Container(
-      padding: EdgeInsets.all(theme.mediumSpace),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(theme.mediumRadius),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Aktivitas Terbaru',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: theme.textColor,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ActivityPage(),
-                    ),
-                  );
-                },
-                child: Text(
-                  'Lihat Semua',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: theme.primaryColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: theme.smallSpace),
-          _buildActivityItem(
-            theme: theme,
-            title: 'Ujian Matematika Dasar',
-            subtitle: 'Selesai dengan skor 85',
-            time: '2 jam lalu',
-            icon: Icons.assignment_turned_in,
-            iconColor: Colors.green,
-          ),
-          Divider(height: 16, color: theme.textColor.withOpacity(0.1)),
-          _buildActivityItem(
-            theme: theme,
-            title: 'Ujian IPA Umum untuk menguji pengetahuan sains dasar.',
-            subtitle: 'selesai dengan skor 90',
-            time: '5 jam lalu',
-            icon: Icons.play_circle_filled,
-            iconColor: Colors.blue,
-          ),
-          Divider(height: 16, color: theme.textColor.withOpacity(0.1)),
-          _buildActivityItem(
-            theme: theme,
-            title: 'Ujian Kimia dasar mengenai unsur, senyawa, dan reaksi.',
-            subtitle: 'selesai dengan skor 88',
-            time: '1 hari lalu',
-            icon: Icons.quiz,
-            iconColor: Colors.orange,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActivityItem({
-    required AppTheme theme,
-    required String title,
-    required String subtitle,
-    required String time,
-    required IconData icon,
-    required Color iconColor,
-  }) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: iconColor, size: 16),
-        ),
-        SizedBox(width: theme.smallSpace),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: theme.textColor,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(height: 2),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: theme.textColor.withOpacity(0.6),
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-        Text(
-          time,
-          style: TextStyle(
-            fontSize: 11,
-            color: theme.textColor.withOpacity(0.5),
           ),
         ),
       ],

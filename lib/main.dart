@@ -18,6 +18,7 @@ import 'package:rucas_exam_project/screens/register.dart';
 import 'package:rucas_exam_project/screens/promotion_detail.dart';
 import 'package:rucas_exam_project/screens/profile_screen.dart';
 import 'package:rucas_exam_project/screens/exam_review_screen.dart';
+import 'screens/activity_screen.dart';
 import 'screens/exam_result_screen.dart';
 import 'screens/splash_screen.dart';
 
@@ -62,6 +63,7 @@ class MainApp extends StatelessWidget {
         '/list-exam': (context) => ListExamScreen(),
         '/ForgotPassword': (context) => ForgotPasswordScreen(),
         '/profile': (context) => const ProfileScreen(),
+        '/activity': (context) => const ActivityScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/exam') {
