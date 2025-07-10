@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
+import 'package:rucas_exam_project/screens/activity_page.dart'
+    show ActivityPage;
 import 'package:rucas_exam_project/widgets/Home/greeting_section.dart';
 import 'package:rucas_exam_project/widgets/home/promotion_section.dart';
 import 'package:rucas_exam_project/widgets/home/exam_section.dart';
@@ -55,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: theme.largeSpace),
                     _buildLearningProgressCard(theme),
                     SizedBox(height: theme.largeSpace),
-                    _buildRecentActivityCard(theme),
+                    _buildRecentActivityCard(context, theme),
                     SizedBox(height: theme.largeSpace),
                     PromotionSection(),
                   ],
@@ -286,7 +288,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRecentActivityCard(AppTheme theme) {
+  Widget _buildRecentActivityCard(BuildContext context, AppTheme theme) {
     return Container(
       padding: EdgeInsets.all(theme.mediumSpace),
       decoration: BoxDecoration(
@@ -315,7 +317,14 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ActivityPage(),
+                    ),
+                  );
+                },
                 child: Text(
                   'Lihat Semua',
                   style: TextStyle(
@@ -339,8 +348,8 @@ class HomeScreen extends StatelessWidget {
           Divider(height: 16, color: theme.textColor.withOpacity(0.1)),
           _buildActivityItem(
             theme: theme,
-            title: 'Belajar Fisika - Gerak Lurus',
-            subtitle: 'Progress 60% selesai',
+            title: 'Ujian IPA Umum untuk menguji pengetahuan sains dasar.',
+            subtitle: 'selesai dengan skor 90',
             time: '5 jam lalu',
             icon: Icons.play_circle_filled,
             iconColor: Colors.blue,
@@ -348,8 +357,8 @@ class HomeScreen extends StatelessWidget {
           Divider(height: 16, color: theme.textColor.withOpacity(0.1)),
           _buildActivityItem(
             theme: theme,
-            title: 'Latihan Soal Kimia',
-            subtitle: 'Mencoba 15 soal',
+            title: 'Ujian Kimia dasar mengenai unsur, senyawa, dan reaksi.',
+            subtitle: 'selesai dengan skor 88',
             time: '1 hari lalu',
             icon: Icons.quiz,
             iconColor: Colors.orange,
