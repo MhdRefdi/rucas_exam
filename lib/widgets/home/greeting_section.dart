@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
+import 'package:rucas_exam_project/provider/user_provider.dart';
 
 class GreetingSection extends StatelessWidget {
   final AppTheme theme = AppTheme();
@@ -8,6 +12,16 @@ class GreetingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<UserProvider>().user;
+    
+    // Cek apakah ada imageUrl
+    ImageProvider imageProvider;
+    if (user.imageUrl != null && user.imageUrl!.isNotEmpty) {
+      imageProvider = FileImage(File(user.imageUrl!));
+    } else {
+      imageProvider = const AssetImage("assets/images/profil.jpg");
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.transparent,
@@ -26,10 +40,10 @@ class GreetingSection extends StatelessWidget {
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(
-            theme.mediumSpace,
-            theme.smallSpace,
-            theme.mediumSpace,
-            theme.largeSpace,
+            16,
+            16,
+            16,
+            MediaQuery.of(context).padding.bottom + 16,
           ),
           child: Column(
             children: [
@@ -89,8 +103,8 @@ class GreetingSection extends StatelessWidget {
                             radius: 18,
                             backgroundColor: theme.defaultColor,
                             child: ClipOval(
-                              child: Image.asset(
-                                "assets/images/profil.jpg",
+                              child: Image(
+                                image: imageProvider,
                                 width: 36,
                                 height: 36,
                                 fit: BoxFit.cover,
@@ -133,7 +147,7 @@ class GreetingSection extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          "Halo, Selamat Datang! 👋",
+                          "Halo, ${user.name}! 👋",
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w800,
