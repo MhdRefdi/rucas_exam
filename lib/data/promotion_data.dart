@@ -5,6 +5,7 @@ class Promotion {
   final String description;
   final String promoCode;
   final DateTime validUntil;
+  final DateTime validFrom;
   final List<String> termsConditions;
 
   Promotion({
@@ -14,6 +15,7 @@ class Promotion {
     required this.description,
     required this.promoCode,
     required this.validUntil,
+    required this.validFrom,
     required this.termsConditions,
   });
 }
@@ -45,7 +47,8 @@ final List<Promotion> promotions = [
         '• Maksimal diskon Rp270.000\n'
         '• Tidak dapat digabung dengan promo lainnya',
     promoCode: 'BRIJAYA27',
-    validUntil: DateTime(2025, 12, 31),
+    validUntil: DateTime(2025, 7, 31),
+    validFrom: DateTime(2025, 6, 15),
     termsConditions: [
       'Berlaku untuk semua jenis kartu BRI',
       'Minimal transaksi Rp500.000',
@@ -89,7 +92,8 @@ final List<Promotion> promotions = [
         '• Gratis 4 sesi trial tanpa syarat\n'
         '• Cicilan 0% hingga 12 bulan',
     promoCode: 'BRAIN30',
-    validUntil: DateTime(2025, 12, 31),
+    validUntil: DateTime(2025, 7, 26),
+    validFrom: DateTime(2025, 6, 15),
     termsConditions: [
       'Diskon 30% untuk pendaftaran bulan ini',
       'Gratis 4 sesi trial tanpa syarat',
@@ -133,7 +137,8 @@ final List<Promotion> promotions = [
         '• Merchandise bertanda tangan idola untuk 50 pendaftar pertama\n'
         '• Kesempatan tampil di social media Ruangguru bersama idolamu',
     promoCode: 'IDOLAKU',
-    validUntil: DateTime(2025, 12, 31),
+    validUntil: DateTime(2025, 7, 15),
+    validFrom: DateTime(2025, 6, 15),
     termsConditions: [
       'Diskon 25% dengan kode: IDOLAKU',
       'Merchandise terbatas untuk 50 pendaftar pertama',
@@ -182,7 +187,8 @@ final List<Promotion> promotions = [
         '• Diskon 40% untuk upgrade ke paket tahunan\n'
         '• Bonus 50 token untuk mengakses sesi konsultasi dengan master teacher',
     promoCode: 'VIDEOBARU',
-    validUntil: DateTime(2025, 12, 31),
+    validUntil: DateTime(2025, 7, 17),
+    validFrom: DateTime(2025, 6, 15),
     termsConditions: [
       'Akses gratis 7 hari untuk pengguna baru',
       'Diskon 40% untuk upgrade ke paket tahunan',
@@ -238,6 +244,7 @@ final List<Promotion> promotions = [
         'DAFTAR SEKARANG SEBELUM KAMU MENYESAL!',
     promoCode: 'JADIJUARA',
     validUntil: DateTime(2025, 7, 29),
+    validFrom: DateTime(2025, 6, 15),
     termsConditions: [
       'Harga normal Rp775.000/tahun',
       'Garansi refund 7 hari jika tidak puas',
@@ -308,7 +315,8 @@ final List<Promotion> promotions = [
         'INVESTASI TERBAIK UNTUK MASA DEPAN CEMERLANG DI UNIVERSITAS INDONESIA!\n'
         'JANGAN TUNDA LAGI - KUOTA HAMPIR PENUH!',
     promoCode: 'MASUKUI',
-    validUntil: DateTime(2025, 8, 30),
+    validUntil: DateTime(2025, 8, 25),
+    validFrom: DateTime(2025, 6, 15),
     termsConditions: [
       'Pembayaran dapat dicicil 12x tanpa bunga',
       'Garansi mengulang gratis jika tidak lolos',

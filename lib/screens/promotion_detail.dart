@@ -58,9 +58,7 @@ class _PromotionDetailState extends State<PromotionDetail> {
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: CustomScrollView(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
+        physics: AlwaysScrollableScrollPhysics(),
         slivers: [
           // Enhanced App Bar with Hero Animation
           SliverAppBar(
@@ -72,11 +70,6 @@ class _PromotionDetailState extends State<PromotionDetail> {
             leading: _buildBackButton(context),
             leadingWidth: 45,
             actions: [
-              IconButton(
-                onPressed:
-                    () => _showSnackBar('Fitur berbagi akan segera hadir'),
-                icon: const Icon(Icons.share, color: Colors.white, size: 24),
-              ),
               IconButton(
                 onPressed: _toggleBookmark,
                 icon: Icon(
@@ -138,22 +131,6 @@ class _PromotionDetailState extends State<PromotionDetail> {
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              title: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
-                ),
-                child: Text(
-                  widget.promotion.title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
               background: Hero(
                 tag: 'promo-${widget.promotion.id}',
                 child: Image.asset(
@@ -1988,19 +1965,24 @@ class _PromoBadge extends StatelessWidget {
 // Stats Card Component
 class _PromotionStatsCard extends StatelessWidget {
   final AppTheme theme;
-  final Promotion promotion; // Terima data promosi lengkap
+  final Promotion promotion;
 
   const _PromotionStatsCard({required this.theme, required this.promotion});
 
   @override
   Widget build(BuildContext context) {
-    // Ambil validUntil dari data promosi
     final validUntil = promotion.validUntil;
     final currentDate = DateTime.now();
     final remainingDays = validUntil.difference(currentDate).inDays;
-    final totalDuration = validUntil.difference(promotion.validUntil).inDays;
-    final progress =
-        remainingDays / totalDuration.clamp(1, double.maxFinite.toInt());
+    final totalDuration = validUntil.difference(promotion.validFrom).inDays;
+    
+    // Hitung hari yang sudah berlalu
+    final elapsedDays = totalDuration - remainingDays;
+    
+    // Hitung progress (pastikan tidak ada pembagian dengan 0)
+    final progress = totalDuration > 0 
+        ? (elapsedDays / totalDuration).clamp(0.0, 1.0)
+        : 0.0;
 
     return Column(
       children: [
@@ -2015,9 +1997,7 @@ class _PromotionStatsCard extends StatelessWidget {
                   Text(
                     'Berlaku hingga: ${_formatDate(promotion.validUntil)}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withOpacity(0.6),
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                     ),
                   ),
                   Text(
@@ -2035,7 +2015,7 @@ class _PromotionStatsCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: LinearProgressIndicator(
-                  value: remainingDays > 0 ? progress : 0,
+                  value: progress,
                   minHeight: 8,
                   backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
                   valueColor: AlwaysStoppedAnimation<Color>(
