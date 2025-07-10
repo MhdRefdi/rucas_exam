@@ -172,7 +172,9 @@ class ListExamScreen extends StatelessWidget {
                                       onTap: () {},
                                       child: Image(
                                         fit: BoxFit.fill,
-                                        image: AssetImage("assets/banners/1.png"),
+                                        image: AssetImage(
+                                          "assets/banners/1.png",
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -306,7 +308,7 @@ class ListExamCard extends StatelessWidget {
                 SizedBox(width: 40),
                 ExamDescription(
                   icon: Icons.lock_clock_rounded,
-                  title: "Tanggal",
+                  title: "Waktu",
                   description: exam.time,
                 ),
               ],

@@ -7,6 +7,7 @@ import 'package:rucas_exam_project/provider/page_provider.dart';
 import 'package:rucas_exam_project/provider/text_scale_provider.dart';
 import 'package:rucas_exam_project/provider/user_provider.dart';
 import 'package:rucas_exam_project/screens/ForgotPassword.dart';
+import 'package:rucas_exam_project/screens/activity_page.dart';
 import 'package:rucas_exam_project/screens/exam.dart';
 import 'package:rucas_exam_project/screens/home.dart';
 import 'package:rucas_exam_project/screens/inbox_screen.dart';
@@ -47,6 +48,7 @@ class MainApp extends StatelessWidget {
         '/list-exam': (context) => ListExamScreen(),
         '/ForgotPassword': (context) => ForgotPasswordScreen(),
         '/profile': (context) => const ProfileScreen(),
+        '/activity': (context) => const ActivityPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/exam') {
