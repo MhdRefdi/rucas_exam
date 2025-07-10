@@ -62,6 +62,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
 
+    // Cek apakah ada imageUrl
+    ImageProvider imageProvider;
+    if (user.imageUrl != null && user.imageUrl!.isNotEmpty) {
+      imageProvider = FileImage(File(user.imageUrl!));
+    } else {
+      imageProvider = const AssetImage("assets/images/profil.jpg");
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -152,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: CircleAvatar(
                       radius: 56,
-                      backgroundImage: Image.asset('assets/images/profil.jpg').image,
+                      backgroundImage: imageProvider,
                     ),
                   ),
                   const SizedBox(height: 20),

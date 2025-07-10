@@ -14,6 +14,14 @@ class GreetingSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
     
+    // Cek apakah ada imageUrl
+    ImageProvider imageProvider;
+    if (user.imageUrl != null && user.imageUrl!.isNotEmpty) {
+      imageProvider = FileImage(File(user.imageUrl!));
+    } else {
+      imageProvider = const AssetImage("assets/images/profil.jpg");
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.transparent,
@@ -96,7 +104,7 @@ class GreetingSection extends StatelessWidget {
                             backgroundColor: theme.defaultColor,
                             child: ClipOval(
                               child: Image(
-                                image: Image.asset(user.imageUrl ?? 'assets/images/profile.jpg').image,
+                                image: imageProvider,
                                 width: 36,
                                 height: 36,
                                 fit: BoxFit.cover,
