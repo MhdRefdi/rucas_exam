@@ -219,4 +219,6 @@ class ExamProvider with ChangeNotifier {
 
     return -1;
   }
+
+  getAnsweredQuestionsCount() {}
 }

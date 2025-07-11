@@ -657,7 +657,7 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
   }
 }
 
-// QUESTION CARD - DIPERBESAR DAN TANPA SCROLL
+// QUESTION CARD - DIPERBAIKI TANPA SCROLL
 class _ReviewQuestionCard extends StatelessWidget {
   final AppTheme theme;
   final Question question;
@@ -676,19 +676,9 @@ class _ReviewQuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // Card dibesarkan
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      padding: const EdgeInsets.all(8), // padding luar card
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -696,7 +686,7 @@ class _ReviewQuestionCard extends StatelessWidget {
         children: [
           // Header
           Container(
-            padding: const EdgeInsets.all(6),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -705,26 +695,26 @@ class _ReviewQuestionCard extends StatelessWidget {
                 ],
               ),
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
               ),
             ),
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(3),
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: theme.primaryColor,
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(Icons.quiz, color: theme.defaultColor, size: 12),
+                  child: Icon(Icons.quiz, color: theme.defaultColor, size: 16),
                 ),
-                const SizedBox(width: 5),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'Pertanyaan',
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: theme.textColor,
                     ),
@@ -734,24 +724,24 @@ class _ReviewQuestionCard extends StatelessWidget {
             ),
           ),
 
+          // Content
           Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // Question text
                 Text(
                   question.question,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: theme.textColor,
-                    height: 1.3,
+                    height: 1.5,
                   ),
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 16),
 
                 // Options (A-D)
                 ...question.options.entries.map((entry) {
@@ -787,56 +777,56 @@ class _ReviewQuestionCard extends StatelessWidget {
                   }
 
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 4),
+                    margin: const EdgeInsets.only(bottom: 8),
                     decoration: BoxDecoration(
-                      border: Border.all(color: borderColor, width: 1),
-                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: borderColor, width: 1.5),
+                      borderRadius: BorderRadius.circular(12),
                       color: bgColor,
                     ),
                     child: ListTile(
-                      dense: true,
                       contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 0,
+                        horizontal: 16,
+                        vertical: 8,
                       ),
                       leading: Container(
-                        padding: const EdgeInsets.all(3),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: theme.primaryColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(3),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           optionKey,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: theme.primaryColor,
-                            fontSize: 9,
+                            fontSize: 14,
                           ),
                         ),
                       ),
                       title: Text(
                         optionText,
                         style: TextStyle(
-                          fontSize: 10,
+                          fontSize: 14,
                           color: theme.textColor,
                           fontWeight: FontWeight.w500,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
                       trailing:
                           icon != null
-                              ? Icon(icon, color: iconColor, size: 14)
-                              : null,
-                      subtitle:
-                          statusText.isNotEmpty
-                              ? Text(
-                                statusText,
-                                style: TextStyle(
-                                  fontSize: 8,
-                                  color: iconColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(icon, color: iconColor, size: 20),
+                                  if (statusText.isNotEmpty)
+                                    Text(
+                                      statusText,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: iconColor,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                ],
                               )
                               : null,
                     ),
@@ -844,10 +834,11 @@ class _ReviewQuestionCard extends StatelessWidget {
                 }).toList(),
 
                 // Explanation
-                if (question.solution != null)
+                if (question.solution != null) ...[
+                  const SizedBox(height: 16),
                   Container(
-                    margin: const EdgeInsets.only(top: 6),
-                    padding: const EdgeInsets.all(6),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -855,23 +846,42 @@ class _ReviewQuestionCard extends StatelessWidget {
                           Colors.blue.withOpacity(0.05),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: Colors.blue.withOpacity(0.3),
                         width: 1,
                       ),
                     ),
-                    child: Text(
-                      question.solution!,
-                      style: TextStyle(
-                        color: theme.textColor,
-                        fontSize: 9,
-                        height: 1.3,
-                      ),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.lightbulb, color: Colors.blue, size: 16),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Penjelasan',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          question.solution!,
+                          style: TextStyle(
+                            color: theme.textColor,
+                            fontSize: 13,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                ],
               ],
             ),
           ),
