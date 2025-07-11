@@ -207,7 +207,7 @@ class ExamNavigationButtons extends StatelessWidget {
         children: [
           // Tombol "Sebelumnya"
           _buildPreviousButton(),
-          
+
           // Tombol "Selanjutnya" atau "Selesai" atau "Kembali ke Home"
           if (isReviewMode && isLastQuestion)
             _buildHomeButton(context)
@@ -431,8 +431,11 @@ class _ExamResultsDialogState extends State<ExamResultsDialog> {
         ElevatedButton.icon(
           onPressed: () {
             _saveExamResult(context); // Simpan hasil sebelum review
-            Navigator.pushNamed(context, '/review', 
-              arguments: widget.examProvider.currentExam?.id);
+            Navigator.pushNamed(
+              context,
+              '/review',
+              arguments: widget.examProvider.currentExam?.id,
+            );
           },
           icon: const Icon(Icons.check, color: Colors.black),
           label: const Text('Review Jawaban'),

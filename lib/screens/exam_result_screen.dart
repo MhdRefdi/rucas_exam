@@ -5,6 +5,9 @@ import 'package:rucas_exam_project/models/exam_model.dart';
 import 'package:rucas_exam_project/models/result_model.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 import 'package:rucas_exam_project/provider/result_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class ExamResultScreen extends StatelessWidget {
   final String examId;
@@ -378,6 +381,28 @@ class ExamResultScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed:
+                        () =>
+                            _generateExamResultPDF(context, exam, latestResult),
+                    icon: const Icon(Icons.picture_as_pdf),
+                    label: const Text('Unduh PDF'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
           ],
         ),
       ),
@@ -644,5 +669,74 @@ class ExamResultScreen extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  Future<void> _generateExamResultPDF(
+    BuildContext context,
+    ExamData exam,
+    ExamResult result,
+  ) async {
+    final pdf = pw.Document();
+
+    final wrong = result.totalQuestions - result.correctAnswers;
+
+    pdf.addPage(
+      pw.Page(
+        build:
+            (pw.Context context) => pw.Padding(
+              padding: const pw.EdgeInsets.all(24),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text(
+                    'Laporan Hasil Ujian',
+                    style: pw.TextStyle(
+                      fontSize: 24,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
+                  pw.SizedBox(height: 16),
+                  pw.Text(
+                    'Judul Ujian: ${exam.title}',
+                    style: pw.TextStyle(fontSize: 14),
+                  ),
+                  pw.Text(
+                    'Tanggal Ujian: ${exam.date}',
+                    style: pw.TextStyle(fontSize: 14),
+                  ),
+                  pw.Text(
+                    'Durasi Ujian: ${exam.duration} menit',
+                    style: pw.TextStyle(fontSize: 14),
+                  ),
+                  pw.SizedBox(height: 12),
+                  pw.Text(
+                    'Nilai: ${result.scorePercentage.toStringAsFixed(1)}%',
+                    style: pw.TextStyle(fontSize: 14),
+                  ),
+                  pw.Text(
+                    'Jawaban Benar: ${result.correctAnswers}',
+                    style: pw.TextStyle(fontSize: 14),
+                  ),
+                  pw.Text(
+                    'Jawaban Salah: $wrong',
+                    style: pw.TextStyle(fontSize: 14),
+                  ),
+                  pw.Text(
+                    'Total Soal: ${result.totalQuestions}',
+                    style: pw.TextStyle(fontSize: 14),
+                  ),
+                  pw.Text(
+                    'Tanggal Dikerjakan: ${_formatDate(result.dateTaken)}',
+                    style: pw.TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
   }
 }
