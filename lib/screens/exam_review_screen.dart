@@ -5,6 +5,8 @@ import 'package:rucas_exam_project/models/exam_model.dart';
 import 'package:rucas_exam_project/models/result_model.dart';
 import 'package:rucas_exam_project/provider/exam_provider.dart';
 import 'package:rucas_exam_project/provider/result_provider.dart';
+import 'package:rucas_exam_project/widgets/exam/exam_navigation_buttons.dart';
+import 'package:rucas_exam_project/widgets/exam/question_navigation.dart';
 
 import '../models/question_model.dart';
 
@@ -91,40 +93,44 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
               ],
             ),
           ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 80,
-                  color: widget.theme.defaultColor,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Exam atau hasil tidak ditemukan!',
-                  style: TextStyle(
-                    fontSize: 20,
+          child: SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 80,
                     color: widget.theme.defaultColor,
-                    fontWeight: FontWeight.w500,
                   ),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton.icon(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back, size: 20),
-                  label: const Text('Kembali', style: TextStyle(fontSize: 16)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: widget.theme.defaultColor,
-                    foregroundColor: widget.theme.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Exam atau hasil tidak ditemukan!',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: widget.theme.defaultColor,
+                      fontWeight: FontWeight.w500,
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 14),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back),
+                    label: const Text('Kembali'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: widget.theme.defaultColor,
+                      foregroundColor: widget.theme.primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -137,68 +143,102 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
     final isCorrect = userAnswer == correctAnswer;
 
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // AppBar custom
-          _buildCustomAppBar(context, exam),
-          
-          // Score display
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Text(
-              'Nilai Akhir: ${_latestResult!.scorePercentage.toStringAsFixed(1)}%',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [widget.theme.primaryColor.withOpacity(0.1), Colors.white],
           ),
-
-          // Performance stats
-          _buildPerformanceHeader(
-            context,
-            _latestResult!.correctAnswers,
-            _latestResult!.totalQuestions,
-            _latestResult!.scorePercentage,
-            _latestResult!.flaggedQuestions,
-          ),
-
-          // Progress indicator
-          _buildProgressIndicator(exam.questions.length),
-
-          // Main question card
-          Expanded(
-            child: AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: _ReviewQuestionCard(
-                      theme: widget.theme,
-                      question: currentQuestion,
-                      userAnswer: userAnswer,
-                      correctAnswer: correctAnswer,
-                      isCorrect: isCorrect,
-                    ),
+        ),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // AppBar custom tetap paling atas
+              _buildCustomAppBar(context, exam),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: Text(
+                  'Nilai Akhir: ${_latestResult!.scorePercentage.toStringAsFixed(1)}%',
+                  style: const TextStyle(
+                    fontSize: 16, // Sama seperti Benar/Salah
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black,
                   ),
-                );
-              },
-            ),
-          ),
+                ),
+              ),
 
-          // Navigation buttons
-          _buildNavigationButtons(context, exam),
-        ],
+              // Benar, Salah, Ragu
+              _buildPerformanceHeader(
+                context,
+                _latestResult!.correctAnswers,
+                _latestResult!.totalQuestions,
+                _latestResult!.scorePercentage,
+                _latestResult!.flaggedQuestions,
+              ),
+
+              // Progress indicator
+              _buildProgressIndicator(exam.questions.length),
+
+              // Main question card diperkecil
+              Expanded(
+                child: AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (context, child) {
+                    return FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: SlideTransition(
+                        position: _slideAnimation,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 3,
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              child: _ReviewQuestionCard(
+                                theme: widget.theme,
+                                question: currentQuestion,
+                                userAnswer: userAnswer,
+                                correctAnswer: correctAnswer,
+                                isCorrect: isCorrect,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // Tombol navigasi
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: _buildNavigationButtons(context, exam),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildCustomAppBar(BuildContext context, exam) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: widget.theme.primaryColor,
         borderRadius: const BorderRadius.only(
@@ -215,12 +255,17 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
       ),
       child: Row(
         children: [
-          IconButton(
-            icon: Icon(Icons.arrow_back, 
-                color: widget.theme.defaultColor, size: 24),
-            onPressed: () => Navigator.pop(context),
+          Container(
+            decoration: BoxDecoration(
+              color: widget.theme.defaultColor.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: widget.theme.defaultColor),
+              onPressed: () => Navigator.pop(context),
+            ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,7 +274,7 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
                   'Review Ujian',
                   style: TextStyle(
                     color: widget.theme.defaultColor.withOpacity(0.8),
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -237,7 +282,7 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
                   exam.title,
                   style: TextStyle(
                     color: widget.theme.defaultColor,
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -245,16 +290,21 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
               ],
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.home, 
-                color: widget.theme.defaultColor, size: 24),
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/home',
-                (route) => false,
-              );
-            },
+          Container(
+            decoration: BoxDecoration(
+              color: widget.theme.defaultColor.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              icon: Icon(Icons.home, color: widget.theme.defaultColor),
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/home',
+                  (route) => false,
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -263,11 +313,23 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
 
   Widget _buildProgressIndicator(int totalQuestions) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: widget.theme.primaryColor,
               borderRadius: BorderRadius.circular(15),
@@ -277,11 +339,11 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
               style: TextStyle(
                 color: widget.theme.defaultColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 14,
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 10),
           Expanded(
             child: LinearProgressIndicator(
               value: (_currentQuestionIndex + 1) / totalQuestions,
@@ -289,15 +351,15 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
               valueColor: AlwaysStoppedAnimation<Color>(
                 widget.theme.primaryColor,
               ),
-              minHeight: 8,
+              minHeight: 6,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 10),
           Text(
             'dari $totalQuestions',
             style: TextStyle(
               color: widget.theme.textColor.withOpacity(0.6),
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -308,50 +370,144 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
 
   Widget _buildNavigationButtons(BuildContext context, exam) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, -3),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           Expanded(
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _currentQuestionIndex > 0
-                    ? widget.theme.primaryColor
-                    : Colors.grey.withOpacity(0.3),
-                foregroundColor: _currentQuestionIndex > 0
-                    ? widget.theme.defaultColor
-                    : Colors.grey,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                gradient:
+                    _currentQuestionIndex > 0
+                        ? LinearGradient(
+                          colors: [
+                            widget.theme.primaryColor.withOpacity(0.8),
+                            widget.theme.primaryColor,
+                          ],
+                        )
+                        : null,
+                color:
+                    _currentQuestionIndex > 0
+                        ? null
+                        : Colors.grey.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(25),
+                boxShadow:
+                    _currentQuestionIndex > 0
+                        ? [
+                          BoxShadow(
+                            color: widget.theme.primaryColor.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ]
+                        : [],
               ),
-              onPressed: _currentQuestionIndex > 0
-                  ? () => _jumpToQuestion(_currentQuestionIndex - 1)
-                  : null,
-              icon: const Icon(Icons.arrow_back, size: 20),
-              label: const Text('Sebelumnya', style: TextStyle(fontSize: 16)),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                onPressed:
+                    _currentQuestionIndex > 0
+                        ? () => _jumpToQuestion(_currentQuestionIndex - 1)
+                        : null,
+                icon: Icon(
+                  Icons.arrow_back,
+                  color:
+                      _currentQuestionIndex > 0
+                          ? widget.theme.defaultColor
+                          : Colors.grey,
+                ),
+                label: Text(
+                  'Sebelumnya',
+                  style: TextStyle(
+                    color:
+                        _currentQuestionIndex > 0
+                            ? widget.theme.defaultColor
+                            : Colors.grey,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
             ),
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 16),
           Expanded(
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _currentQuestionIndex < exam.questions.length - 1
-                    ? widget.theme.primaryColor
-                    : Colors.grey.withOpacity(0.3),
-                foregroundColor: _currentQuestionIndex < exam.questions.length - 1
-                    ? widget.theme.defaultColor
-                    : Colors.grey,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                gradient:
+                    _currentQuestionIndex < exam.questions.length - 1
+                        ? LinearGradient(
+                          colors: [
+                            widget.theme.primaryColor,
+                            widget.theme.primaryColor.withOpacity(0.8),
+                          ],
+                        )
+                        : null,
+                color:
+                    _currentQuestionIndex < exam.questions.length - 1
+                        ? null
+                        : Colors.grey.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(25),
+                boxShadow:
+                    _currentQuestionIndex < exam.questions.length - 1
+                        ? [
+                          BoxShadow(
+                            color: widget.theme.primaryColor.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ]
+                        : [],
               ),
-              onPressed: _currentQuestionIndex < exam.questions.length - 1
-                  ? () => _jumpToQuestion(_currentQuestionIndex + 1)
-                  : null,
-              icon: const Icon(Icons.arrow_forward, size: 20),
-              label: const Text('Selanjutnya', style: TextStyle(fontSize: 16)),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                onPressed:
+                    _currentQuestionIndex < exam.questions.length - 1
+                        ? () => _jumpToQuestion(_currentQuestionIndex + 1)
+                        : null,
+                icon: Icon(
+                  Icons.arrow_forward,
+                  color:
+                      _currentQuestionIndex < exam.questions.length - 1
+                          ? widget.theme.defaultColor
+                          : Colors.grey,
+                ),
+                label: Text(
+                  'Selanjutnya',
+                  style: TextStyle(
+                    color:
+                        _currentQuestionIndex < exam.questions.length - 1
+                            ? widget.theme.defaultColor
+                            : Colors.grey,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -359,6 +515,7 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
     );
   }
 
+  // PERFORMANCE HEADER - DIPERKECIL
   Widget _buildPerformanceHeader(
     BuildContext context,
     int correctCount,
@@ -368,10 +525,11 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
   ) {
     final resultProvider = Provider.of<ResultProvider>(context, listen: false);
     final attemptsCount = resultProvider.getTotalAttemptsForExam(widget.examId);
+    final averageScore = resultProvider.getAverageScoreForExam(widget.examId);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -382,10 +540,10 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
             offset: const Offset(0, 2),
           ),
         ],
-        
       ),
       child: Column(
         children: [
+          // Row pertama (3 stat)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -395,7 +553,6 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
                 '$correctCount',
                 Colors.green,
                 true,
-                iconSize: 20,
               ),
               _buildStatItem(
                 Icons.cancel,
@@ -403,7 +560,6 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
                 '${totalQuestions - correctCount}',
                 Colors.red,
                 true,
-                iconSize: 20,
               ),
               _buildStatItem(
                 Icons.flag,
@@ -411,11 +567,13 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
                 '$flaggedCount',
                 Colors.orange,
                 true,
-                iconSize: 20,
               ),
             ],
           ),
-          const SizedBox(height: 16),
+
+          const SizedBox(height: 12),
+
+          // Row kedua (3 stat tambahan)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -425,7 +583,6 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
                 '${scorePercentage.toStringAsFixed(1)}%',
                 Colors.blue,
                 true,
-                iconSize: 20,
               ),
               _buildStatItem(
                 Icons.history,
@@ -433,7 +590,6 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
                 '$attemptsCount',
                 Colors.blue,
                 false,
-                iconSize: 18,
               ),
               if (_latestResult!.rating != null && _latestResult!.rating! > 0)
                 _buildStatItem(
@@ -442,10 +598,10 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
                   '${_latestResult!.rating}/10',
                   Colors.amber,
                   false,
-                  iconSize: 18,
                 )
               else
-                const SizedBox(width: 80),
+                // Jika tidak ada rating, placeholder supaya rata
+                const SizedBox(width: 64),
             ],
           ),
         ],
@@ -458,26 +614,33 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
     String label,
     String value,
     Color color,
-    bool isMainStat, {
-    double iconSize = 16,
-  }) {
+    bool isMainStat,
+  ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: color, size: iconSize),
-        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: color, size: isMainStat ? 16 : 14),
+        ),
+        const SizedBox(height: 4),
         Text(
           value,
           style: TextStyle(
-            fontSize: isMainStat ? 14 : 12,
+            fontSize: isMainStat ? 12 : 10,
             fontWeight: FontWeight.bold,
             color: color,
           ),
         ),
+        const SizedBox(height: 2),
         Text(
           label,
           style: TextStyle(
-            fontSize: isMainStat ? 11 : 10,
+            fontSize: isMainStat ? 9 : 8,
             color: widget.theme.textColor.withOpacity(0.6),
             fontWeight: FontWeight.w500,
           ),
@@ -485,8 +648,16 @@ class _ExamReviewScreenState extends State<ExamReviewScreen>
       ],
     );
   }
+
+  Color _getScoreColor(double percentage) {
+    if (percentage >= 80) return Colors.green;
+    if (percentage >= 60) return Colors.blue;
+    if (percentage >= 40) return Colors.orange;
+    return Colors.red;
+  }
 }
 
+// QUESTION CARD - DIPERBAIKI TANPA SCROLL
 class _ReviewQuestionCard extends StatelessWidget {
   final AppTheme theme;
   final Question question;
@@ -505,108 +676,219 @@ class _ReviewQuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              question.question,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: theme.textColor,
+          // Header
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  theme.primaryColor.withOpacity(0.1),
+                  theme.primaryColor.withOpacity(0.05),
+                ],
               ),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: theme.primaryColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(Icons.quiz, color: theme.defaultColor, size: 16),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Pertanyaan',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: theme.textColor,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          ...question.options.entries.map((entry) {
-            final optionKey = entry.key;
-            final optionText = entry.value;
-            final isUserAnswer = userAnswer == optionKey;
-            final isActuallyCorrect = correctAnswer == optionKey;
 
-            Color borderColor = Colors.grey.withOpacity(0.3);
-            Color bgColor = Colors.transparent;
-            IconData? icon;
-            Color iconColor = Colors.transparent;
-            String statusText = '';
-
-            if (isUserAnswer && isActuallyCorrect) {
-              borderColor = Colors.green;
-              bgColor = Colors.green.withOpacity(0.1);
-              icon = Icons.check_circle;
-              iconColor = Colors.green;
-              statusText = 'Benar';
-            } else if (isUserAnswer && !isActuallyCorrect) {
-              borderColor = Colors.red;
-              bgColor = Colors.red.withOpacity(0.1);
-              icon = Icons.cancel;
-              iconColor = Colors.red;
-              statusText = 'Salah';
-            } else if (isActuallyCorrect) {
-              borderColor = Colors.green;
-              bgColor = Colors.green.withOpacity(0.1);
-              icon = Icons.check_circle;
-              iconColor = Colors.green;
-              statusText = 'Benar';
-            }
-
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              decoration: BoxDecoration(
-                border: Border.all(color: borderColor),
-                borderRadius: BorderRadius.circular(10),
-                color: bgColor,
-              ),
-              child: ListTile(
-                dense: false,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                minLeadingWidth: 24,
-                leading: Text(
-                  optionKey,
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Question text
+                Text(
+                  question.question,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: theme.primaryColor,
                     fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: theme.textColor,
+                    height: 1.5,
                   ),
                 ),
-                title: Text(
-                  optionText,
-                  style: TextStyle(
-                    fontSize: 15,
+                const SizedBox(height: 16),
+
+                // Options (A-D)
+                ...question.options.entries.map((entry) {
+                  final optionKey = entry.key;
+                  final optionText = entry.value;
+                  final isUserAnswer = userAnswer == optionKey;
+                  final isActuallyCorrect = correctAnswer == optionKey;
+
+                  Color borderColor = Colors.grey.withOpacity(0.3);
+                  Color bgColor = Colors.transparent;
+                  IconData? icon;
+                  Color iconColor = Colors.transparent;
+                  String statusText = '';
+
+                  if (isUserAnswer && isActuallyCorrect) {
+                    borderColor = Colors.green;
+                    bgColor = Colors.green.withOpacity(0.1);
+                    icon = Icons.check_circle;
+                    iconColor = Colors.green;
+                    statusText = 'Benar';
+                  } else if (isUserAnswer && !isActuallyCorrect) {
+                    borderColor = Colors.red;
+                    bgColor = Colors.red.withOpacity(0.1);
+                    icon = Icons.cancel;
+                    iconColor = Colors.red;
+                    statusText = 'Salah';
+                  } else if (isActuallyCorrect) {
+                    borderColor = Colors.green;
+                    bgColor = Colors.green.withOpacity(0.1);
+                    icon = Icons.check_circle;
+                    iconColor = Colors.green;
+                    statusText = 'Benar';
+                  }
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: borderColor, width: 1.5),
+                      borderRadius: BorderRadius.circular(12),
+                      color: bgColor,
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      leading: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: theme.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          optionKey,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: theme.primaryColor,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        optionText,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: theme.textColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      trailing:
+                          icon != null
+                              ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(icon, color: iconColor, size: 20),
+                                  if (statusText.isNotEmpty)
+                                    Text(
+                                      statusText,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: iconColor,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                ],
+                              )
+                              : null,
+                    ),
+                  );
+                }).toList(),
+
+                // Explanation
+                if (question.solution != null) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.blue.withOpacity(0.1),
+                          Colors.blue.withOpacity(0.05),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.blue.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.lightbulb, color: Colors.blue, size: 16),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Penjelasan',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          question.solution!,
+                          style: TextStyle(
+                            color: theme.textColor,
+                            fontSize: 13,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                trailing: icon != null 
-                    ? Icon(icon, color: iconColor, size: 20)
-                    : null,
-              ),
-            );
-          }).toList(),
-          if (question.solution != null)
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                'Pembahasan: ${question.solution!}',
-                style: TextStyle(
-                  color: theme.textColor.withOpacity(0.8),
-                  fontSize: 14,
-                ),
-              ),
+                ],
+              ],
             ),
+          ),
         ],
       ),
     );
   }
 }
+
+enum AnswerStatus { unanswered, correct, incorrect }
