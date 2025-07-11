@@ -733,7 +733,7 @@ class ExamResultScreen extends StatelessWidget {
 
               pw.Divider(),
 
-              pw.Text('📊 Ringkasan Hasil:', style: _sectionTitle()),
+              pw.Text('Ringkasan Hasil:', style: _sectionTitle()),
               pw.SizedBox(height: 8),
               pw.Text(
                 'Nilai             : ${result.scorePercentage.toStringAsFixed(1)}%',
