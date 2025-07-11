@@ -678,65 +678,116 @@ class ExamResultScreen extends StatelessWidget {
   ) async {
     final pdf = pw.Document();
 
+    final logo = await imageFromAssetBundle('assets/images/logo.png');
     final wrong = result.totalQuestions - result.correctAnswers;
 
     pdf.addPage(
       pw.Page(
-        build:
-            (pw.Context context) => pw.Padding(
-              padding: const pw.EdgeInsets.all(24),
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
+        margin: const pw.EdgeInsets.all(24),
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text(
-                    'Laporan Hasil Ujian',
-                    style: pw.TextStyle(
-                      fontSize: 24,
-                      fontWeight: pw.FontWeight.bold,
-                    ),
-                  ),
-                  pw.SizedBox(height: 16),
-                  pw.Text(
-                    'Judul Ujian: ${exam.title}',
-                    style: pw.TextStyle(fontSize: 14),
-                  ),
-                  pw.Text(
-                    'Tanggal Ujian: ${exam.date}',
-                    style: pw.TextStyle(fontSize: 14),
+                  pw.Row(
+                    children: [
+                      pw.Image(logo, width: 48, height: 48),
+                      pw.SizedBox(width: 12),
+                      pw.Text(
+                        'Rucas Exam',
+                        style: pw.TextStyle(
+                          fontSize: 20,
+                          fontWeight: pw.FontWeight.bold,
+                          color: PdfColors.blueGrey800,
+                        ),
+                      ),
+                    ],
                   ),
                   pw.Text(
-                    'Durasi Ujian: ${exam.duration} menit',
-                    style: pw.TextStyle(fontSize: 14),
-                  ),
-                  pw.SizedBox(height: 12),
-                  pw.Text(
-                    'Nilai: ${result.scorePercentage.toStringAsFixed(1)}%',
-                    style: pw.TextStyle(fontSize: 14),
-                  ),
-                  pw.Text(
-                    'Jawaban Benar: ${result.correctAnswers}',
-                    style: pw.TextStyle(fontSize: 14),
-                  ),
-                  pw.Text(
-                    'Jawaban Salah: $wrong',
-                    style: pw.TextStyle(fontSize: 14),
-                  ),
-                  pw.Text(
-                    'Total Soal: ${result.totalQuestions}',
-                    style: pw.TextStyle(fontSize: 14),
-                  ),
-                  pw.Text(
-                    'Tanggal Dikerjakan: ${_formatDate(result.dateTaken)}',
-                    style: pw.TextStyle(fontSize: 14),
+                    _formatDate(DateTime.now()),
+                    style: pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
                   ),
                 ],
               ),
-            ),
+              pw.SizedBox(height: 16),
+              pw.Divider(),
+
+              pw.Text(
+                'Laporan Hasil Ujian',
+                style: pw.TextStyle(
+                  fontSize: 18,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+              pw.SizedBox(height: 16),
+
+              pw.Text('Judul Ujian       : ${exam.title}', style: _infoStyle()),
+              pw.Text('Tanggal Ujian     : ${exam.date}', style: _infoStyle()),
+              pw.Text(
+                'Durasi            : ${exam.duration} menit',
+                style: _infoStyle(),
+              ),
+              pw.SizedBox(height: 12),
+
+              pw.Divider(),
+
+              pw.Text('📊 Ringkasan Hasil:', style: _sectionTitle()),
+              pw.SizedBox(height: 8),
+              pw.Text(
+                'Nilai             : ${result.scorePercentage.toStringAsFixed(1)}%',
+                style: _infoStyle(),
+              ),
+              pw.Text(
+                'Jawaban Benar     : ${result.correctAnswers}',
+                style: _infoStyle(),
+              ),
+              pw.Text('Jawaban Salah     : $wrong', style: _infoStyle()),
+              pw.Text(
+                'Total Soal        : ${result.totalQuestions}',
+                style: _infoStyle(),
+              ),
+              pw.Text(
+                'Tanggal Dikerjakan: ${_formatDate(result.dateTaken)}',
+                style: _infoStyle(),
+              ),
+
+              pw.SizedBox(height: 24),
+              pw.Divider(),
+
+              pw.Align(
+                alignment: pw.Alignment.centerRight,
+                child: pw.Text(
+                  'Terima kasih telah menggunakan Rucas Exam!',
+                  style: pw.TextStyle(
+                    fontSize: 12,
+                    fontStyle: pw.FontStyle.italic,
+                    color: PdfColors.grey600,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
 
     await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
+  }
+
+  // Style helper
+  pw.TextStyle _infoStyle() {
+    return pw.TextStyle(fontSize: 12, color: PdfColors.grey800);
+  }
+
+  pw.TextStyle _sectionTitle() {
+    return pw.TextStyle(
+      fontSize: 14,
+      fontWeight: pw.FontWeight.bold,
+      color: PdfColors.blueGrey800,
     );
   }
 }
