@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/provider/user_provider.dart';
+import '../models/user_model.dart';
 import 'edit_profile_screen.dart';
 import 'setting_screen.dart';
 import 'help_screen.dart';
@@ -62,13 +63,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
 
-    // Cek apakah ada imageUrl
-    ImageProvider imageProvider;
-    if (user.imageUrl != null && user.imageUrl!.isNotEmpty) {
-      imageProvider = FileImage(File(user.imageUrl!));
-    } else {
-      imageProvider = const AssetImage("assets/images/profil.jpg");
+ImageProvider getProfileImage(UserModel user) {
+  try {
+    if (user.imageUrl?.isNotEmpty ?? false) {
+      final file = File(user.imageUrl!);
+      if (file.existsSync()) {
+        return FileImage(file);
+      }
     }
+  } catch (e) {
+    debugPrint('Error loading custom image: $e');
+  }
+  
+  // Debugging asset path
+  debugPrint('Loading default asset image');
+  return AssetImage('assets/images/profil.jpg');
+}
+
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -160,7 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: CircleAvatar(
                       radius: 56,
-                      backgroundImage: imageProvider,
+                      backgroundImage: getProfileImage(user),
                     ),
                   ),
                   const SizedBox(height: 20),

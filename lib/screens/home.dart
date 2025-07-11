@@ -152,7 +152,7 @@ class HomeScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: theme.textColor)),
               TextButton.icon(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/list-exam');
+                  Navigator.pushNamed(context, '/activity');
                 },
                 icon: Icon(Icons.arrow_forward_ios, size: 12, color: theme.primaryColor),
                 label: Text('Lihat Semua',

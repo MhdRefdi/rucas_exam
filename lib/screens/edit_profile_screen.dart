@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:rucas_exam_project/provider/user_provider.dart';
 
+import '../models/user_model.dart';
+
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
@@ -35,11 +37,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     location = user.location ?? '';
     bio = user.bio ?? '';
     _imagePath = user.imageUrl;
-    
-    if (_imagePath != null && _imagePath!.isNotEmpty) {
-      _selectedImage = File(_imagePath!);
-    }
   }
+
+  ImageProvider getProfileImage(UserModel user) {
+  try {
+    if (user.imageUrl?.isNotEmpty ?? false) {
+      final file = File(user.imageUrl!);
+      if (file.existsSync()) {
+        return FileImage(file);
+      }
+    }
+  } catch (e) {
+    debugPrint('Error loading custom image: $e');
+  }
+  
+  // Debugging asset path
+  debugPrint('Loading default asset image');
+  return AssetImage('assets/images/profil.jpg');
+}
 
   Future<void> _pickImage() async {
     showModalBottomSheet(
@@ -169,11 +184,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         CircleAvatar(
           radius: 50,
           backgroundColor: Colors.grey[300],
-          backgroundImage:
-              _selectedImage != null
-                  ? FileImage(_selectedImage!)
-                  : const AssetImage('assets/images/profil.jpg')
-                      as ImageProvider,
+          backgroundImage: _selectedImage != null
+              ? FileImage(_selectedImage!)
+              : getProfileImage(context.read<UserProvider>().user),
         ),
         Positioned(
           bottom: 0,
