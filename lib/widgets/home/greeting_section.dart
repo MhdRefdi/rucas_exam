@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:rucas_exam_project/config/theme_config.dart';
 import 'package:rucas_exam_project/provider/user_provider.dart';
 
+import '../../models/user_model.dart';
+
 class GreetingSection extends StatelessWidget {
   final AppTheme theme = AppTheme();
 
@@ -13,13 +15,23 @@ class GreetingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
-    
-    // Cek apakah ada imageUrl
-    ImageProvider imageProvider;
-    if (user.imageUrl != null && user.imageUrl!.isNotEmpty) {
-      imageProvider = FileImage(File(user.imageUrl!));
-    } else {
-      imageProvider = const AssetImage("assets/images/profil.jpg");
+    debugPrint(user.imageUrl);
+
+    ImageProvider getProfileImage(UserModel user) {
+      try {
+        if (user.imageUrl?.isNotEmpty ?? false) {
+          final file = File(user.imageUrl!);
+          if (file.existsSync()) {
+            return FileImage(file);
+          }
+        }
+      } catch (e) {
+        debugPrint('Error loading custom image: $e');
+      }
+
+      // Debugging asset path
+      debugPrint('Loading default asset image');
+      return AssetImage('assets/images/profil.jpg');
     }
 
     return Container(
@@ -104,16 +116,12 @@ class GreetingSection extends StatelessWidget {
                             backgroundColor: theme.defaultColor,
                             child: ClipOval(
                               child: Image(
-                                image: imageProvider,
-                                width: 36,
-                                height: 36,
-                                fit: BoxFit.cover,
+                                image: getProfileImage(user),
+                                width: 100,
+                                height: 100,
                                 errorBuilder: (context, error, stackTrace) {
-                                  return Icon(
-                                    Icons.person,
-                                    color: theme.primaryColor,
-                                    size: 20,
-                                  );
+                                  debugPrint('Error loading image: $error');
+                                  return Icon(Icons.person, color: Colors.grey);
                                 },
                               ),
                             ),
@@ -190,13 +198,14 @@ class GreetingSection extends StatelessWidget {
       ),
       child: IconButton(
         padding: EdgeInsets.zero,
-        icon: hasBadge
-            ? Badge(
-                smallSize: 8,
-                backgroundColor: Colors.red,
-                child: Icon(icon, color: theme.defaultColor, size: 22),
-              )
-            : Icon(icon, color: theme.defaultColor, size: 22),
+        icon:
+            hasBadge
+                ? Badge(
+                  smallSize: 8,
+                  backgroundColor: Colors.red,
+                  child: Icon(icon, color: theme.defaultColor, size: 22),
+                )
+                : Icon(icon, color: theme.defaultColor, size: 22),
         onPressed: onPressed,
       ),
     );

@@ -200,8 +200,7 @@ class ListExamScreen extends StatelessWidget {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // Optionally navigate to exams tab
-              DefaultTabController.of(context).animateTo(0);
+              Navigator.of(context).pushReplacementNamed('/list-exam');
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: theme.primaryColor,
